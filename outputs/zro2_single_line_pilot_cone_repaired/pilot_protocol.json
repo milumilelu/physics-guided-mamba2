@@ -1,0 +1,63 @@
+{
+  "source_cag": "C:\\Users\\RZF\\Desktop\\博士课题资料\\光机所实验原始数据\\氧化锆\\120组直线.cag",
+  "source_design": "C:\\Users\\RZF\\Desktop\\博士课题资料\\光机所实验原始数据\\氧化锆\\氧化锆_line_design.csv",
+  "groups": [
+    13,
+    19,
+    33,
+    34,
+    43,
+    44,
+    48,
+    51,
+    60,
+    68,
+    94,
+    95,
+    101,
+    104,
+    116
+  ],
+  "config": {
+    "power_w": 5.333,
+    "line_length_um": 200.0,
+    "threshold_k": 4.0,
+    "central_fraction": 0.7,
+    "profile_step_um": 1.0,
+    "profile_strip_half_width_um": 0.65,
+    "plane_negative_clip_sigma": 2.5,
+    "plane_positive_clip_sigma": 4.0,
+    "plane_max_iter": 12,
+    "cone_repair_enabled": true,
+    "cone_half_window_px": 12,
+    "cone_seed_sigma": 6.0,
+    "cone_grow_sigma": 1.5,
+    "cone_min_seed_depth_um": 0.8,
+    "cone_max_component_span_px": 36,
+    "min_component_pixels": 5,
+    "min_profile_points": 8
+  },
+  "mapping": "User-confirmed: DOE 加工顺序 equals CAG Path",
+  "conical_dropout_preprocessing": {
+    "detection": "row-wise grayscale closing residual; adaptive seed/grow thresholds from the robust second-difference noise scale",
+    "acceptance": "candidate must contain a strong seed, have bounded per-row width, and retain both X-direction shoulders",
+    "replacement": "robust local quadratic fitted to the surrounding base ring; only upward corrections to raw Z are allowed",
+    "regularization": "none"
+  },
+  "height_sign": "removal depth = robust reference plane - measured height",
+  "threshold": "D > threshold_k * 1.4826 * MAD(reference residual)",
+  "width": "median threshold-crossing width; crater perpendicular span in discrete mode",
+  "depth": "median of per-profile/per-crater P95 removal depth",
+  "warning": "Pilot outputs require visual review before 120-group batch processing.",
+  "qc_rules": {
+    "edge_clipped": "review",
+    "line_detection_confidence_below": 0.75,
+    "discrete_mode": "review",
+    "threshold_width_relative_range_above": 0.25,
+    "threshold_depth_relative_range_above": 0.15,
+    "threshold_mode_change": "review",
+    "continuous_profiles_below": 50,
+    "reference_surface_ratio_below": 0.35,
+    "relative_depth_MAD_above": 0.5
+  }
+}

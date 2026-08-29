@@ -1,0 +1,27 @@
+{
+  "groups": [
+    13,
+    19,
+    33,
+    34,
+    43,
+    44,
+    48,
+    51,
+    60,
+    68,
+    94,
+    95,
+    101,
+    104,
+    116
+  ],
+  "config": {
+    "cone_repair_enabled": true,
+    "cone_half_window_px": 12,
+    "cone_seed_sigma": 6.0,
+    "cone_grow_sigma": 1.5,
+    "cone_min_seed_depth_um": 0.8,
+    "cone_max_component_span_px": 36
+  }
+}

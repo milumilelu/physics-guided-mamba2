@@ -1,0 +1,22 @@
+{
+  "source_cag": "C:\\Users\\RZF\\Desktop\\专利\\氧化锆\\120组直线.cag",
+  "group": 1,
+  "original_filename": "C:\\Users\\USER1\\Documents\\MeasureData20260528124003.vk4",
+  "timestamp": "2026-05-28 12:40:03",
+  "shape_rows_cols": [
+    64,
+    1024
+  ],
+  "point_count": 65536,
+  "valid_point_count": 65536,
+  "dx_um": 0.278657,
+  "dy_um": 0.278657,
+  "z_step_um": 9.999999999999999e-05,
+  "x_span_um": 285.066111,
+  "y_span_um": 17.555391,
+  "z_min_um": 0.0,
+  "z_max_um": 16.1958,
+  "z_mean_um": 11.046182009887694,
+  "z_std_um": 2.086330325687606,
+  "z_zero_count": 1
+}

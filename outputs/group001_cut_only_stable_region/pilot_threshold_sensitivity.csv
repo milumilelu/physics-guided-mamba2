@@ -1,0 +1,4 @@
+﻿加工顺序,threshold_k,status,processing_mode,W_line_um,D_line_um,C_continuity,n_signal_pixels,edge_clipped
+1,3,ok,continuous,8.995529996,4.677394137,1,14245,0
+1,4,ok,continuous,8.555343036,4.695436976,1,13574,0
+1,5,ok,continuous,8.194902781,4.73338969,1,13165,0

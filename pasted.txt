@@ -1,0 +1,1715 @@
+当前论文正式收敛为一篇**“部分可观测条件下的跨尺度物理引导隐状态动力学建模”**论文，而不是“用 Mamba 预测氧化锆激光加工结果”。
+
+更准确的主线是：
+
+$$
+\boxed{
+\text{真实脉冲历史}
+\rightarrow
+(H_n,Z_n)
+\rightarrow
+\text{材料去除状态门控}
+\rightarrow
+H_{n+1}
+\rightarrow
+\text{单线/槽压缩观测}
+}
+$$
+
+其中 AI 只负责最难、最缺少显式物理模型的部分——**历史材料隐状态 \(Z_n\) 的选择性演化**。这条路线既能避开目前最接近的氧化锆建模工作，也比单纯的“physics-guided Mamba”更容易形成完整的科学问题。
+
+---
+
+# 1. 首先明确：当前论文已经处在一个比较拥挤的研究区
+
+对氧化锆来说，简单的“参数—加工结果关系”已经不新。
+
+2023 年已有工作直接研究超短脉冲激光加工 ZrO₂ 方槽，分析了槽深、粗糙度和形貌；其中报告了高重复频率下明显热积累和熔融损伤，并发现脉宽从 390 fs 增加到 6 ps 时烧蚀阈值上升，同时材料去除效率下降。更重要的是，去除效率和粗糙度都不是简单的全局单调函数。([KCI][1])
+
+与你最接近的实际上是 Bogatyrev 等 2025 年的工作。他们针对 8YSZ 已经进行了静态 D² 实验和动态 grooving 实验，研究了孵化、热积累、表面形貌演化、临界脉冲间隔导致的烧蚀—严重熔融转变，并建立了用于大尺度加工表面演化的计算模型。他们甚至明确将单脉冲、单线等 elementary events 作为大尺度加工建模的 building blocks。([科学直达][2])
+
+AI 侧同样已有多条路线：Tani 和 Kobayashi 2022 已经实现“当前二维表面形貌 + 激光输入 → 下一脉冲形貌”，并用单脉冲训练数据递归预测多脉冲三维形貌；Mottay 2025 已用 TTM + residual neural network 处理小样本 ultrafast ablation，并同时包含 line 和 raster 数据；2026 年 AM-PGNN 又已经把注意力机制和物理单调约束用于飞秒激光微槽深度预测，并在 WC、Cu、SiC 上进行跨材料验证。([Nature][3])
+
+所以论文不能再把以下任何一条单独写成创新：
+
+$$
+\text{ZrO}_2+\text{单线/槽},
+$$
+
+$$
+\text{逐脉冲形貌预测},
+$$
+
+$$
+\text{物理+AI},
+$$
+
+$$
+\text{Mamba},
+$$
+
+或者
+
+$$
+\text{粗糙度/深度预测}.
+$$
+
+---
+
+# 2. 论文真正可以占住的位置
+
+本轮检索后，我认为最值得保留的四个连续创新环节是：
+
+| 层次   | 当前论文真正需要做的事情                                                |
+| ---- | ----------------------------------------------------------- |
+| 物理状态 | 当前形貌 \(H_n\) 之外，引入不能由当前形貌唯一确定的历史材料状态 \(Z_n\)                |
+| 机制状态 | \(Z_n\) 不仅修正一个烧蚀公式，而是参与确定多个材料去除状态子模型的权重                     |
+| 部分观测 | \(H_n,Z_n,\pi_n\) 不直接测量，通过单线宽/深和槽深/粗糙度反演                    |
+| AI   | 用 selective SSM/Mamba-2 学习脉冲历史如何控制 \(Z_n\) 的保留与注入，而不是直接预测槽深 |
+
+因此论文科学问题可以正式表述为：
+
+> **在只能获得最终单线和槽加工形貌压缩观测、而不能逐脉冲测量材料内部状态的情况下，能否利用物理引导的选择性状态空间模型识别脉冲历史材料隐状态，并利用该隐状态描述多脉冲加工中材料去除状态的转变，从而提高未见脉冲历史和跨尺度加工条件下的预测能力？**
+
+这比“如何提高预测精度”强很多。
+
+---
+
+# 3. 为什么 \(Z_n\) 在氧化锆上有明确的物理依据
+
+这不是为了使用 Mamba 人为发明一个 latent state。
+
+氧化锆最接近的 2025 年研究已经表明，其烧蚀阈值同时受到**照射历史和材料温度**影响；当脉冲间隔或热输入达到一定条件后，会从较理想的烧蚀区进入严重熔融区；同时形貌演化又会反过来影响后续吸收和加工效率。([科学直达][2])
+
+因此第一篇论文我建议只设两个历史状态：
+
+$$
+\boxed{
+Z_n=
+[z_n^{P},z_n^{T}]
+}
+$$
+
+其中：
+
+$$
+z_n^{P}
+$$
+
+定义为**持久历史材料状态**，综合表示相对长寿命的缺陷、结构弱化、孔隙/微结构变化等历史效应；
+
+$$
+z_n^{T}
+$$
+
+定义为**快速恢复历史材料状态**，主要表征热积累及其他短寿命瞬态效应。
+
+注意论文不能写：
+
+$$
+z^P=\text{缺陷浓度},
+\qquad
+z^T=\text{真实温度}.
+$$
+
+没有原位温度和缺陷测量时，这两个量只能叫：
+
+> persistent history-state proxy
+> transient/thermal history-state proxy
+
+即“物理可解释隐状态”。
+
+这和当前关于部分可观测动力系统的 scientific ML 问题是吻合的：2025 年已有工作专门研究如何在部分状态不可测时结合物理结构学习未测状态动力学。([PubMed Central (PMC)][4])
+
+---
+
+# 4. \(H_n\) 我建议做一个重要调整：论文第一版不要用完整二维点云状态
+
+概念层面仍然是：
+
+$$
+H_n=\text{current surface morphology state}.
+$$
+
+但是论文实现层面，我不再建议一开始使用：
+
+$$
+H_n=h_n(x,y)\in\mathbb R^{128\times128}
+$$
+
+这样的高维状态。
+
+原因很简单：
+
+你当前真正监督模型的是：
+
+单线：
+
+$$
+[w,d]
+$$
+
+槽：
+
+$$
+[d_g,S_a,S_q,S_z].
+$$
+
+也就是说你用 2–4 个宏观标量去反演每个脉冲对应的数千维甚至上万维 \(H_n\)，这是严重欠定问题。
+
+**论文第一版应该使用 reduced-order morphology state。**
+
+可写成：
+
+$$
+\boxed{
+H_n=\Phi_H(\text{surface morphology})
+}
+$$
+
+其中：
+
+$$
+H_n\in\mathbb R^{K_H},
+\qquad
+K_H\approx4\sim8.
+$$
+
+例如包含：
+
+$$
+H_n=
+[
+d_n,\,
+l_n,\,
+\sigma_{h,n},\,
+\kappa_n,\ldots
+]
+$$
+
+分别表示：
+
+* 等效材料去除深度；
+* 横向作用尺度；
+* 表面高度离散程度；
+* 横截面/形貌形状参数。
+
+这仍然是“表面形貌状态”，但变成低维显式物理表征。
+
+完整点云版本可以留给第二篇论文，用 Mamba Neural Operator 或 DeepOMamba 做：
+
+$$
+H_n(x,y)\rightarrow H_{n+1}(x,y).
+$$
+
+2025–2026 年 Mamba Neural Operator、MBNO、DeepOMamba 已经证明 SSM 可以有效扩展到时空场和 PDE operator learning，所以这个扩展路线是存在的，但不应该强塞进你当前只有约 \(10^2\) 级工艺实验的第一篇文章。([科学直达][5])
+
+---
+
+# 5. 最终状态方程
+
+建议把整个微观动力学写成：
+
+$$
+\boxed{
+(H_n,Z_n)
+\rightarrow
+(H_{n+1},Z_{n+1})
+}
+$$
+
+其中 pulse token：
+
+$$
+x_n=
+[
+F_n,\tau_p,\Delta t_n,\Delta x_n,
+h,
+p_n,
+d_n^{\rm scan}
+].
+$$
+
+固定工件端功率为：
+
+$$
+P=5.3333~{\rm W},
+$$
+
+所以：
+
+$$
+E_p=\frac{P}{f}.
+$$
+
+已知光斑半径 \(w_0\) 后：
+
+$$
+F_0=
+\frac{2E_p}{\pi w_0^2}.
+$$
+
+扫描方向：
+
+$$
+\Delta x=\frac vf,
+$$
+
+时间：
+
+$$
+\Delta t=\frac1f.
+$$
+
+槽加工另外加入：
+
+$$
+h=\text{填充间距},
+$$
+
+以及 pass index、弓形扫描方向等。
+
+这里有一个非常关键的数据要求：
+
+> **必须获得氧化锆真实 \(1/e^2\) 光斑尺寸。**
+
+没有 \(w_0\)，只能得到 pulse energy，不能得到真正的 peak fluence：
+
+$$
+F_0.
+$$
+
+如果后续论文要讲“烧蚀状态”和“阈值”，光斑尺寸属于必需实验元数据。
+
+---
+
+# 6. \(Z_n\) 的物理骨架
+
+先建立一个不用 AI 也可以运行的版本：
+
+$$
+\boxed{
+z_{n+1}^{k}
+=
+\rho_n^kz_n^k
++
+b_n^k\phi_k(x_n,H_n),
+\qquad
+k=P,T.
+}
+$$
+
+恢复项：
+
+$$
+\rho_n^k
+=
+\exp
+\left(
+-\frac{\Delta t_n}{\tau_k}
+\right).
+$$
+
+因此：
+
+$$
+0<\rho_n^k\le1.
+$$
+
+为了区分两个状态：
+
+$$
+\boxed{
+\tau_P>\tau_T
+}
+$$
+
+作为一个软约束。
+
+这不仅有物理意义，还有一个重要算法意义：
+
+> 防止 \(z^P\) 和 \(z^T\) 在训练中发生完全可交换的 label switching。
+
+否则两个隐状态很容易只交换名称而不改变预测结果。
+
+---
+
+# 7. Mamba-2到底放在哪里
+
+Mamba 不直接预测：
+
+$$
+d_g,S_a,S_q,S_z.
+$$
+
+它只处理：
+
+$$
+x_1,x_2,\ldots,x_n
+$$
+
+形成：
+
+$$
+\boxed{
+c_n
+=
+{\rm Mamba2}_\theta(x_{1:n})
+}
+$$
+
+然后由 \(c_n\) 调节：
+
+$$
+\rho_n^P,\rho_n^T,b_n^P,b_n^T.
+$$
+
+例如：
+
+$$
+\tau_n^k
+=
+\tau_{k,\min}
++
+{\rm softplus}
+(W_{\tau,k}c_n+b_{\tau,k}),
+$$
+
+$$
+b_n^k=
+{\rm softplus}
+(W_{b,k}c_n+b_{b,k}).
+$$
+
+于是：
+
+$$
+\boxed{
+Z_{n+1}
+=
+\mathcal S_{\rm physics}
+[
+Z_n,
+{\rm Mamba2}(x_{1:n})
+]
+}
+$$
+
+这才是论文里 Mamba 最合理的位置：
+
+> **Mamba-2负责“选择性记忆”，物理递推负责“状态动力学”。**
+
+Mamba-2 的 SSD 框架就是对 selective state-space recurrence 的系统化扩展，原论文报告核心层相较前代有明显的计算效率优势。更重要的是，后续 scientific ML 工作已经发现 Mamba 类 SSM 在动力系统的长期预测、外推和有限数据场景中具有竞争力。([arXiv][6])
+
+---
+
+# 8. 为什么目前不建议 Mamba-3
+
+Mamba-3 已于 2026 年公开，引入更丰富的 SSM 离散化、复值状态和 MIMO 结构，在 state tracking 和语言任务中较 Mamba-2 有进一步提升。([arXiv][7])
+
+但是：
+
+$$
+\text{Mamba-3更前沿}
+\neq
+\text{更适合你当前数据}.
+$$
+
+你的问题是：
+
+$$
+O(10^2)
+$$
+
+级实验条件、部分观测、物理反演。
+
+Mamba-3 当前的优势证据主要不来自这种任务。
+
+所以当前建议是：
+
+$$
+\boxed{
+\text{轻量 Mamba-2 selective SSM}
+}
+$$
+
+例如第一版只使用：
+
+$$
+1\sim2
+$$
+
+个 Mamba block，
+
+$$
+d_{\rm model}=32\sim64,
+$$
+
+state dimension：
+
+$$
+8\sim16.
+$$
+
+不能搞成大型 backbone。
+
+---
+
+# 9. 材料去除专家必须针对氧化锆重新设计
+
+前面对“对数专家 + 普通幂律专家”的定义还不够好。
+
+氧化锆文献显示一个非常明确的特点：
+
+> 随着热积累增加，材料并不是简单地“烧蚀越来越强”，而可能进入熔融、再凝固、去除效率下降和粗糙度恶化的区域。([KCI][1])
+
+所以建议两个专家分别定义为：
+
+$$
+\boxed{
+A_1=\text{ablation-dominated expert}
+}
+$$
+
+和：
+
+$$
+\boxed{
+A_2=\text{thermal-accumulation / melting-tendency expert}.
+}
+$$
+
+注意是“tendency”，不是说 \(\pi_2\) 就是实际熔融体积分数。
+
+---
+
+## Expert 1：烧蚀主导状态
+
+采用已有物理基础较好的对数型去除：
+
+$$
+\boxed{
+\Delta d_n^{(1)}
+=
+\left[
+d_0+
+\delta_1
+\ln
+\left(
+\frac{F_n}
+{F_{\rm th,1}(Z_n)}
+\right)
+\right]_+
+}
+$$
+
+其中：
+
+$$
+F_{\rm th,1}(Z)
+=
+F_{\rm th,1}^{0}
+\exp
+(-\gamma_Pz^P-\gamma_Tz^T).
+$$
+
+\(d_0\) 可以采用 TRM 思想作为一个可选物理项。TRM 在 2025 年已经公开，所以它是**专家的实现形式，不是论文创新本身**。([科学直达][8])
+
+---
+
+# 10. Expert 2：热积累/熔融倾向状态
+
+这个专家不应使用另一个参数不同的 log law。
+
+可以设计为一个具有饱和能力的非线性函数，例如：
+
+$$
+\boxed{
+\Delta d_n^{(2)}
+=
+a_2
+\frac{
+[\chi_n-1]_+^{p}
+}{
+1+b_2[\chi_n-1]_+^{q}
+}
+}
+$$
+
+其中：
+
+$$
+\chi_n=
+\frac{F_n}{F_{\rm th,2}(Z_n)}.
+$$
+
+这个形式允许：
+
+* 初期随能量增加材料去除增加；
+* 后续趋于饱和；
+* 数据支持时允许效率下降。
+
+它比简单的：
+
+$$
+(F/F_{\rm th}-1)^p
+$$
+
+更适合氧化锆目前已知的非单调加工行为。
+
+同时这个专家对 morphology state 的 roughness/heterogeneity 分量给予更大的增量：
+
+$$
+\Delta H_n^{(2)}
+=
+[
+\Delta d_2,
+\Delta l_2,
+\Delta\sigma_{h,2},
+\ldots
+].
+$$
+
+因此模型可以同时解释：
+
+$$
+\text{depth}
+$$
+
+和：
+
+$$
+\text{roughness}.
+$$
+
+---
+
+# 11. 机制门控
+
+最终：
+
+$$
+\boxed{
+\boldsymbol\pi_n
+=
+{\rm softmax}
+\{
+G_\theta
+(
+H_n,Z_n,\chi_n,\tau_p
+)
+\}
+}
+$$
+
+对于二专家：
+
+$$
+\pi_{1,n}+\pi_{2,n}=1.
+$$
+
+然后：
+
+$$
+\boxed{
+\Delta H_n
+=
+\pi_{1,n}\Delta H_n^{(1)}
++
+\pi_{2,n}\Delta H_n^{(2)}.
+}
+$$
+
+$$
+H_{n+1}
+=
+H_n+\Delta H_n.
+$$
+
+门控第一版不要做复杂网络。
+
+一个 2 层小 MLP 足够，甚至可以用：
+
+$$
+\pi_{2,n}
+=
+\sigma
+(
+a_0+
+a_F\ln\chi_n+
+a_Pz_n^P+
+a_Tz_n^T+
+a_\tau\ln\tau_p+
+a_HH_n
+).
+$$
+
+其中可考虑物理约束：
+
+$$
+\frac{\partial\pi_2}{\partial z^T}\ge0.
+$$
+
+也就是说，在其他条件相同情况下，热历史状态越高，热积累/熔融倾向 expert 的贡献不应降低。
+
+---
+
+# 12. 这里不要照搬 AM-PGNN 的“全局单调约束”
+
+这一点非常重要。
+
+AM-PGNN 2026 对微槽深度使用了频率、能流密度、扫描速度与槽深之间的单调关系作为 physics loss。([MDPI][9])
+
+但氧化锆并不适合简单复制。
+
+已有 ZrO₂ 数据表明：
+
+* 去除效率随 fluence 可能先增加后下降；
+* 粗糙度也可能先降后升；
+* 高频率可能引起强热积累和熔融损伤。([KCI][1])
+
+所以我们应该使用：
+
+$$
+\boxed{
+\text{局部/结构物理约束}
+}
+$$
+
+而不是：
+
+$$
+\boxed{
+\text{全局输入—输出单调约束}.
+}
+$$
+
+例如只约束：
+
+$$
+F_{\rm th}>0,
+$$
+
+$$
+\Delta d_m\ge0,
+$$
+
+$$
+0<\rho_P,\rho_T\le1,
+$$
+
+$$
+\tau_P>\tau_T,
+$$
+
+$$
+0\le\pi_m\le1,
+$$
+
+以及在 Expert 1 的适用区间：
+
+$$
+\frac{\partial A_1}{\partial F}\ge0.
+$$
+
+这是比普通 PGNN 更符合实际氧化锆物理的地方。
+
+---
+
+# 13. 单线和槽数据的作用要彻底区分
+
+当前论文不要把它们简单看成“两个数据集”。
+
+它们应该被看作**同一隐状态动力系统的两个不同观测实验**。
+
+### 单线观测
+
+$$
+\boxed{
+Y_L=
+[
+w_{\rm line},
+d_{\rm line}
+]
+}
+$$
+
+主要负责约束：
+
+$$
+F_{\rm th},
+\delta,
+A_1,A_2
+$$
+
+以及较短加工历史下的状态变化。
+
+---
+
+### 槽观测
+
+$$
+\boxed{
+Y_G=
+[
+d_g,
+S_a,
+S_q,
+S_z
+]
+}
+$$
+
+主要负责约束：
+
+$$
+Z_n
+$$
+
+的长期累计和：
+
+$$
+G(H,Z)
+$$
+
+的门控。
+
+因为弓形填充槽中存在：
+
+* 大量脉冲；
+* 相邻扫描线；
+* hatch spacing；
+* 多遍加工；
+* pass-to-pass memory；
+* 方向反转。
+
+这正是历史状态真正被放大的地方。
+
+---
+
+# 14. 观测算子
+
+建立：
+
+$$
+\boxed{
+\hat Y_L
+=
+\mathcal O_L(H_N)
+}
+$$
+
+和：
+
+$$
+\boxed{
+\hat Y_G
+=
+\mathcal O_G(H_N).
+}
+$$
+
+单线：
+
+$$
+\mathcal O_L:
+H_N
+\rightarrow
+[\hat w,\hat d].
+$$
+
+槽：
+
+$$
+\mathcal O_G:
+H_N
+\rightarrow
+[
+\hat d_g,
+\hat S_a,
+\hat S_q,
+\hat S_z
+].
+$$
+
+这样论文就不是：
+
+$$
+X\rightarrow Y.
+$$
+
+而是：
+
+$$
+X_{1:N}
+\rightarrow
+(H_N,Z_N)
+\rightarrow
+Y.
+$$
+
+这就是整个方法论高度的来源。
+
+---
+
+# 15. 原始点云仍然非常重要，但作为“测量层”而不是主神经网络输入
+
+氧化锆单线点云建议提取：
+
+$$
+w,\quad d
+$$
+
+作为主监督。
+
+同时保存：
+
+$$
+A_{\rm cs},
+V_{\rm rem},
+C_{\rm shape},
+\sigma_w,
+\sigma_d.
+$$
+
+这些不进入主 loss，留作：
+
+$$
+\boxed{
+\text{out-of-loss physical validation}
+}
+$$
+
+例如：
+
+模型训练从未使用：
+
+$$
+C_{\rm shape},
+$$
+
+但如果发现：
+
+$$
+\pi_2
+$$
+
+与：
+
+$$
+C_{\rm shape}
+$$
+
+或单位长度去除量存在稳定关系，就能为 gate 的物理解释提供额外证据。
+
+槽点云同理，主监督用：
+
+$$
+d_g,S_a,S_q,S_z,
+$$
+
+同时可以保留面积去除体积、局部 roughness distribution 等验证信息。
+
+---
+
+# 16. 训练流程建议重新定为四阶段
+
+### Stage A：基础物理模型
+
+先不用 AI。
+
+使用单线数据标定：
+
+$$
+F_{\rm th}^{0},
+\delta_1,
+d_0,
+\text{effective beam scale}.
+$$
+
+得到一个最简单的：
+
+$$
+H_{n+1}=H_n+A_1.
+$$
+
+这是整个后续模型的锚点。
+
+---
+
+### Stage B：显式双状态模型
+
+加入：
+
+$$
+Z_n=[z^P,z^T].
+$$
+
+但：
+
+**不使用 Mamba。**
+
+采用固定参数：
+
+$$
+\rho^P,\rho^T,b^P,b^T.
+$$
+
+验证：
+
+$$
+H+Z
+$$
+
+是否真的优于：
+
+$$
+H.
+$$
+
+如果这个阶段都没有提升，Mamba 没有意义。
+
+---
+
+### Stage C：机制门控
+
+增加：
+
+$$
+A_1,A_2,G.
+$$
+
+比较：
+
+$$
+H+Z+\text{single expert}
+$$
+
+与：
+
+$$
+H+Z+\text{two experts}.
+$$
+
+这是第二个核心消融。
+
+---
+
+### Stage D：Mamba-2历史状态更新
+
+最后才把固定的：
+
+$$
+\rho,b
+$$
+
+改成：
+
+$$
+\rho_n,b_n
+=
+f_{\rm Mamba2}(x_{1:n}).
+$$
+
+于是论文能够严格回答：
+
+> Mamba 带来的提升，到底来自“更好的历史状态学习”，还是仅仅模型参数更多？
+
+---
+
+# 17. 必须增加一个氧化锆专用 physics baseline
+
+这次调研以后，我认为这是之前路线里缺失的一项。
+
+不能只拿：
+
+* XGBoost；
+* GRU；
+* MLP；
+
+做 baseline。
+
+审稿人很可能直接问：
+
+> 与 Bogatyrev 2025 的氧化锆孵化/热积累表面演化模型相比怎么样？
+
+他们的工作已经利用有效脉冲数、能量穿透深度、阈值以及 groove kerf evolution 来模拟表面演化。([ResearchGate][10])
+
+所以最终至少需要这样的比较体系：
+
+| 模型                       | 目的               |
+| ------------------------ | ---------------- |
+| B0 CatBoost/XGBoost      | 纯宏观数据驱动          |
+| B1 ZrO₂ physics baseline | 孵化/热积累/对数烧蚀类传统物理 |
+| B2 \(H\)-only            | 当前形貌单状态          |
+| B3 \(H+Z\), one expert   | 验证历史材料状态         |
+| B4 \(H+Z\)+2 experts     | 验证机制门控           |
+| B5 B4 + GRU              | 普通序列 AI          |
+| **B6 B4 + Mamba-2**      | **本文完整方法**       |
+
+这张表应该成为论文主要消融表。
+
+---
+
+# 18. 最重要的验证不是随机 80/20
+
+最终至少做四类外推。
+
+第一类：
+
+$$
+\boxed{
+\text{leave-one-frequency-out}
+}
+$$
+
+例如整个：
+
+$$
+f=50~{\rm kHz}
+$$
+
+不出现在训练中。
+
+第二类：
+
+$$
+\boxed{
+\text{leave-one-pulse-width-out}.
+}
+$$
+
+第三类：
+
+$$
+\boxed{
+\text{leave-one-pass-count-out}.
+}
+$$
+
+这个尤其重要，因为它最直接验证：
+
+$$
+Z_n
+$$
+
+是否真的学到了历史。
+
+第四类：
+
+$$
+\boxed{
+\text{leave-one-hatch-spacing-out}
+}
+$$
+
+只用于槽数据。
+
+---
+
+# 19. 必须保留“等剂量异历史”挑战集
+
+这还是目前非常好的实验设计。
+
+固定或匹配：
+
+$$
+Q_A=
+\frac{PR}{vh}
+$$
+
+使：
+
+$$
+Q_A^{(A)}
+\approx
+Q_A^{(B)}
+$$
+
+但：
+
+$$
+f_A\neq f_B
+$$
+
+或：
+
+$$
+R_A,h_A
+$$
+
+不同。
+
+也就是说：
+
+$$
+\text{total dose similar}
+$$
+
+但：
+
+$$
+\text{pulse history different}.
+$$
+
+然后比较：
+
+$$
+B1,B2,B3,\ldots,B6.
+$$
+
+如果只有加入 \(Z\) 的模型能够区分：
+
+$$
+Y_A\neq Y_B,
+$$
+
+这个结果比整体 \(R^2\) 提高几个百分点更能证明论文核心假设。
+
+---
+
+# 20. 跨尺度实验应该成为论文最亮的算法实验
+
+设计：
+
+训练数据中：
+
+$$
+\text{某工况只有 single-line data}
+$$
+
+没有对应 groove data。
+
+模型利用：
+
+$$
+Y_L=[w,d]
+$$
+
+学习该工况下的基础材料响应。
+
+然后测试：
+
+$$
+Y_G=
+[d_g,S_a,S_q,S_z].
+$$
+
+也就是：
+
+$$
+\boxed{
+\text{single-line}
+\rightarrow
+\text{groove zero/few-shot transfer}.
+}
+$$
+
+随后逐渐加入：
+
+$$
+5,\ 10,\ 20,\ 40
+$$
+
+组槽数据，画：
+
+$$
+N_{\rm groove}
+\rightarrow
+RMSE
+$$
+
+学习曲线。
+
+如果双状态物理模型只需少量槽数据就能校准，而纯黑箱需要大量数据，这是很强的 scientific ML 结果。
+
+Mottay 2025 已经把“小样本物理+AI”作为重要价值点，所以这里最好定量展示 sample efficiency。([AIP Publishing][11])
+
+---
+
+# 21. 隐状态必须额外做“可辨识性检查”
+
+这是这篇论文最容易被审稿人攻击的地方。
+
+你无法直接测：
+
+$$
+Z_n.
+$$
+
+所以仅仅画一条漂亮的：
+
+$$
+z^P(n),z^T(n)
+$$
+
+曲线没有意义。
+
+至少要验证：
+
+$$
+\tau_P>\tau_T
+$$
+
+在不同随机种子下保持；
+
+模型重新训练后：
+
+$$
+Z_n
+$$
+
+的趋势稳定；
+
+删除某一状态：
+
+$$
+Z=[z^P]
+$$
+
+或：
+
+$$
+Z=[z^T]
+$$
+
+性能显著下降；
+
+并做：
+
+$$
+1\text{-state}
+\quad vs\quad
+2\text{-state}
+\quad vs\quad
+3\text{-state}.
+$$
+
+如果：
+
+$$
+3\text{-state}
+$$
+
+没有明显提升，就明确选择2-state。
+
+这叫：
+
+$$
+\boxed{
+\text{model-order selection}.
+}
+$$
+
+论文不能预先假设“双状态一定正确”，而应通过消融证明二维是性能—可解释性的合理折中。
+
+---
+
+# 22. 门控也要检查是否“塌缩”
+
+典型 MoE 问题是：
+
+$$
+\pi_1\approx1,\qquad \pi_2\approx0
+$$
+
+所有工况都只用一个专家。
+
+如果发生这种情况，所谓 mechanism gate 实际不存在。
+
+所以要报告：
+
+$$
+p(\pi_1),\quad p(\pi_2)
+$$
+
+在整个工艺空间中的分布。
+
+以及：
+
+$$
+\pi_2
+$$
+
+与：
+
+* frequency；
+* \(\Delta t\)；
+* pulse width；
+* pass count；
+* roughness；
+
+之间的关系。
+
+如果：
+
+$$
+\pi_2
+$$
+
+集中出现在高热积累、高 roughness 工况，这与氧化锆已有研究报告的高热输入熔融趋势相符。([科学直达][2])
+
+但论文措辞仍然只能说：
+
+> consistent with a thermally accumulated removal regime
+
+而不能说：
+
+> \(\pi_2\) proves melting fraction.
+
+---
+
+# 23. 如果条件允许，补很少的 SEM 就能大幅提高论文质量
+
+不需要重新做大规模DOE。
+
+从最终模型中选择：
+
+$$
+\pi_2\text{最低的3–5组}
+$$
+
+和：
+
+$$
+\pi_2\text{最高的3–5组}.
+$$
+
+做 SEM。
+
+观察：
+
+* 清晰烧蚀纹理；
+* 熔融/再凝固；
+* recast；
+* 颗粒堆积；
+* 微裂纹/孔隙。
+
+如果两组有系统差异，就是非常好的：
+
+$$
+\boxed{
+\text{post-hoc mechanism validation}.
+}
+$$
+
+这种验证的价值远高于再补几十个随机槽。
+
+---
+
+# 24. 最终损失函数
+
+建议：
+
+$$
+\boxed{
+\mathcal L
+=
+\lambda_L\mathcal L_L
++
+\lambda_G\mathcal L_G
++
+\lambda_P\mathcal L_{\rm phy}
++
+\lambda_Z\mathcal L_Z
++
+\lambda_M\mathcal L_{\rm gate}.
+}
+$$
+
+单线：
+
+$$
+\mathcal L_L
+=
+{\rm Huber}(\hat w,w)
++
+{\rm Huber}(\hat d,d).
+$$
+
+槽：
+
+$$
+\mathcal L_G
+=
+{\rm Huber}(\hat d_g,d_g)
++
+\lambda_a{\rm Huber}(\hat S_a,S_a)
++
+\lambda_q{\rm Huber}(\hat S_q,S_q)
++
+\lambda_z{\rm Huber}(\hat S_z,S_z).
+$$
+
+所有变量先进行 robust normalization。
+
+由于：
+
+$$
+S_z
+$$
+
+对极值点非常敏感，第一版建议：
+
+$$
+\lambda_z<\lambda_a,\lambda_q.
+$$
+
+---
+
+# 25. 论文最终技术路线图
+
+可以压缩成：
+
+$$
+\boxed{
+\begin{array}{c}
+\textbf{ZrO}_2\textbf{ confocal experiments}\\
+\\
+\text{single line: }(w,d)
+\qquad
+\text{groove: }(d_g,S_a,S_q,S_z)
+\\[4pt]
+\downarrow\\
+\textbf{Processing-to-pulse transformation}\\
+E_p,\ F_0,\ \Delta t,\ \Delta x,\ h,\ pass,\ direction
+\\[4pt]
+\downarrow\\
+\textbf{Selective history encoder}\\
+c_n={\rm Mamba2}(x_{1:n})
+\\[4pt]
+\downarrow\\
+\textbf{Dual hidden material state}\\
+Z_n=[z_n^P,z_n^T]
+\\[4pt]
+\downarrow\\
+\textbf{Reduced morphology state}\\
+H_n
+\\[4pt]
+\downarrow\\
+\textbf{Physics-constrained gate}\\
+\pi_n=G(H_n,Z_n,x_n)
+\\[4pt]
+\swarrow\qquad\searrow\\
+A_1:\text{ablation-dominated}
+\qquad
+A_2:\text{thermal/melting-tendency}
+\\[4pt]
+\searrow\qquad\swarrow\\
+H_{n+1}
+\\[4pt]
+\downarrow\\
+H_N
+\\[4pt]
+\swarrow\qquad\qquad\searrow\\
+\mathcal O_L\qquad\mathcal O_G\\
+(w,d)\qquad(d_g,S_a,S_q,S_z)
+\\[4pt]
+\downarrow\\
+\textbf{joint inverse calibration}
+\\[4pt]
+\downarrow\\
+\textbf{history extrapolation + micro-to-macro transfer}
+\end{array}
+}
+$$
+
+---
+
+# 26. 论文“story”建议
+
+我建议论文不要以：
+
+> “We propose a novel Mamba-based model…”
+
+开头。
+
+真正的 story 应该是：
+
+**第一步：** 氧化锆多脉冲超快激光加工具有明显历史依赖、热积累和加工状态转变，而现有模型主要通过有效脉冲数、孵化阈值或当前形貌描述这种历史。已有氧化锆研究已经证明温度和照射历史都会影响阈值，并存在烧蚀—熔融转变。([科学直达][2])
+
+**第二步：** 真实加工中历史材料状态无法逐脉冲直接观测；只能获得最终单线和槽形貌，因此问题本质上属于：
+
+$$
+\boxed{\text{partially observed dynamical system}.}
+$$
+
+**第三步：** 提出：
+
+$$
+(H_n,Z_n)
+$$
+
+双状态，其中 \(Z_n\) 由 selective SSM 根据完整脉冲历史学习。
+
+**第四步：** 让 \(Z_n\) 参与多个材料去除状态的门控，而不是仅仅修正一个经验公式。
+
+**第五步：** 利用单线：
+
+$$
+(w,d)
+$$
+
+和槽：
+
+$$
+(d_g,S_a,S_q,S_z)
+$$
+
+两种尺度观测共同反演不可测的 \(Z_n\)。
+
+**第六步：** 通过 unseen history、equal-dose/different-history、micro-to-macro transfer 证明模型真正学到了历史动力学，而不是工艺参数插值。
+
+这就是整篇论文最完整的逻辑闭环。
+
+---
+
+# 27. 论文题目目前可以向这个方向靠
+
+英文我目前最推荐：
+
+> **Physics-guided selective state-space learning of hidden pulse-history states for cross-scale ultrafast laser ablation prediction in zirconia**
+
+如果强调单线到槽：
+
+> **From single tracks to grooves: physics-guided hidden-state learning for multi-pulse ultrafast laser ablation of zirconia**
+
+如果突出方法：
+
+> **Mechanism-gated selective state-space modeling of partially observed multi-pulse ultrafast laser ablation in zirconia**
+
+第三个学术味最强，我目前更倾向它。
+
+---
+
+# 28. 当前真正需要补齐的信息
+
+在开始写正式算法代码以前，优先级最高的不是继续换AI，而是把以下实验元数据补齐：
+
+| 必需信息                     | 原因                      |
+| ------------------------ | ----------------------- |
+| 正确的 ZrO₂ 单线 DOE + 点云一一映射 | 前面上传的单线文件已确认属于其他材料，不能混用 |
+| 光斑 \(1/e^2\) 半径/直径       | 计算真实 peak fluence       |
+| 激光波长                     | 光学作用与文献比较               |
+| ZrO₂具体材料体系               | 3Y-TZP、8YSZ或其他成分会明显影响机理 |
+| 单线实际长度                   | 重建单线 pulse sequence     |
+| 槽长宽                      | 重建弓形扫描历史                |
+| 弓形扫描起点、方向                | 重建相邻行作用顺序               |
+| 每遍之间的停顿时间                | 对 \(z^T\) 极关键           |
+| 共聚焦预处理/粗糙度ROI定义          | 保证 \(Sa,Sq,Sz\) 一致      |
+
+尤其是：
+
+$$
+\boxed{
+w_0
+}
+$$
+
+和：
+
+$$
+\boxed{
+\text{pass-to-pass timing}
+}
+$$
+
+如果缺失，会直接降低 \(Z^T\) 的物理可信度。
+
+---
+
+## 最后的判断
+
+经过当前查新，**这篇论文是能成立的，但必须比之前更聚焦。**
+
+最危险的路线是：
+
+$$
+\text{Mamba}
++
+\text{MoE}
++
+\text{physics loss}
++
+\text{ZrO}_2
+$$
+
+然后只证明：
+
+$$
+R^2
+$$
+
+比 XGBoost 高。
+
+这很容易被审稿人认为只是算法拼装。
+
+真正值得做的是：
+
+$$
+\boxed{
+\text{部分可观测多脉冲动力系统}
+}
+$$
+
+作为科学问题；
+
+$$
+\boxed{
+H_n+Z_n
+}
+$$
+
+作为物理假设；
+
+$$
+\boxed{
+\text{机制门控}
+}
+$$
+
+作为非平稳材料去除规律；
+
+$$
+\boxed{
+\text{Mamba-2}
+}
+$$
+
+作为历史状态识别器；
+
+$$
+\boxed{
+\text{单线+槽联合反演}
+}
+$$
+
+作为数据创新；
+
+最后用：
+
+$$
+\boxed{
+\text{equal-dose/different-history}
++
+\text{leave-one-history-out}
++
+\text{micro-to-macro transfer}
+}
+$$
+
+证明模型确实学到了“历史”，而不是学到普通参数相关性。
+
+**这才是我建议固定下来的当前论文技术路线。**
+
+[1]: https://www.kci.go.kr/kciportal/landing/article.kci?arti_id=ART002954402&utm_source=chatgpt.com "Ultrashort pulse laser processing of ZrO2 ceramics"
+[2]: https://www.sciencedirect.com/science/article/pii/S0924013624003868?utm_source=chatgpt.com "Femtosecond laser ablation of zirconia-based ceramic materials: From ablation mechanism to modelling of large-scale processing - ScienceDirect"
+[3]: https://www.nature.com/articles/s41598-022-09870-x?utm_source=chatgpt.com "Ultrafast laser ablation simulator using deep neural networks | Scientific Reports"
+[4]: https://pmc.ncbi.nlm.nih.gov/articles/PMC12201977/?utm_source=chatgpt.com "Learning Physics Informed Neural ODEs with Partial Measurements - PMC"
+[5]: https://www.sciencedirect.com/science/article/pii/S0021999125008496?utm_source=chatgpt.com "Mamba neural operator: Who wins? transformers vs. state-space models for PDEs - ScienceDirect"
+[6]: https://arxiv.org/abs/2405.21060?utm_source=chatgpt.com "Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality"
+[7]: https://arxiv.org/abs/2603.15569?utm_source=chatgpt.com "Mamba-3: Improved Sequence Modeling using State Space Principles"
+[8]: https://www.sciencedirect.com/science/article/pii/S0030399225006942?utm_source=chatgpt.com "Improved prediction of ultrashort pulse laser ablation efficiency - ScienceDirect"
+[9]: https://www.mdpi.com/2075-1702/14/5/509?utm_source=chatgpt.com "Prediction of Groove Depth in Femtosecond Laser Ablation via Attention Mechanism and Monotonic Constraint"
+[10]: https://www.researchgate.net/publication/385894537_Femtosecond_laser_ablation_of_zirconia-based_ceramic_materials_From_ablation_mechanism_to_modelling_of_large-scale_processing?utm_source=chatgpt.com "(PDF) Femtosecond laser ablation of zirconia-based ceramic materials: From ablation mechanism to modelling of large-scale processing"
+[11]: https://pubs.aip.org/lia/jla/article/37/4/042031/3368987/Data-efficient-hybrid-physics-Machine-learning?utm_source=chatgpt.com "Data-efficient hybrid physics—Machine learning model for ..."

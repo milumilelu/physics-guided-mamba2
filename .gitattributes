@@ -1,0 +1,22 @@
+# 统一换行符：仓库内一律 LF，避免跨平台协作产生整文件 diff
+* text=auto eol=lf
+
+# 源码与文本
+*.py   text eol=lf
+*.md   text eol=lf
+*.txt  text eol=lf
+*.csv  text eol=lf
+*.json text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.patch text eol=lf
+
+# 二进制：禁止任何换行转换与 diff 尝试
+*.docx binary
+*.doc  binary
+*.xlsx binary
+*.pptx binary
+*.png  binary
+*.cag  binary
+*.vk4  binary
+*.pyc  binary

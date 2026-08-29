@@ -1,0 +1,38 @@
+{
+  "source_cag": "C:\\Users\\RZF\\Desktop\\博士课题资料\\光机所实验原始数据\\氧化锆\\120组直线.cag",
+  "group": 1,
+  "original_filename": "C:\\Users\\USER1\\Documents\\MeasureData20260528124003.vk4",
+  "timestamp": "2026-05-28 12:40:03",
+  "vk4_timestamp": "2026-05-28 12:40:03",
+  "shape_rows_cols": [
+    64,
+    1024
+  ],
+  "point_count": 65536,
+  "valid_point_count": 65536,
+  "invalid_point_count": 0,
+  "dx_um": 0.278657,
+  "dy_um": 0.278657,
+  "z_step_um": 9.999999999999999e-05,
+  "x_center_span_um": 285.066111,
+  "y_center_span_um": 17.555391,
+  "z_min_um": 0.0,
+  "z_max_um": 16.1958,
+  "z_range_um": 16.1958,
+  "z_mean_um": 11.046182009887694,
+  "z_median_um": 12.036599999999998,
+  "z_std_um": 2.086330325687606,
+  "z_zero_sample_count": 1,
+  "z_percentiles_um": {
+    "p01": 4.447299999999999,
+    "p50": 12.036599999999998,
+    "p99": 13.1596
+  },
+  "raw_u32_sha256": "15e3effb07e1846ae76bbec793678d9d5e366a352c3e91dd5fea0e9974f6e35c",
+  "direct_height_equals_embedded_vk4": true,
+  "direct_vk4_mismatch_count": 0,
+  "embedded_vk4_height_data_offset": 133412,
+  "processing": "none; direct calibrated height = uint32 sample * z_step_um",
+  "physical_map": "native X:Y aspect; no color clipping",
+  "point_cloud": "all points; native XYZ values; display box Z dimension enlarged 4x"
+}

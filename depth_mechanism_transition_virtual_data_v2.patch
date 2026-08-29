@@ -1,0 +1,586 @@
+--- /mnt/data/depth_mechanism_transition_virtual_data.py	2026-08-17 01:50:17.085333185 +0000
++++ /mnt/data/depth_mechanism_transition_virtual_data_v2.py	2026-08-17 01:52:31.581825896 +0000
+@@ -1,7 +1,7 @@
+ #!/usr/bin/env python3
+ # -*- coding: utf-8 -*-
+ """
+-Mechanism-guided recurrent feature surrogate v5 for ultrafast laser depth prediction.
++Mechanism-guided recurrent feature surrogate v5.2 for ultrafast laser depth prediction and leakage-free virtual-data benchmarking.
+ 
+ Purpose
+ -------
+@@ -2234,6 +2234,8 @@
+ def generate_executable_virtual_candidate_pool(
+     reference_df: pd.DataFrame,
+     args: argparse.Namespace,
++    candidate_count: Optional[int] = None,
++    seed: Optional[int] = None,
+ ) -> pd.DataFrame:
+     """Generate process candidates inside explicitly executable/allowed ranges.
+ 
+@@ -2241,8 +2243,9 @@
+     speed and hatch spacing default to continuous observed ranges. Pass count is
+     integer-valued. User-supplied CLI bounds/lists override those defaults.
+     """
+-    rng = np.random.default_rng(int(args.seed) + 1701)
+-    n = max(1, int(args.virtual_candidate_count))
++    rng_seed = int(args.seed) + 1701 if seed is None else int(seed)
++    rng = np.random.default_rng(rng_seed)
++    n = max(1, int(args.virtual_candidate_count if candidate_count is None else candidate_count))
+ 
+     tau_values = _observed_or_requested_values(
+         reference_df, "pulse_width_fs", args.virtual_pulse_width_values
+@@ -2649,6 +2652,518 @@
+     }
+ 
+ 
++
++# -----------------------------
++# Leakage-free augmentation benchmark
++# -----------------------------
++
++
++def _merge_candidate_with_pooled(candidate_df: pd.DataFrame, pooled_df: pd.DataFrame) -> pd.DataFrame:
++    """Merge candidate recipes and their physics features without duplicate column names."""
++    extra = [c for c in pooled_df.columns if c not in candidate_df.columns]
++    return pd.concat(
++        [candidate_df.reset_index(drop=True), pooled_df[extra].reset_index(drop=True)],
++        axis=1,
++    )
++
++
++def _physics_valid_virtual_rows(df: pd.DataFrame, args: argparse.Namespace) -> pd.DataFrame:
++    """Apply only deterministic physics-sanity filters; no test-fold information is used."""
++    if df is None or df.empty:
++        return pd.DataFrame() if df is None else df.copy()
++    out = df.copy()
++    valid = np.ones(len(out), dtype=bool)
++    for c in ["z_recursive_um", "N_eff", "g1_margin_min", "g1_margin_max"]:
++        if c in out.columns:
++            valid &= np.isfinite(pd.to_numeric(out[c], errors="coerce").values)
++    if "z_recursive_um" in out.columns:
++        z = pd.to_numeric(out["z_recursive_um"], errors="coerce").values
++        valid &= z >= 0.0
++        valid &= z < float(args.max_depth_clip_um) * 0.999
++    return out.loc[valid].reset_index(drop=True)
++
++
++def _standardize_from_reference(
++    reference: pd.DataFrame,
++    target: pd.DataFrame,
++    cols: Sequence[str],
++) -> Tuple[np.ndarray, np.ndarray]:
++    """Median-impute and standardize using reference rows only."""
++    if not cols:
++        return np.empty((len(reference), 0)), np.empty((len(target), 0))
++    ref = reference[list(cols)].apply(pd.to_numeric, errors="coerce").astype(float)
++    tar = target[list(cols)].apply(pd.to_numeric, errors="coerce").astype(float)
++    med = ref.median(axis=0).fillna(0.0)
++    ref = ref.fillna(med)
++    tar = tar.fillna(med)
++    mu = ref.mean(axis=0).values
++    sd = ref.std(axis=0, ddof=0).values
++    sd = np.where(np.isfinite(sd) & (sd > 1e-12), sd, 1.0)
++    return (ref.values - mu) / sd, (tar.values - mu) / sd
++
++
++def select_core5_coverage_candidates(
++    candidate_df: pd.DataFrame,
++    candidate_pooled: pd.DataFrame,
++    train_pooled: pd.DataFrame,
++    n_select: int,
++    args: argparse.Namespace,
++) -> pd.DataFrame:
++    """Greedy farthest-point selection in the *training-fold-defined* core5 space.
++
++    This is the explicit static-feature-space comparator for the mechanism-transition
++    strategy. Scaling, imputation, and coverage reference all use training rows only.
++    """
++    merged = _physics_valid_virtual_rows(
++        _merge_candidate_with_pooled(candidate_df, candidate_pooled), args
++    )
++    if merged.empty or n_select <= 0:
++        return pd.DataFrame()
++    fs = select_feature_sets(train_pooled).get("lowdim_area_proxy_pulse_core5", [])
++    cols = [c for c in fs if c in train_pooled.columns and c in merged.columns]
++    if not cols:
++        return merged.head(min(n_select, len(merged))).copy().reset_index(drop=True)
++    ref_z, cand_z = _standardize_from_reference(train_pooled, merged, cols)
++    if cand_z.shape[0] == 0:
++        return pd.DataFrame()
++    if ref_z.shape[0] > 0:
++        d2 = ((cand_z[:, None, :] - ref_z[None, :, :]) ** 2).sum(axis=2)
++        min_d2 = np.min(d2, axis=1)
++    else:
++        min_d2 = np.full(cand_z.shape[0], np.inf)
++    selected: List[int] = []
++    remaining = np.ones(cand_z.shape[0], dtype=bool)
++    for rank in range(1, min(int(n_select), cand_z.shape[0]) + 1):
++        masked = np.where(remaining, min_d2, -np.inf)
++        idx = int(np.argmax(masked))
++        if not np.isfinite(masked[idx]):
++            break
++        selected.append(idx)
++        remaining[idx] = False
++        d_new = ((cand_z - cand_z[idx][None, :]) ** 2).sum(axis=1)
++        min_d2 = np.minimum(min_d2, d_new)
++        merged.loc[idx, "core5_selection_rank"] = rank
++        merged.loc[idx, "core5_min_distance_at_pick"] = math.sqrt(max(float(masked[idx]), 0.0))
++    return merged.iloc[selected].copy().reset_index(drop=True)
++
++
++def select_lhs_augmentation_samples(
++    train_df: pd.DataFrame,
++    params_fold: PhysicsParams,
++    optical: OpticalConfig,
++    args: argparse.Namespace,
++    max_pass: int,
++    n_select: int,
++    seed: int,
++) -> pd.DataFrame:
++    """Generate the raw-process-space LHS comparator using training-fold bounds only."""
++    if n_select <= 0:
++        return pd.DataFrame()
++    # A small oversampling factor compensates for recipes removed as duplicates.
++    count = max(int(n_select), int(math.ceil(n_select * 1.5)))
++    cand = generate_executable_virtual_candidate_pool(
++        train_df, args, candidate_count=count, seed=seed
++    )
++    if cand.empty:
++        return pd.DataFrame()
++    _seq, pooled, _mask = build_features(cand, params_fold, optical, args, max_pass=max_pass)
++    merged = _physics_valid_virtual_rows(_merge_candidate_with_pooled(cand, pooled), args)
++    return merged.head(min(int(n_select), len(merged))).copy().reset_index(drop=True)
++
++
++def _make_aug_model(model_name: str, n_features: int, seed: int):
++    model = make_sklearn_model(model_name, seed, n_features=n_features)
++    if not isinstance(model, Pipeline) and canonical_model_name(model_name) not in EXTERNAL_MODEL_NAMES:
++        model = Pipeline([("imputer", SimpleImputer(strategy="median")), ("model", model)])
++    return model
++
++
++def _fit_with_optional_sample_weight(model: Any, X: pd.DataFrame, y: np.ndarray, weight: Optional[np.ndarray]) -> Any:
++    """Fit while using sample weights when the final estimator supports them."""
++    if weight is None:
++        model.fit(X, y)
++        return model
++    try:
++        if isinstance(model, Pipeline):
++            final_name = list(model.named_steps.keys())[-1]
++            model.fit(X, y, **{f"{final_name}__sample_weight": weight})
++        else:
++            model.fit(X, y, sample_weight=weight)
++    except (TypeError, ValueError):
++        # GPR and some external estimators do not expose sample_weight.
++        model.fit(X, y)
++    return model
++
++
++def _predict_aug_model(model: Any, X: pd.DataFrame, args: argparse.Namespace) -> np.ndarray:
++    pred_t = model.predict(X)
++    pred = np.expm1(pred_t) if args.target_transform == "log1p" else pred_t
++    return np.clip(np.asarray(pred, dtype=float), 0.0, args.max_depth_clip_um)
++
++
++def generate_fold_internal_virtual_labels(
++    train_pooled: pd.DataFrame,
++    y_train: np.ndarray,
++    virtual_rows: pd.DataFrame,
++    args: argparse.Namespace,
++    seed: int,
++) -> Tuple[np.ndarray, str]:
++    """Create virtual labels using *training-fold data only*.
++
++    Choices:
++      physics: recurrent z_recursive_um only;
++      fold_surrogate: observation mapper fitted only to the current training fold;
++      residual_ridge: recurrent physics plus a Ridge residual corrector fitted only
++                      to the current training fold.
++    """
++    if virtual_rows is None or virtual_rows.empty:
++        return np.asarray([], dtype=float), "none"
++    source = str(args.augmentation_label_source)
++    if source == "physics":
++        return np.clip(
++            pd.to_numeric(virtual_rows["z_recursive_um"], errors="coerce").values.astype(float),
++            0.0, args.max_depth_clip_um,
++        ), "fold_physics_only"
++
++    feature_sets = select_feature_sets(train_pooled)
++    fs_name = str(args.augmentation_label_feature_set)
++    if fs_name not in feature_sets:
++        raise ValueError(f"Unknown augmentation label feature set: {fs_name}")
++    cols = [c for c in feature_sets[fs_name] if c in train_pooled.columns and c in virtual_rows.columns]
++    if not cols:
++        raise ValueError(f"No usable labeler features for {fs_name}")
++
++    if source == "fold_surrogate":
++        model_name = str(args.augmentation_label_model)
++        model = _make_aug_model(model_name, len(cols), seed)
++        target = np.log1p(y_train) if args.target_transform == "log1p" else y_train
++        model.fit(train_pooled[cols], target)
++        pred = _predict_aug_model(model, virtual_rows[cols], args)
++        return pred, f"fold_surrogate:{model_name}__{fs_name}"
++
++    if source == "residual_ridge":
++        if "z_recursive_um" not in train_pooled.columns or "z_recursive_um" not in virtual_rows.columns:
++            raise ValueError("residual_ridge requires z_recursive_um")
++        phys_train = pd.to_numeric(train_pooled["z_recursive_um"], errors="coerce").fillna(0.0).values.astype(float)
++        phys_virtual = pd.to_numeric(virtual_rows["z_recursive_um"], errors="coerce").fillna(0.0).values.astype(float)
++        residual = np.asarray(y_train, dtype=float) - phys_train
++        residual_model = Pipeline([
++            ("imputer", SimpleImputer(strategy="median")),
++            ("scaler", StandardScaler()),
++            ("ridge", Ridge(alpha=float(args.augmentation_residual_ridge_alpha))),
++        ])
++        residual_model.fit(train_pooled[cols], residual)
++        correction = np.asarray(residual_model.predict(virtual_rows[cols]), dtype=float)
++        pred = np.clip(phys_virtual + correction, 0.0, args.max_depth_clip_um)
++        return pred, f"fold_physics_plus_residual_ridge:{fs_name}"
++
++    raise ValueError(f"Unknown augmentation label source: {source}")
++
++
++def _evaluate_augmented_fold(
++    train_pooled: pd.DataFrame,
++    y_train: np.ndarray,
++    test_pooled: pd.DataFrame,
++    virtual_rows: pd.DataFrame,
++    virtual_y: np.ndarray,
++    args: argparse.Namespace,
++    seed: int,
++) -> np.ndarray:
++    fs_name = str(args.augmentation_eval_feature_set)
++    feature_sets = select_feature_sets(train_pooled)
++    if fs_name not in feature_sets:
++        raise ValueError(f"Unknown augmentation evaluation feature set: {fs_name}")
++    cols = [c for c in feature_sets[fs_name] if c in train_pooled.columns and c in test_pooled.columns]
++    if virtual_rows is not None and not virtual_rows.empty:
++        cols = [c for c in cols if c in virtual_rows.columns]
++    if not cols:
++        raise ValueError(f"No usable evaluation features for {fs_name}")
++
++    X_real = train_pooled[cols].reset_index(drop=True)
++    y_real = np.asarray(y_train, dtype=float)
++    if virtual_rows is not None and not virtual_rows.empty and len(virtual_y) > 0:
++        X_virtual = virtual_rows[cols].reset_index(drop=True)
++        X_fit = pd.concat([X_real, X_virtual], axis=0, ignore_index=True)
++        y_fit = np.concatenate([y_real, np.asarray(virtual_y, dtype=float)])
++        weights = np.concatenate([
++            np.ones(len(y_real), dtype=float),
++            np.full(len(virtual_y), float(args.augmentation_virtual_weight), dtype=float),
++        ])
++    else:
++        X_fit = X_real
++        y_fit = y_real
++        weights = np.ones(len(y_real), dtype=float)
++
++    model_name = str(args.augmentation_eval_model)
++    model = _make_aug_model(model_name, len(cols), seed)
++    target = np.log1p(y_fit) if args.target_transform == "log1p" else y_fit
++    model = _fit_with_optional_sample_weight(model, X_fit, target, weights)
++    return _predict_aug_model(model, test_pooled[cols], args)
++
++
++def run_leakage_free_augmentation_benchmark(
++    measured_df: pd.DataFrame,
++    optical: OpticalConfig,
++    args: argparse.Namespace,
++    output_dir: Path,
++) -> Dict[str, Any]:
++    """Repeated-CV benchmark with virtual generation, selection, and labelling inside each train fold.
++
++    Test-fold rows are never used to: fit physics parameters, set observed virtual
++    candidate ranges, construct mechanism coverage, scale core5 coverage, fit the
++    virtual-label model, or train the augmented observation mapper.
++    """
++    if measured_df.empty:
++        return {}
++    measured_df = measured_df.reset_index(drop=True)
++    y = measured_df["measured_depth_um"].astype(float).values
++    row_ids = measured_df["run_id"].values
++    folds = make_cv_splits(measured_df, y, args)
++    strategies = [x.strip().lower() for x in str(args.augmentation_strategies).split(",") if x.strip()]
++    strategies = [x for x in strategies if x in {"lhs", "core5", "mechanism"}]
++    if not strategies:
++        raise ValueError("--augmentation-strategies must contain at least one of lhs,core5,mechanism")
++    all_strategies = ["baseline"] + strategies
++    init = args_to_physics_params(args)
++    max_pass_global = max(
++        int(np.nanmax(measured_df["pass_count"].astype(float).values)),
++        int(args.virtual_pass_max) if args.virtual_pass_max is not None else 1,
++    )
++
++    pred_rows: List[pd.DataFrame] = []
++    split_metric_rows: List[Dict[str, Any]] = []
++    virtual_export_rows: List[pd.DataFrame] = []
++    oof_sum = {s: np.zeros_like(y, dtype=float) for s in all_strategies}
++    oof_count = {s: np.zeros_like(y, dtype=float) for s in all_strategies}
++    repeat_pred: Dict[str, Dict[int, np.ndarray]] = {s: {} for s in all_strategies}
++    repeat_count: Dict[str, Dict[int, np.ndarray]] = {s: {} for s in all_strategies}
++
++    for split_no, (repeat, fold, tr, te) in enumerate(folds, start=1):
++        repeat = int(repeat)
++        fold = int(fold)
++        train_df = measured_df.iloc[tr].copy().reset_index(drop=True)
++        test_df = measured_df.iloc[te].copy().reset_index(drop=True)
++        y_train = y[tr]
++        print(
++            f"[augmentation benchmark] split {split_no}/{len(folds)} "
++            f"r{repeat} f{fold}: train={len(tr)} test={len(te)}"
++        )
++
++        # Strict rule: any learnable physics parameters are identified from train only.
++        if args.physics_fit_scope == "fixed":
++            params_fold = init
++        else:
++            if not TORCH_AVAILABLE:
++                raise RuntimeError(
++                    "Leakage-free augmentation benchmark with fitted physics requires PyTorch; "
++                    "use --physics-fit-scope fixed or install PyTorch."
++                )
++            params_fold = fit_physics_params(
++                train_df, args, optical, init, args.device,
++                label=f"augmentation-fold-physics r{repeat} f{fold}",
++            )
++
++        _seq_tr, pooled_train, _mask_tr = build_features(
++            train_df, params_fold, optical, args, max_pass=max_pass_global
++        )
++        _seq_te, pooled_test, _mask_te = build_features(
++            test_df, params_fold, optical, args, max_pass=max_pass_global
++        )
++
++        split_virtual: Dict[str, pd.DataFrame] = {}
++        k_virtual = max(0, int(args.augmentation_select_count))
++        candidate_seed = int(args.seed) + 50000 + 1000 * repeat + fold
++
++        if "lhs" in strategies:
++            split_virtual["lhs"] = select_lhs_augmentation_samples(
++                train_df, params_fold, optical, args, max_pass_global,
++                k_virtual, candidate_seed + 11,
++            )
++
++        need_pool = any(s in strategies for s in ["core5", "mechanism"])
++        if need_pool:
++            candidates = generate_executable_virtual_candidate_pool(
++                train_df, args,
++                candidate_count=max(int(args.augmentation_candidate_count), k_virtual),
++                seed=candidate_seed + 23,
++            )
++            if not candidates.empty:
++                _seq_c, pooled_c, _mask_c = build_features(
++                    candidates, params_fold, optical, args, max_pass=max_pass_global
++                )
++            else:
++                pooled_c = pd.DataFrame()
++        else:
++            candidates = pd.DataFrame()
++            pooled_c = pd.DataFrame()
++
++        if "core5" in strategies:
++            split_virtual["core5"] = select_core5_coverage_candidates(
++                candidates, pooled_c, pooled_train, k_virtual, args
++            ) if not candidates.empty else pd.DataFrame()
++
++        if "mechanism" in strategies:
++            if candidates.empty:
++                split_virtual["mechanism"] = pd.DataFrame()
++            else:
++                local_args = argparse.Namespace(**vars(args))
++                local_args.virtual_select_count = k_virtual
++                _scored, selected = score_and_select_virtual_candidates(
++                    candidates, pooled_c, pooled_train, local_args
++                )
++                split_virtual["mechanism"] = selected
++
++        # Baseline first: identical train/test physics representation, no virtual rows.
++        baseline_pred = _evaluate_augmented_fold(
++            pooled_train, y_train, pooled_test, pd.DataFrame(), np.asarray([]),
++            args, seed=candidate_seed + 101,
++        )
++        fold_predictions = {"baseline": baseline_pred}
++        fold_virtual_counts = {"baseline": 0}
++        fold_label_sources = {"baseline": "measured_only"}
++
++        for sname in strategies:
++            vr = split_virtual.get(sname, pd.DataFrame())
++            if vr is None or vr.empty:
++                pred = baseline_pred.copy()
++                label_source = "none; fallback_to_baseline"
++                vy = np.asarray([], dtype=float)
++            else:
++                vy, label_source = generate_fold_internal_virtual_labels(
++                    pooled_train, y_train, vr, args,
++                    seed=candidate_seed + 200 + strategies.index(sname),
++                )
++                good = np.isfinite(vy)
++                if not np.all(good):
++                    vr = vr.loc[good].reset_index(drop=True)
++                    vy = vy[good]
++                pred = _evaluate_augmented_fold(
++                    pooled_train, y_train, pooled_test, vr, vy, args,
++                    seed=candidate_seed + 300 + strategies.index(sname),
++                ) if len(vy) else baseline_pred.copy()
++
++                if not vr.empty:
++                    exp = vr.copy()
++                    exp["augmentation_strategy"] = sname
++                    exp["repeat"] = repeat
++                    exp["fold"] = fold
++                    exp["fold_virtual_depth_um"] = vy
++                    exp["fold_virtual_label_source"] = label_source
++                    virtual_export_rows.append(exp)
++            fold_predictions[sname] = pred
++            fold_virtual_counts[sname] = int(len(vy))
++            fold_label_sources[sname] = label_source
++
++        for sname, pred in fold_predictions.items():
++            oof_sum[sname][te] += pred
++            oof_count[sname][te] += 1.0
++            if repeat not in repeat_pred[sname]:
++                repeat_pred[sname][repeat] = np.zeros_like(y, dtype=float)
++                repeat_count[sname][repeat] = np.zeros_like(y, dtype=float)
++            repeat_pred[sname][repeat][te] = pred
++            repeat_count[sname][repeat][te] += 1.0
++            m = metrics_dict(y[te], pred, prefix="")
++            split_metric_rows.append({
++                "strategy": sname,
++                "repeat": repeat,
++                "fold": fold,
++                "n_train_real": int(len(tr)),
++                "n_test_real": int(len(te)),
++                "n_virtual": int(fold_virtual_counts[sname]),
++                "virtual_label_source": fold_label_sources[sname],
++                "rmse": m["rmse"], "mae": m["mae"], "r2": m["r2"],
++            })
++            pred_rows.append(pd.DataFrame({
++                "strategy": sname,
++                "repeat": repeat,
++                "fold": fold,
++                "run_id": row_ids[te],
++                "measured_depth_um": y[te],
++                "pred_depth_um": pred,
++                "residual_um": pred - y[te],
++                "n_virtual": int(fold_virtual_counts[sname]),
++            }))
++
++    summary_rows: List[Dict[str, Any]] = []
++    baseline_rmse = np.nan
++    for sname in all_strategies:
++        count = np.maximum(oof_count[sname], 1.0)
++        oof = oof_sum[sname] / count
++        met = metrics_dict(y, oof, prefix="cv_")
++        rep_metrics = []
++        for rep, pp in sorted(repeat_pred[sname].items()):
++            cnt = repeat_count[sname][rep]
++            if np.all(cnt > 0):
++                rep_metrics.append(metrics_dict(y, pp, prefix=""))
++        row: Dict[str, Any] = {
++            "strategy": sname,
++            **met,
++            "cv_repeats": int(args.cv_repeats),
++            "cv_folds": int(args.cv_folds),
++            "eval_model": args.augmentation_eval_model,
++            "eval_feature_set": args.augmentation_eval_feature_set,
++            "virtual_label_source": "measured_only" if sname == "baseline" else args.augmentation_label_source,
++            "virtual_weight": 0.0 if sname == "baseline" else float(args.augmentation_virtual_weight),
++        }
++        if rep_metrics:
++            for key in ["rmse", "mae", "r2"]:
++                vals = np.asarray([m[key] for m in rep_metrics if np.isfinite(m[key])], dtype=float)
++                if vals.size:
++                    row[f"cv_{key}_repeat_mean"] = float(np.mean(vals))
++                    row[f"cv_{key}_repeat_std"] = float(np.std(vals, ddof=1)) if vals.size > 1 else 0.0
++        if sname == "baseline":
++            baseline_rmse = float(met["cv_rmse"])
++        summary_rows.append(row)
++
++    summary_df = pd.DataFrame(summary_rows)
++    if np.isfinite(baseline_rmse):
++        summary_df["delta_cv_rmse_vs_baseline"] = summary_df["cv_rmse"] - baseline_rmse
++        summary_df["rmse_improvement_pct_vs_baseline"] = np.where(
++            baseline_rmse > 0,
++            100.0 * (baseline_rmse - summary_df["cv_rmse"]) / baseline_rmse,
++            np.nan,
++        )
++    summary_df = summary_df.sort_values("cv_rmse", ascending=True).reset_index(drop=True)
++    split_df = pd.DataFrame(split_metric_rows)
++    preds_df = pd.concat(pred_rows, axis=0, ignore_index=True) if pred_rows else pd.DataFrame()
++    virtual_df = pd.concat(virtual_export_rows, axis=0, ignore_index=True) if virtual_export_rows else pd.DataFrame()
++
++    summary_df.to_csv(output_dir / "augmentation_benchmark_cv.csv", index=False)
++    split_df.to_csv(output_dir / "augmentation_benchmark_split_metrics.csv", index=False)
++    preds_df.to_csv(output_dir / "augmentation_benchmark_predictions.csv", index=False)
++    if not virtual_df.empty:
++        virtual_df.to_csv(output_dir / "augmentation_virtual_samples_by_fold.csv", index=False)
++
++    protocol = {
++        "strict_no_leakage": True,
++        "rule": (
++            "For every repeated CV split, physics fitting (when learnable), candidate-range inference, "
++            "mechanism/core5 coverage construction, virtual sample selection, virtual labelling, and "
++            "augmented-model fitting use training-fold rows only. Test-fold rows are used only for evaluation."
++        ),
++        "strategies": all_strategies,
++        "label_source": args.augmentation_label_source,
++        "label_model": args.augmentation_label_model,
++        "label_feature_set": args.augmentation_label_feature_set,
++        "evaluation_model": args.augmentation_eval_model,
++        "evaluation_feature_set": args.augmentation_eval_feature_set,
++        "virtual_select_count": int(args.augmentation_select_count),
++        "candidate_count": int(args.augmentation_candidate_count),
++        "virtual_weight": float(args.augmentation_virtual_weight),
++    }
++    (output_dir / "augmentation_benchmark_protocol.json").write_text(
++        json.dumps(protocol, indent=2, ensure_ascii=False), encoding="utf-8"
++    )
++    print("[augmentation benchmark] saved leakage-free augmentation comparison")
++    return {
++        "summary": summary_df,
++        "split_metrics": split_df,
++        "predictions": preds_df,
++        "virtual_samples": virtual_df,
++        "protocol": protocol,
++    }
++
++
+ # -----------------------------
+ # Reporting
+ # -----------------------------
+@@ -3653,6 +4168,18 @@
+     p.add_argument("--virtual-stability-samples", type=int, default=12, help="Parameter-perturbation replicates for mechanism-signature stability; 0 disables.")
+     p.add_argument("--virtual-param-perturb-frac", type=float, default=0.08, help="Log-scale relative perturbation used only for the signature-stability sensitivity diagnostic.")
+     p.add_argument("--virtual-label-source", type=str, default="both", choices=["physics", "best_surrogate", "both"], help="Virtual response label export. 'both' retains physics label and an optional best-observation-mapper label.")
++    # Strict, fold-internal augmentation benchmark (no test-fold leakage)
++    p.add_argument("--run-augmentation-benchmark", action="store_true", help="Compare measured-only vs LHS/core5/mechanism-transition augmentation with all virtual generation and labelling performed inside each CV training fold.")
++    p.add_argument("--augmentation-strategies", type=str, default="lhs,core5,mechanism", help="Comma-separated leakage-free augmentation comparators: lhs,core5,mechanism.")
++    p.add_argument("--augmentation-candidate-count", type=int, default=2000, help="Per-fold candidate pool size used by core5/mechanism selection.")
++    p.add_argument("--augmentation-select-count", type=int, default=30, help="Maximum number of virtual samples added inside each training fold for each strategy.")
++    p.add_argument("--augmentation-label-source", type=str, default="residual_ridge", choices=["physics", "fold_surrogate", "residual_ridge"], help="Leakage-free virtual labeler. All choices are fitted/evaluated using training-fold information only.")
++    p.add_argument("--augmentation-label-model", type=str, default="gpr", help="Training-fold-only observation mapper used when --augmentation-label-source fold_surrogate.")
++    p.add_argument("--augmentation-label-feature-set", type=str, default="lowdim_area_proxy_pulse_core5", help="Feature set used by the fold-internal virtual labeler/residual corrector.")
++    p.add_argument("--augmentation-residual-ridge-alpha", type=float, default=3.0, help="Ridge regularization for the fold-internal residual correction labeler.")
++    p.add_argument("--augmentation-eval-model", type=str, default="gbdt", help="Fixed downstream model for a fair augmentation comparison; do not choose it from full-data CV results.")
++    p.add_argument("--augmentation-eval-feature-set", type=str, default="lowdim_area_proxy_pulse_core5", help="Fixed feature representation used to compare baseline/LHS/core5/mechanism augmentation.")
++    p.add_argument("--augmentation-virtual-weight", type=float, default=0.5, help="Training weight for each virtual sample when the downstream estimator supports sample_weight.")
+     # Publication-oriented figures and interpretability
+     p.add_argument("--no-interpretability", dest="run_interpretability", action="store_false", help="Disable final-model PDP/ALE interpretability plots.")
+     p.set_defaults(run_interpretability=True)
+@@ -3744,6 +4271,15 @@
+             optical=optical,
+             args=args,
+             output_dir=output_dir,
++        )
++    augmentation_benchmark = {}
++    if args.run_augmentation_benchmark:
++        print("[mechanism-sequence] Running strict fold-internal augmentation benchmark")
++        augmentation_benchmark = run_leakage_free_augmentation_benchmark(
++            measured_df=measured_df,
++            optical=optical,
++            args=args,
++            output_dir=output_dir,
+         )
+     residual_diag_df = residual_diagnostics_by_group(pred_all, metrics_df, measured_df, output_dir)
+     metrics_df.to_csv(output_dir / "model_compare_cv.csv", index=False)
