@@ -14,6 +14,7 @@ $$
 
 ```
 physics-guided Mamba-2/
+├── export_height_csv.py               # ★ CAG → 高度矩阵 CSV 批量导出（与官方导出逐字节一致）
 ├── extract_zro2_single_line.py        # ★ 主流水线：CAG 解码 → 几何提取 → 特征表
 ├── depth_mechanism_transition_virtual_data_v2.py   # 机理递推 + 虚拟数据增强（含 .patch）
 ├── compare_raw_vs_repaired.py         # 圆锥伪影修复对观测算子 Y=[W_line, D_line] 的影响
@@ -63,7 +64,53 @@ KEYENCE 显微镜的 `.cag` 本质是一个 ZIP 容器，内部按 `Path/<组号
 
 关键中间量：`fluence`、`threshold`、`margin = log(fluence/threshold)`、`inc`、`z`、`total_defocus`、pass 级去除增量、累计深度、`core5` 物理代理特征。
 
-## 3. 运行方式
+## 3. CAG 高度矩阵批量导出
+
+`export_height_csv.py` 把 `.cag` 中每一组测量导出为 KEYENCE `ImageDataCsv` 格式的 CSV，
+**输出与官方软件导出逐字节一致**（已在 `20补充pass` 的 10 个手工导出文件上验证：10/10 完全一致，
+含"测量数据名"字段）。
+
+```bash
+.venv/Scripts/python.exe export_height_csv.py \
+    --cag       "氧化锆/pass实验数据/120正式.cag" \
+    --output-dir "氧化锆/pass实验数据/csv文件/120正式"
+
+# 整棵目录树，按源结构镜像输出
+.venv/Scripts/python.exe export_height_csv.py \
+    --batch-root  "E:/博士课题资料/光机所实验原始数据" \
+    --output-root "E:/博士课题资料/csv高度" --skip-existing --dry-run
+```
+
+### 文件名来自容器本身，不要手工推导
+
+`--naming data`（默认）读取 CAG 内 `MeasurementDataMap → FileItemAccessor` 槽位中存储的字符串，
+也就是 KEYENCE 软件数据列表里显示、并写进 CSV `"测量数据名"` 字段的那个名字。
+
+```
+<root>/<组号>/<uuid>/<FileItemAccessor uuid>/e57e75b1-707b-4a6f-a095-1485b8b95efb
+```
+
+该槽位是**无长度前缀的 UTF-8/GBK 文本**，因此按 UTF-16LE 结构扫描容器是找不到的。
+
+⚠️ **不要按"组号 → 加工顺序"推导命名。** 蛇形扫描会让编号回折，例如 `60Pass组.cag` 中：
+
+| 组号 | 1 | 6 | 7 | 8 | … | 12 | 13 |
+|---|---|---|---|---|---|---|---|
+| 真实数据名 | `1 2` | `11 12` | **`14 13`** | **`16 15`** | … | **`24 23`** | `25 26` |
+
+若按 `(2n-1, 2n)` 推导，第 7 组会错成 `13 14`。一切以容器内记录为准。
+
+其它命名模式：`--naming original`（采集文件名 `MeasureData20260528105621`）、
+`--naming index`（`001`）。
+
+### 解码要点
+
+* 高度段起点是 `height_offset + 20 + 776`；`776` 是伪彩色 LUT，漏掉会造成**列循环移位 194**。
+* 换算必须**四舍五入远离零**：`(raw * z_step_pm + 500) // 1000`
+  （`np.round` 是银行家舍入，会产生 0.001 μm 偏差）。
+* 无效像素哨兵 `raw >= 0xFF000000`；VK4 blob 大小阈值取 100 KB（旧直线扫描只有 568 KB）。
+
+## 4. 运行方式
 
 主流水线（默认跑 15 组 pilot：13/19/33/34/43/44/48/51/60/68/94/95/101/104/116）：
 
@@ -103,7 +150,7 @@ powershell -ExecutionPolicy Bypass -File scripts/setup_environment.ps1 `
 > （如 `C:\Users\RZF\Desktop\专利\...`、`F:\20260528-xgd\...`），在当前目录下无法直接运行。
 > 建议后续改为 `argparse` 参数或读取统一的 `config.toml`。
 
-## 4. 版本控制约定
+## 5. 版本控制约定
 
 | 内容 | 策略 | 原因 |
 |---|---|---|
@@ -115,7 +162,7 @@ powershell -ExecutionPolicy Bypass -File scripts/setup_environment.ps1 `
 
 若确需保留某张诊断图，用 `git add -f <路径>` 强制加入。
 
-## 5. 当前进展
+## 6. 当前进展
 
 - [x] CAG 容器解码与 VK4 高度标定还原（已通过 `cag_raw_verification` 交叉验证）
 - [x] 圆锥缺失伪影检测与修复（15 组共修复 290 个锥、48,256 像素，残余强缺陷 0 处）

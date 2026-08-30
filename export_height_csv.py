@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import re
 import struct
 import sys
 import time
@@ -60,6 +61,15 @@ LUT_BYTES = 776
 # KEYENCE flags unmeasured pixels with a 0xFF...... sentinel.
 INVALID_SENTINEL = 0xFF000000
 
+# MeasurementDataMap names the storage slot that holds the *display* name of a
+# measurement (the string VK analyser shows in its data list and reuses as the
+# CSV "测量数据名" field, e.g. "1 2").  The payload lives at
+#   <root>/<group>/<uuid>/<FileItemAccessor uuid>/<DATA_ENTRY_KEY>
+# and is plain UTF-8/GBK text with no length prefix -- which is why a
+# UTF-16LE-only scan of the container never sees it.
+FILE_ITEM_KEY = "FileItemAccessor"
+DATA_ENTRY_KEY = "e57e75b1-707b-4a6f-a095-1485b8b95efb"
+
 
 class CagHeightReader:
     """Minimal reader that pulls one height map per measurement out of a .cag."""
@@ -68,7 +78,8 @@ class CagHeightReader:
         self.path = path
         self.archive = zipfile.ZipFile(path)
         self._vk4: dict[int, zipfile.ZipInfo] = {}
-        self._names: dict[int, str] = {}
+        self._names: dict[int, str] = {}        # OriginalFileName stem
+        self._data_names: dict[int, str] = {}   # KEYENCE display name, e.g. "1 2"
         self._index()
 
     def close(self) -> None:
@@ -101,13 +112,53 @@ class CagHeightReader:
             raise ValueError(f"no VK4 measurement blobs found in {self.path}")
         if measurement_xml is not None:
             root = ET.fromstring(measurement_xml.decode("utf-8-sig"))
+            file_item_keys: dict[int, str] = {}
             for item in root.findall("MeasurementData"):
                 group = int(item.findtext("Path", "0"))
                 self._names[group] = Path(item.findtext("OriginalFileName", "")).stem
+                for key in item.findall("./StorageKeys/StorageKey"):
+                    if key.get("Name") == FILE_ITEM_KEY:
+                        file_item_keys[group] = (key.text or "").strip()
+            if file_item_keys:
+                self._data_names = self._read_data_names(file_item_keys)
+
+    def _read_data_names(self, keys: dict[int, str]) -> dict[int, str]:
+        """Read the display name of every measurement out of the container."""
+        names: dict[int, str] = {}
+        for info in self.archive.infolist():
+            parts = info.filename.split("/")
+            if len(parts) != 5 or not parts[1].isdigit():
+                continue
+            group = int(parts[1])
+            if parts[3] != keys.get(group) or parts[4] != DATA_ENTRY_KEY:
+                continue
+            name = _decode_data_name(self.archive.read(info))
+            if name:
+                names[group] = name
+        return names
 
     @property
     def groups(self) -> list[int]:
         return sorted(self._vk4)
+
+    @property
+    def names(self) -> dict[int, str]:
+        """Captured file names (OriginalFileName stems)."""
+        return self._names
+
+    @property
+    def data_names(self) -> dict[int, str]:
+        """Display names as KEYENCE stores them, e.g. ``{1: "1 2"}``."""
+        return self._data_names
+
+    def peek_shape(self, group: int) -> str:
+        """Read the width/height header without decoding the height map."""
+        with self.archive.open(self._vk4[group]) as stream:
+            head = stream.read(128)
+            offsets = dict(zip(VK4_KEYS, struct.unpack_from("<18I", head, 12)))
+            stream.seek(offsets["height"])
+            width, height = struct.unpack_from("<2I", stream.read(8))
+        return f"{width}x{height}"
 
     def read_height(self, group: int, fill_invalid: bool = True
                     ) -> tuple[np.ndarray, dict[str, object]]:
@@ -268,6 +319,38 @@ def parse_groups(text: str, available: list[int], strict: bool = True) -> list[i
     return [g for g in wanted if g in present]
 
 
+def _decode_data_name(raw: bytes) -> str:
+    """Decode a FileItemAccessor payload into a printable display name."""
+    for enc in ("utf-8", "gbk", "utf-16-le"):
+        try:
+            text = raw.decode(enc)
+        except UnicodeDecodeError:
+            continue
+        text = text.rstrip("\x00").strip()
+        if text and all(ch.isprintable() for ch in text):
+            return text
+    return ""
+
+
+_UNSAFE = re.compile(r'[\\/:*?"<>|\x00-\x1f]')
+
+
+def build_stem(args, reader, group: int) -> str:
+    """Build the file stem for one measurement group.
+
+    ``data`` uses the name KEYENCE itself stores in the container (the same
+    string it writes to the CSV ``测量数据名`` field), falling back to the
+    captured file name and finally to the group index.
+    """
+    if args.naming == "data":
+        name = reader.data_names.get(group, "")
+        if name:
+            return _UNSAFE.sub("_", name).strip().rstrip(".") or f"{group:03d}"
+    if args.naming in ("data", "original") and reader.names.get(group):
+        return reader.names[group]
+    return f"{group:03d}"
+
+
 def export_container(cag_path: Path, out_dir: Path, args,
                      verbose: bool = True) -> tuple[int, int, str]:
     """Export every selected group of one container.
@@ -280,18 +363,23 @@ def export_container(cag_path: Path, out_dir: Path, args,
                               strict=not args.batch_root)
         if not groups:
             return 0, 0, "-"
-        probe = reader.read_height(groups[0])[1]
-        shape = f"{probe['width']}x{probe['height']}"
+        shape = reader.peek_shape(groups[0])
         if args.dry_run:
+            if verbose:
+                named = sum(1 for g in groups if reader.data_names.get(g))
+                preview = ", ".join(
+                    f"{build_stem(args, reader, g)}{args.suffix}"
+                    for g in groups[:3])
+                print(f"  {len(groups)} group(s), {shape}, "
+                      f"{named} named in container")
+                print(f"  e.g. {preview}")
             return len(groups), 0, shape
 
         out_dir.mkdir(parents=True, exist_ok=True)
         total = 0
         started = time.time()
         for n, group in enumerate(groups, 1):
-            stem = f"{group:03d}"
-            if args.naming == "original" and reader._names.get(group):
-                stem = reader._names[group]
+            stem = build_stem(args, reader, group)
             out_path = out_dir / f"{stem}{args.suffix}"
             if args.skip_existing and out_path.exists():
                 continue
@@ -339,9 +427,12 @@ def main() -> int:
     parser.add_argument("--format", choices=("keyence", "plain"), default="keyence",
                         help="keyence reproduces the official ImageDataCsv "
                              "layout; plain writes a bare numeric matrix")
-    parser.add_argument("--naming", choices=("index", "original"), default="index",
-                        help="index -> 001_高度.csv; original -> the embedded "
-                             "VK4 file name")
+    parser.add_argument("--naming", choices=("data", "original", "index"),
+                        default="data",
+                        help="data -> the name stored in the container, e.g. "
+                             "'1 2' (default, matches the official export); "
+                             "original -> the captured VK4 file name, e.g. "
+                             "MeasureData20260528105621; index -> 001")
     parser.add_argument("--suffix", default="_高度.csv",
                         help="file name suffix (default: _高度.csv)")
     parser.add_argument("--skip-existing", action="store_true",
