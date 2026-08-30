@@ -1,0 +1,103 @@
+{
+  "timestamp_utc": "2026-08-30T08:06:52.752051+00:00",
+  "git_commit_hash": "85c0feaef3d72a2484860b112696c79277e8fc5a",
+  "git_worktree_dirty": true,
+  "python_version": "3.12.13 (main, Aug  7 2026, 02:26:41) [MSC v.1944 64 bit (AMD64)]",
+  "package_versions": {
+    "numpy": "2.3.5",
+    "pandas": "3.0.1",
+    "Pillow": "12.3.0",
+    "matplotlib": "3.10.7",
+    "scikit-learn": "1.7.2",
+    "scipy": "1.18.1"
+  },
+  "config_path": "config\\session_manifest.csv",
+  "input_files": [
+    {
+      "session_id": "zro2_120_formal",
+      "role": "cag",
+      "path": "氧化锆\\pass实验数据\\120正式.cag",
+      "exists": 1,
+      "bytes": 9502214871,
+      "sha256": "bfa2a95bac75d7cac0f8f4f7d097b5bfde64b3f23d81b9c86d445e953fdb6657"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "design",
+      "path": "氧化锆\\pass实验数据\\120正式_design记录表_0516.csv",
+      "exists": 1,
+      "bytes": 3964,
+      "sha256": "59690c4620adffa853f94c318d3737088c896eb37978b9773928b5be3276e32c"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "cag",
+      "path": "氧化锆\\pass实验数据\\60Pass组.cag",
+      "exists": 1,
+      "bytes": 2375712940,
+      "sha256": "9b9d1ed67d2e1268584506fa27779c6f23c8253bdc884dfad11c5c6612ad3fe0"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "design",
+      "path": "氧化锆\\pass实验数据\\60pass_design.csv",
+      "exists": 1,
+      "bytes": 2062,
+      "sha256": "e50cee4555b63d19d76686962a36b2815710fb22128482b968bddeff5e733abe"
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "role": "cag",
+      "path": "氧化锆\\pass实验数据\\20补充pass.cag",
+      "exists": 1,
+      "bytes": 791924743,
+      "sha256": "3880da8e64c312ffef3b7367590d38da939425d148770eeb5a98cff3406159a9"
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "role": "design",
+      "path": "氧化锆\\pass实验数据\\20补充_pass5_6实验.csv",
+      "exists": 1,
+      "bytes": 700,
+      "sha256": "a0245dbcc4d1641264e23363d42ed83a4315e9d2472d48930e7903df58f2736f"
+    }
+  ],
+  "session_definitions": [
+    {
+      "session_id": "zro2_120_formal",
+      "cag_path": "氧化锆/pass实验数据/120正式.cag",
+      "design_path": "氧化锆/pass实验数据/120正式_design记录表_0516.csv",
+      "input_format": "cag",
+      "mapping_rule": "one_to_one_measurement_id",
+      "rois_per_measurement": 1,
+      "mapping_provenance": "user_confirmed_2026-08-30",
+      "expected_design_rows": 120
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "cag_path": "氧化锆/pass实验数据/60Pass组.cag",
+      "design_path": "氧化锆/pass实验数据/60pass_design.csv",
+      "input_format": "cag",
+      "mapping_rule": "paired_left_to_right_odd_even",
+      "rois_per_measurement": 2,
+      "mapping_provenance": "user_confirmed_2026-08-30",
+      "expected_design_rows": 60
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "cag_path": "氧化锆/pass实验数据/20补充pass.cag",
+      "design_path": "氧化锆/pass实验数据/20补充_pass5_6实验.csv",
+      "input_format": "cag",
+      "mapping_rule": "paired_left_to_right_odd_even",
+      "rois_per_measurement": 2,
+      "mapping_provenance": "user_confirmed_2026-08-30",
+      "expected_design_rows": 20
+    }
+  ],
+  "phase0_decision": "STOP",
+  "blocker_codes": [
+    "no_real_height_csv_fixture",
+    "cag_csv_equivalence_not_established"
+  ],
+  "manual_approval_status": "not_applicable_phase0_failed"
+}

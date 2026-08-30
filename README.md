@@ -75,7 +75,29 @@ python extract_zro2_single_line.py \
     --groups pilot --pilot-count 15
 ```
 
-依赖：`numpy`、`pandas`、`pillow`、`matplotlib`。
+固定环境：CPython 3.12.13，完整版本见 `requirements.txt`。仓库内环境初始化：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/setup_environment.ps1 `
+    -Python "C:\path\to\Python312\python.exe"
+```
+
+国内网络可显式指定镜像；包版本仍由 `requirements.txt` 固定：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/setup_environment.ps1 `
+    -Python "C:\path\to\Python312\python.exe" `
+    -IndexUrl "https://pypi.tuna.tsinghua.edu.cn/simple"
+```
+
+需要脚本中的非默认 XGBoost/CatBoost 模型时增加 `-WithExtraModels`，版本见
+`requirements-extra-models.txt`。需要训练可学习物理参数或后续 Mamba 模型时增加
+`-WithTorch`。该扩展固定为
+`torch==2.11.0+cu128`，详见 `requirements-torch-cu128.txt`。安装后使用：
+
+```powershell
+.\.venv\Scripts\python.exe scripts/verify_environment.py
+```
 
 > **注意**：`render_cag_group1_raw.py`、`validate_conical_preprocess_group1.py`、`probe_cag.py` 中硬编码了历史绝对路径
 > （如 `C:\Users\RZF\Desktop\专利\...`、`F:\20260528-xgd\...`），在当前目录下无法直接运行。

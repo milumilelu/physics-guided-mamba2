@@ -296,7 +296,7 @@ def bounded_sigmoid(raw: Any, lo: float, hi: float):
     return lo + (hi - lo) * torch.sigmoid(raw)
 
 
-class TorchPhysicsModel(nn.Module):
+class TorchPhysicsModel(nn.Module if TORCH_AVAILABLE else object):
     """Tiny differentiable physics-only model for optional full/fold fitting.
 
     It does not contain eta_net. It only fits effective physical parameters so that

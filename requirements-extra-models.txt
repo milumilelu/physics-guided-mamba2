@@ -1,0 +1,6 @@
+# Optional non-default estimators and their additional resolved dependencies.
+catboost==1.2.10
+graphviz==0.21
+narwhals==2.25.0
+plotly==7.0.0
+xgboost==3.4.1
