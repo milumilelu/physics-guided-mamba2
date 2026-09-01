@@ -1,0 +1,48 @@
+{
+  "stage": "WP9_common_fov_gate",
+  "generated_at_utc": "2026-08-31T03:03:02.530251+00:00",
+  "decision": "PASS",
+  "resampling_performed": false,
+  "exclusion_policy": "C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\config\\phase_a_exclusions.yaml",
+  "included_samples": 178,
+  "excluded_samples": 22,
+  "coarsest_input_pixel_um": 0.344174,
+  "sessions": [
+    {
+      "session_id": "zro2_120_formal",
+      "common_fov_um": 438.6937884169646,
+      "status": "PASS",
+      "registered_fov_um": 300.0,
+      "grid_pixels": 871,
+      "pixel_um": 0.34443168771526983,
+      "warning": "",
+      "external_reference_width_um": 50.0,
+      "limiting_measurement_id": "25",
+      "limiting_sample_id": "25"
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "common_fov_um": null,
+      "status": "EXCLUDED",
+      "registered_fov_um": null,
+      "grid_pixels": null,
+      "pixel_um": null,
+      "warning": "session excluded by approved Phase A exclusion policy",
+      "external_reference_width_um": null,
+      "limiting_measurement_id": null,
+      "limiting_sample_id": null
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "common_fov_um": 264.5911165369864,
+      "status": "PASS",
+      "registered_fov_um": 264.5911165369864,
+      "grid_pixels": 768,
+      "pixel_um": 0.3445196829908677,
+      "warning": "",
+      "external_reference_width_um": 32.29555826849321,
+      "limiting_measurement_id": "23",
+      "limiting_sample_id": "45"
+    }
+  ]
+}

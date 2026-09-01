@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<title>专利附图预览 · 超快激光多脉冲烧蚀形貌预测</title>
+<style>
+  :root{
+    --bg:#f7f6f1;
+    --card:#ffffff;
+    --ink:#2C2C2A;
+    --muted:#5F5E5A;
+    --line:#D3D1C7;
+    --accent:#185FA5;
+    --warn:#BA7517;
+    --bad:#A32D2D;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:"Microsoft YaHei","PingFang SC","Source Han Sans CN",sans-serif;line-height:1.65}
+  .wrap{max-width:1480px;margin:0 auto;padding:40px 24px 80px}
+  header{margin-bottom:24px}
+  h1{font-size:22px;font-weight:500;margin:0 0 6px}
+  h1 small{font-size:13px;font-weight:400;color:var(--muted);margin-left:10px}
+  .lede{font-size:13.5px;color:var(--muted);max-width:1080px}
+  .rule{margin-top:14px;padding:12px 16px;background:#fbfaf6;border:1px solid var(--line);border-radius:8px;font-size:12.5px;color:var(--muted);line-height:1.7}
+  .rule b{color:var(--ink);font-weight:500}
+  .rule code{background:#F1EFE8;padding:1px 6px;border-radius:4px;font-size:12px}
+  .nav{position:sticky;top:0;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--line);z-index:10;margin:0 -24px 24px;padding:10px 24px}
+  .nav a{font-size:13px;color:var(--accent);text-decoration:none;margin-right:18px}
+  .nav a:hover{text-decoration:underline}
+  .fig{margin:32px 0;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .fig-head{padding:18px 22px 8px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .fig-num{font-family:"Times New Roman",serif;font-size:20px;color:var(--ink)}
+  .fig-title{font-size:17px;font-weight:500;color:var(--ink)}
+  .fig-role{font-size:12px;color:var(--muted)}
+  .fig-body{padding:0}
+  .fig-body svg, .fig-body object{display:block;width:100%;height:auto;max-width:100%}
+  .fig-foot{padding:14px 22px;background:#fbfaf6;border-top:1px dashed var(--line);font-size:12.5px;color:var(--muted)}
+  .fig-foot b{color:var(--ink);font-weight:500}
+  .legend{padding:14px 22px;font-size:12px;color:var(--muted);display:flex;gap:22px;flex-wrap:wrap;background:#fbfaf6;border-top:1px dashed var(--line)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .swatch{display:inline-block;width:14px;height:10px;border:1px solid var(--line);border-radius:2px}
+  .sw-blue{background:#E6F1FB;border-color:#185FA5}
+  .sw-amber{background:#FAEEDA;border-color:#BA7517}
+  .sw-gray{background:#F1EFE8;border-color:#888780}
+  .sw-red{background:none;border:1px dashed #A32D2D;border-style:dashed}
+  .meta{margin-top:40px;font-size:12px;color:var(--muted);text-align:center;border-top:1px solid var(--line);padding-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>超快激光多脉冲烧蚀形貌预测 · 专利附图预览 <small>6 张矢量附图（SVG · 1400×820 · 可交给绘图人员改绘）</small></h1>
+    <div class="lede">按照「先建立问题意识，再给出技术方案」的顺序编排：图 1–3 让审查员先理解为什么需要历史状态、为什么必须同时引入单线与槽观测；图 4–6 再逐层展开双状态递推、门控子模型与联合反演闭环。所有图中均避免把宏观观测写成可直接识别某一微观机制。</div>
+    <div class="rule">
+      <b>统一视觉语法（按《画图说明 2.0》）：</b>
+      画布 1400 × 820 · 框尺寸三档（普通 240×140 / 重点 240×200~280×320 / <b>核心模型 340×200 唯一最大</b>）·
+      字号铁律（标题 26 / 区域框标题 24 粗 / 框标题 22 粗 / 正文 22–24 / 辅助 ≥21 / 数学下标 15–18，<b>禁止 11/12/13</b>）·
+      三色体系（蓝 #185FA5 = 模型 · 灰 #5F5E5A = 实验 · 橙 #BA7517 = 校准 · 红 #A32D2D 仅用于 Z_n 虚框）·
+      连线规则（主流程只允许水平直线 + 90° 正交折线；每张图最多 1 根上下连接、1 根外围反馈；无贝塞尔、无巨大回环）·
+      <b>图内不再放"图1""图2"字样</b>，图题与解释交给 Word 正文。
+    </div>
+  </header>
+
+  <nav class="nav">
+    <a href="#f1">图 1 · 加工到底发生了什么</a>
+    <a href="#f2">图 2 · 为什么 H_n 不够</a>
+    <a href="#f3">图 3 · 实验怎么约束</a>
+    <a href="#f4">图 4 · 总体技术路线</a>
+    <a href="#f5">图 5 · 单脉冲内部计算</a>
+    <a href="#f6">图 6 · 不可测状态如何校准</a>
+  </nav>
+
+  <section class="fig" id="f1">
+    <div class="fig-head">
+      <span class="fig-num">图 1</span>
+      <span class="fig-title">多脉冲扫描加工过程与宏观形貌形成</span>
+      <span class="fig-role">入口图 · 4 区严格栅格：A 工艺输入 / B 单扫描线脉冲作用（视觉中心） / C 多线多遍累积 / D 最终工程观测</span>
+    </div>
+    <div class="fig-body"><object data="fig1.svg" type="image/svg+xml" style="width:100%;display:block"></object></div>
+    <div class="legend">
+      <span><span class="swatch sw-gray"></span>加工参数 / 宏观结果（实验事实）</span>
+      <span><span class="swatch sw-blue"></span>单扫描线脉冲作用（视觉中心，含 Δx / Δt）</span>
+      <span><span class="swatch sw-amber"></span>多线 / 多遍累积（间距 h，逐遍历史累积）</span>
+    </div>
+    <div class="fig-foot"><b>关键文字：</b>宏观加工形貌是大量局部脉冲事件按照特定能量、时间间隔、空间位置和扫描顺序累积形成的结果。</div>
+  </section>
+
+  <section class="fig" id="f2">
+    <div class="fig-head">
+      <span class="fig-num">图 2</span>
+      <span class="fig-title">同一形貌可能由不同历史状态达到</span>
+      <span class="fig-role">问题图 · A / B 两条平行历史路径严格对称，论证「S_n = (H_n, Z_n)」的必要性</span>
+    </div>
+    <div class="fig-body"><object data="fig2.svg" type="image/svg+xml" style="width:100%;display:block"></object></div>
+    <div class="legend">
+      <span><span class="swatch sw-gray"></span>几何形貌相近的不同历史（H_n）</span>
+      <span><span class="swatch sw-red"></span>历史材料状态差异（Z_n，红色虚框）</span>
+      <span><span class="swatch sw-amber"></span>相同 u_n 下的可能不同响应 ΔH_n</span>
+    </div>
+    <div class="fig-foot"><b>关键文字：</b>两组具有不同脉冲能量分配、时间间隔、空间重叠关系或扫描顺序的历史，可能形成相近的当前表面形貌，但材料历史状态 Z_n <b>可不同</b>。底部"传统 S_n = H_n" vs "本发明 S_n = (H_n, Z_n)"严格左右同宽同高对照。</div>
+  </section>
+
+  <section class="fig" id="f3">
+    <div class="fig-head">
+      <span class="fig-num">图 3</span>
+      <span class="fig-title">单线观测与槽观测对脉冲级模型的互补约束</span>
+      <span class="fig-role">实验侧 · 左右两列完全模板化，箭头共同进入下方"联合约束 / 反演校准"，再反向更新中央模型</span>
+    </div>
+    <div class="fig-body"><object data="fig3.svg" type="image/svg+xml" style="width:100%;display:block"></object></div>
+    <div class="legend">
+      <span><span class="swatch sw-gray"></span>实验链：扫描轨迹 → 共聚焦点云 → 压缩观测</span>
+      <span><span class="swatch sw-blue"></span>中心：同一脉冲级双状态递推模型（H_n, Z_n → H_N）</span>
+      <span><span class="swatch sw-amber"></span>下方：联合约束 / 反演校准（Y_line + Y_groove → 更新模型参数）</span>
+    </div>
+    <div class="fig-foot"><b>关键文字：</b>两条实验线索先共同汇入"联合约束 / 反演校准"节点，再由该节点向上更新同一中央模型（不训练两个独立模型）。实验观测不再直接进入预测阶段。</div>
+  </section>
+
+  <section class="fig" id="f4">
+    <div class="fig-head">
+      <span class="fig-num">图 4</span>
+      <span class="fig-title">基于双状态递推与多尺度观测联合约束的总体技术路线</span>
+      <span class="fig-role">方案总览 · 上下双泳道 9 框：上前向预测 5 框 / 下实验校准 4 框；核心模型 340×200 唯一最大</span>
+    </div>
+    <div class="fig-body"><object data="fig4.svg" type="image/svg+xml" style="width:100%;display:block"></object></div>
+    <div class="legend">
+      <span><span class="swatch sw-amber"></span>上层：加工条件 → 脉冲序列 → 双状态逐脉冲递推模型（核心，340×200）→ 预测形貌 → 预测压缩观测</span>
+      <span><span class="swatch sw-gray"></span>下层：共聚焦实验 → 实测压缩观测 → 单线-槽联合校准 → 模型参数更新</span>
+      <span><span class="swatch sw-blue"></span>底部 1 根蓝色反馈线（更新历史状态转移 / 门控 / 子模型参数）</span>
+    </div>
+    <div class="fig-foot"><b>关键文字：</b>同一脉冲级模型既解释单线局部响应，又解释槽加工长期累积结果；上下泳道之间仅 1 根橙色连接（预测观测→联合校准）与 1 根蓝色反馈（参数更新→核心模型）。</div>
+  </section>
+
+  <section class="fig" id="f5">
+    <div class="fig-head">
+      <span class="fig-num">图 5</span>
+      <span class="fig-title">单脉冲内部计算：状态 — 门控 — 子模型 — 加权 — 同步更新</span>
+      <span class="fig-role">机制放大 · 5 列严格栅格；第一列 3 输入 240×110 严格同宽同高；Z_n 红虚线但不放大</span>
+    </div>
+    <div class="fig-body"><object data="fig5.svg" type="image/svg+xml" style="width:100%;display:block"></object></div>
+    <div class="legend">
+      <span><span class="swatch sw-blue"></span>输入：H_n, Z_n（红虚线）, u_n；门控：π_n = G_θ(H_n, Z_n, u_n)</span>
+      <span><span class="swatch sw-blue"></span>子模型：A_1 / A_2 / A_M 严格一列；加权组合：ΔH_n = Σ π_{m,n} · A_m</span>
+      <span><span class="swatch sw-blue"></span>最右总框：双状态同步更新 H_{n+1}, Z_{n+1} = (下一作用事件)</span>
+    </div>
+    <div class="fig-foot"><b>关键文字：</b>Z_n 既进入门控，又继续向 Z_{n+1} 递推，与 MoE / 普通专家网络有本质区别。整张图无任何回环弧线、无底部大橙框。</div>
+  </section>
+
+  <section class="fig" id="f6">
+    <div class="fig-head">
+      <span class="fig-num">图 6</span>
+      <span class="fig-title">单线与槽多尺度压缩观测联合反演及模型校准闭环</span>
+      <span class="fig-role">校准闭环 · 4 列布局：来源链 / 单线比较 / 槽比较 / 联合反演；实测在上、预测在下严格对齐</span>
+    </div>
+    <div class="fig-body"><object data="fig6.svg" type="image/svg+xml" style="width:100%;display:block"></object></div>
+    <div class="legend">
+      <span><span class="swatch sw-gray"></span>上层：实验数据链（Y_line, Y_groove）</span>
+      <span><span class="swatch sw-blue"></span>下层：模型预测链（Ŷ_line, Ŷ_groove）</span>
+      <span><span class="swatch sw-amber"></span>中央：联合目标函数 → 联合反演/参数优化（S_θ, G_θ, A_m）</span>
+    </div>
+    <div class="fig-foot"><b>关键文字：</b>反演、约束、校准历史状态相关参数；<b>不主张宏观观测可直接识别某一微观机制，仅约束历史状态转移参数 S_θ</b>。仅 1 根底部 90° 反馈线（更新模型参数）。</div>
+  </section>
+
+  <div class="meta">
+    6 张 SVG 矢量图位于 <code>figures/</code> 目录，可直接交给绘图人员改绘，也可用于生成 PDF / PNG。<br/>
+    阅读链：图 1（发生了什么）→ 图 2（H_n 不够）→ 图 3（实验怎么约束）→ 图 4（总体方案）→ 图 5（单脉冲计算）→ 图 6（不可测状态校准）。<br/>
+    完整视觉语法见 <code>README.md</code> 与 <code>画图说明2.0.md</code>。
+  </div>
+</div>
+</body>
+</html>

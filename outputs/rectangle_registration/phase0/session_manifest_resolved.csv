@@ -1,4 +1,4 @@
-﻿session_id,cag_path,design_path,design_encoding,design_rows,cag_measurements,embedded_vk4_count,rois_per_measurement,cardinality_match,mapping_rule,mapping_provenance,mapping_resolved,unique_grid_spec_count,session_status
-zro2_120_formal,氧化锆/pass实验数据/120正式.cag,氧化锆/pass实验数据/120正式_design记录表_0516.csv,gb18030,120,120,120,1,1,one_to_one_measurement_id,user_confirmed_2026-08-30,1,1,mapping_resolved
-zro2_60_pass,氧化锆/pass实验数据/60Pass组.cag,氧化锆/pass实验数据/60pass_design.csv,gb18030,60,30,30,2,1,paired_left_to_right_odd_even,user_confirmed_2026-08-30,1,1,mapping_resolved
-zro2_20_supplement,氧化锆/pass实验数据/20补充pass.cag,氧化锆/pass实验数据/20补充_pass5_6实验.csv,gb18030,20,10,10,2,1,paired_left_to_right_odd_even,user_confirmed_2026-08-30,1,1,mapping_resolved
+﻿session_id,cag_path,design_path,design_encoding,design_rows,cag_measurements,embedded_vk4_count,rois_per_measurement,cardinality_match,mapping_rule,mapping_provenance,mapping_resolved,height_measurements_registered,height_samples_registered,unique_grid_spec_count,session_status
+zro2_120_formal,氧化锆/pass实验数据/120正式.cag,氧化锆/pass实验数据/120正式_design记录表_0516.csv,gb18030,120,120,120,1,1,one_to_one_measurement_id,user_confirmed_2026-08-30,1,120,120,1,mapping_resolved
+zro2_60_pass,氧化锆/pass实验数据/60Pass组.cag,氧化锆/pass实验数据/60pass_design.csv,gb18030,60,30,30,2,1,paired_slot_from_cag_data_name,user_confirmed_2026-08-30,1,30,60,1,mapping_resolved
+zro2_20_supplement,氧化锆/pass实验数据/20补充pass.cag,氧化锆/pass实验数据/20补充_pass5_6实验.csv,gb18030,20,10,10,2,1,paired_slot_from_cag_data_name,user_confirmed_2026-08-30,1,10,20,1,mapping_resolved

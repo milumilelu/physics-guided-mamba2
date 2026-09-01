@@ -14,6 +14,7 @@ EXPECTED_PACKAGES = {
     "matplotlib": "3.10.7",
     "sklearn": "1.7.2",
     "scipy": "1.18.1",
+    "yaml": "6.0.3",
 }
 OPTIONAL_PACKAGES = {
     "catboost": "1.2.10",

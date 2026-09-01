@@ -1,0 +1,10 @@
+{
+  "stage": "WP9_resampling_and_final_leveling",
+  "generated_at_utc": "2026-08-31T03:05:21.543502+00:00",
+  "decision": "PASS",
+  "expected_samples": 178,
+  "exported_h_reg": 178,
+  "exported_h_200": 178,
+  "h200_pixels": 580,
+  "errors": []
+}

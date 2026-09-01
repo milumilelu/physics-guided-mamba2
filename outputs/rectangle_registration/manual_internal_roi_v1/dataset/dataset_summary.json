@@ -1,0 +1,16 @@
+{
+  "decision": "PASS",
+  "samples": 200,
+  "shape": [
+    200,
+    160,
+    160
+  ],
+  "dtype": "float32",
+  "bundle": "outputs\\rectangle_registration\\manual_internal_roi_v1\\dataset\\stable_roi_80um_dataset.npz",
+  "bundle_sha256": "B057C26E4742A4CE3DBC82737C7FBDCD09D68A2B7E97AF623415C2476933B9B4",
+  "index": "outputs\\rectangle_registration\\manual_internal_roi_v1\\dataset\\stable_roi_80um_index.csv",
+  "index_sha256": "D6141EFEF6D3B644ADCB30352EC6F8577D97B40FBA0BBAE395AC06CA6BD6B571",
+  "primary": "height_raw",
+  "optional": "height_repaired"
+}

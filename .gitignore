@@ -58,9 +58,21 @@ env/
 氧化锆/**/csv文件/
 
 # ============================================================
+# 历史 BLOCKED 路线的派生中间体
+# ============================================================
+# 旧 260 µm manual_v1 Phase A 的 H_reg / H_200，合计约 2.6 GB。
+# 该路线状态为 BLOCKED，仅作方法演进审计证据，且可由 16–21 号脚本确定性重建。
+# 不入版本库；如需留档请用 git add -f 或转存外部存储。
+outputs/rectangle_registration/registered/H_reg/
+outputs/rectangle_registration/registered/H_200/
+outputs/rectangle_registration/manual_v1/registered/H_reg/
+outputs/rectangle_registration/manual_v1/registered/H_200/
+
+# ============================================================
 # 编辑器 / 系统 / 工具
 # ============================================================
 .workbuddy-ai/
+.workbuddy/
 .vscode/
 .idea/
 *.swp

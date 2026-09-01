@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+import yaml
 
 
 VK4_KEYS = [
@@ -52,6 +53,7 @@ class SessionSpec:
     session_id: str
     cag_path: str
     design_path: str
+    csv_subdir: str
     input_format: str
     mapping_rule: str
     rois_per_measurement: int
@@ -213,6 +215,16 @@ def parse_args() -> argparse.Namespace:
         default=Path("config/session_manifest.csv"),
     )
     parser.add_argument(
+        "--config",
+        type=Path,
+        default=Path("config/rectangle_registration.yaml"),
+    )
+    parser.add_argument(
+        "--height-manifest",
+        type=Path,
+        default=Path("config/height_source_manifest.csv"),
+    )
+    parser.add_argument(
         "--output-dir",
         type=Path,
         default=Path("outputs/rectangle_registration/phase0"),
@@ -229,8 +241,14 @@ def main() -> int:
     args = parse_args()
     repo = Path(__file__).resolve().parents[1]
     manifest_path = (repo / args.manifest).resolve()
+    config_path = (repo / args.config).resolve()
+    height_manifest_path = (repo / args.height_manifest).resolve()
     output_dir = (repo / args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    evidence_path = (repo / config["input"]["equivalence_gate"]
+                     ["evidence_path"]).resolve()
 
     manifest_df = pd.read_csv(manifest_path, encoding="utf-8-sig")
     specs = [
@@ -238,6 +256,7 @@ def main() -> int:
             session_id=str(row.session_id),
             cag_path=str(row.cag_path),
             design_path=str(row.design_path),
+            csv_subdir=str(row.csv_subdir),
             input_format=str(row.input_format),
             mapping_rule=str(row.mapping_rule),
             rois_per_measurement=int(row.rois_per_measurement),
@@ -246,12 +265,15 @@ def main() -> int:
         )
         for row in manifest_df.itertuples(index=False)
     ]
-
-    height_csvs = sorted(
-        path
-        for path in repo.rglob("*_高度.csv")
-        if ".venv" not in path.parts and "outputs" not in path.parts
-    )
+    with height_manifest_path.open("r", encoding="utf-8-sig", newline="") as stream:
+        height_source_rows = list(csv.DictReader(stream))
+    height_rows_by_session = {
+        spec.session_id: [row for row in height_source_rows
+                          if row["session_id"] == spec.session_id]
+        for spec in specs
+    }
+    height_csvs = [(repo / row["csv_path"]).resolve()
+                   for row in height_source_rows]
     inventory_rows: list[dict[str, Any]] = []
     session_rows: list[dict[str, Any]] = []
     mapping_rows: list[dict[str, Any]] = []
@@ -303,14 +325,33 @@ def main() -> int:
         )
         measurement_count = int(cag["measurement_count"])
         cardinality_match = len(design) == measurement_count * spec.rois_per_measurement
+        session_height_rows = height_rows_by_session.get(spec.session_id, [])
+        registered_measurements = [int(row["measurement_id"])
+                                   for row in session_height_rows]
+        registered_sample_ids: list[int] = []
+        for row in session_height_rows:
+            for column in ("slot_1_sample_id", "slot_2_sample_id"):
+                value = str(row.get(column, "")).strip()
+                if value:
+                    registered_sample_ids.append(int(value))
+        height_measurements_complete = (
+            sorted(registered_measurements) == list(range(1, measurement_count + 1))
+            and len(set(registered_measurements)) == len(registered_measurements)
+        )
+        height_sample_mapping_complete = (
+            sorted(registered_sample_ids) == sorted(design_ids)
+            and len(set(registered_sample_ids)) == len(registered_sample_ids)
+        )
         supported_mapping_rule = spec.mapping_rule in {
             "one_to_one_measurement_id",
-            "paired_left_to_right_odd_even",
+            "paired_slot_from_cag_data_name",
         }
         mapping_resolved = bool(
             supported_mapping_rule
             and cardinality_match
             and design_ids_valid
+            and height_measurements_complete
+            and height_sample_mapping_complete
             and spec.mapping_provenance
         )
 
@@ -341,6 +382,25 @@ def main() -> int:
                         f"Design rows={len(design)}, CAG measurements={measurement_count}, "
                         f"ROIs per measurement={spec.rois_per_measurement}"
                     ),
+                }
+            )
+        if not height_measurements_complete:
+            blockers.append(
+                {
+                    "code": "height_measurement_set_incomplete",
+                    "session_id": spec.session_id,
+                    "message": (
+                        f"Height manifest measurement IDs do not uniquely cover "
+                        f"1..{measurement_count}"
+                    ),
+                }
+            )
+        if not height_sample_mapping_complete:
+            blockers.append(
+                {
+                    "code": "height_sample_mapping_incomplete",
+                    "session_id": spec.session_id,
+                    "message": "Height manifest slots do not uniquely cover design sample IDs",
                 }
             )
         if not mapping_resolved:
@@ -386,74 +446,130 @@ def main() -> int:
                 "mapping_rule": spec.mapping_rule,
                 "mapping_provenance": spec.mapping_provenance,
                 "mapping_resolved": int(mapping_resolved),
+                "height_measurements_registered": len(registered_measurements),
+                "height_samples_registered": len(registered_sample_ids),
                 "unique_grid_spec_count": len(cag["unique_grid_specs"]),
                 "session_status": "mapping_resolved" if mapping_resolved else "mapping_blocked",
             }
         )
-        for sample_id in design_ids:
-            if spec.mapping_rule == "one_to_one_measurement_id":
-                measurement_id: int | str = sample_id
-                roi_within_measurement = "single"
-            elif spec.mapping_rule == "paired_left_to_right_odd_even":
-                measurement_id = (sample_id + 1) // 2
-                roi_within_measurement = "left" if sample_id % 2 else "right"
-            else:
-                measurement_id = ""
-                roi_within_measurement = ""
-            mapping_rows.append(
-                {
-                    "session_id": spec.session_id,
-                    "sample_id": sample_id,
-                    "design_row_id": sample_id,
-                    "cag_measurement_id": measurement_id,
-                    "roi_within_measurement": roi_within_measurement,
-                    "mapping_rule": spec.mapping_rule,
-                    "mapping_provenance": spec.mapping_provenance,
-                    "mapping_status": "resolved" if mapping_resolved else "unresolved",
-                }
-            )
+        for source_row in sorted(session_height_rows,
+                                 key=lambda row: int(row["measurement_id"])):
+            measurement_id = int(source_row["measurement_id"])
+            slots = (("slot_1_sample_id", "single" if spec.rois_per_measurement == 1
+                      else "slot_1"), ("slot_2_sample_id", "slot_2"))
+            for column, slot_name in slots:
+                value = str(source_row.get(column, "")).strip()
+                if not value:
+                    continue
+                sample_id = int(value)
+                mapping_rows.append(
+                    {
+                        "session_id": spec.session_id,
+                        "sample_id": sample_id,
+                        "design_row_id": sample_id,
+                        "cag_measurement_id": measurement_id,
+                        "roi_within_measurement": slot_name,
+                        "mapping_rule": spec.mapping_rule,
+                        "mapping_provenance": spec.mapping_provenance,
+                        "mapping_status": "resolved" if mapping_resolved else "unresolved",
+                    }
+                )
         session_details[spec.session_id] = {
             "spec": asdict(spec),
             "design_columns": [str(column) for column in design.columns],
             "cag": cag,
         }
 
-    if not height_csvs:
+    if not height_source_rows:
         blockers.append(
             {
-                "code": "no_real_height_csv_fixture",
+                "code": "empty_height_source_manifest",
                 "session_id": "all",
-                "message": "No *_高度.csv exists in the workspace outside outputs/.venv",
-            }
-        )
-        blockers.append(
-            {
-                "code": "cag_csv_equivalence_not_established",
-                "session_id": "all",
-                "message": (
-                    "No same-series CSV fixtures are available for CAG height/mask equivalence testing"
-                ),
+                "message": "height_source_manifest.csv contains no measurements",
             }
         )
     else:
-        for path in height_csvs:
+        allowed_sources = set(config["input"]["allowed_source_types"])
+        for source_row, path in zip(height_source_rows, height_csvs):
+            exists = path.is_file()
+            actual_hash = ""
+            if exists:
+                actual_hash = ("SKIPPED" if args.skip_hashes
+                               else sha256_file(path))
             inventory_rows.append(
                 {
-                    "session_id": "unassigned",
+                    "session_id": source_row["session_id"],
                     "role": "height_csv",
-                    "path": str(path.relative_to(repo)),
-                    "exists": 1,
-                    "bytes": path.stat().st_size,
-                    "sha256": "SKIPPED" if args.skip_hashes else sha256_file(path),
+                    "path": source_row["csv_path"],
+                    "exists": int(exists),
+                    "bytes": path.stat().st_size if exists else "",
+                    "sha256": actual_hash,
                 }
             )
-        blockers.append(
-            {
-                "code": "cag_csv_equivalence_not_established",
+            if not exists:
+                blockers.append({
+                    "code": "missing_height_csv",
+                    "session_id": source_row["session_id"],
+                    "message": f"Missing registered height CSV: {source_row['csv_path']}",
+                })
+            if source_row["csv_source_type"] not in allowed_sources:
+                blockers.append({
+                    "code": "invalid_height_source_type",
+                    "session_id": source_row["session_id"],
+                    "message": source_row["csv_source_type"],
+                })
+            if source_row["provenance_status"] != "registered":
+                blockers.append({
+                    "code": "height_provenance_unregistered",
+                    "session_id": source_row["session_id"],
+                    "message": source_row["csv_path"],
+                })
+            if (exists and not args.skip_hashes
+                    and actual_hash != source_row["csv_sha256"]):
+                blockers.append({
+                    "code": "height_csv_hash_mismatch",
+                    "session_id": source_row["session_id"],
+                    "message": source_row["csv_path"],
+                })
+
+    equivalence: dict[str, Any] = {}
+    if not evidence_path.is_file():
+        blockers.append({
+            "code": "cag_csv_equivalence_not_established",
+            "session_id": "all",
+            "message": f"Missing evidence: {evidence_path}",
+        })
+    else:
+        try:
+            equivalence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            blockers.append({
+                "code": "invalid_equivalence_evidence",
                 "session_id": "all",
-                "message": "Height CSV exists, but no frozen CAG-CSV equivalence result is registered",
+                "message": str(exc),
+            })
+        else:
+            evidence_hashes = equivalence.get("input_hashes", {})
+            expected_evidence_hashes = {
+                "config": sha256_file(config_path),
+                "height_source_manifest": sha256_file(height_manifest_path),
             }
-        )
+            stale = [name for name, value in expected_evidence_hashes.items()
+                     if evidence_hashes.get(name) != value]
+            if stale:
+                blockers.append({
+                    "code": "stale_equivalence_evidence",
+                    "session_id": "all",
+                    "message": f"Input hashes changed: {', '.join(stale)}",
+                })
+            if equivalence.get("decision") != "PASS":
+                blockers.append({
+                    "code": "cag_csv_equivalence_not_established",
+                    "session_id": "all",
+                    "message": (
+                        f"Equivalence decision is {equivalence.get('decision', 'missing')}"
+                    ),
+                })
 
     if args.skip_hashes:
         blockers.append(
@@ -478,6 +594,8 @@ def main() -> int:
         "mapping_rule",
         "mapping_provenance",
         "mapping_resolved",
+        "height_measurements_registered",
+        "height_samples_registered",
         "unique_grid_spec_count",
         "session_status",
     ]
@@ -501,7 +619,11 @@ def main() -> int:
         "pass": phase0_pass,
         "decision": "PASS" if phase0_pass else "STOP",
         "height_csv_count": len(height_csvs),
+        "measurement_count": len(height_source_rows),
+        "sample_count": len(mapping_rows),
         "session_count": len(specs),
+        "equivalence_decision": equivalence.get("decision", "missing"),
+        "equivalence_evidence_path": str(evidence_path.relative_to(repo)),
         "blockers": blockers,
         "warnings": warnings,
         "session_details": session_details,
@@ -510,32 +632,70 @@ def main() -> int:
         json.dumps(validation, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
+    blocker_lines = "\n".join(
+        f"- `{item['code']}` [{item['session_id']}]: {item['message']}"
+        for item in blockers
+    ) or "- 无"
+    result_md = f"""# Phase 0 数据可用性验收结果
+
+## 结论
+
+**{validation['decision']}**
+
+- session：{len(specs)}
+- measurement：{len(height_source_rows)}
+- sample mapping：{len(mapping_rows)}
+- CAG–CSV 等价证据：{validation['equivalence_decision']}
+- blocker：{len(blockers)}
+
+## 阻断项
+
+{blocker_lines}
+
+## 规则
+
+只有 `phase0_validation.json` 的 `decision` 为 `PASS` 且 blockers 为空，才允许进入 Phase A。
+本报告由 `scripts/00_validate_inputs.py` 自动生成，不应手工修改。
+"""
+    (output_dir / "PHASE0_RESULT.md").write_text(result_md, encoding="utf-8")
+
     versions = {}
-    for package in ("numpy", "pandas", "Pillow", "matplotlib", "scikit-learn", "scipy"):
+    for package in ("numpy", "pandas", "Pillow", "matplotlib", "scikit-learn",
+                    "scipy", "PyYAML"):
         try:
             versions[package] = importlib.metadata.version(package)
         except importlib.metadata.PackageNotFoundError:
             versions[package] = "not-installed"
-    manifest = {
+    run_manifest_path = output_dir.parent / "run_manifest.json"
+    try:
+        manifest = json.loads(run_manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        manifest = {}
+    manifest.update({
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "git_commit_hash": git_value(repo, "rev-parse", "HEAD"),
         "git_worktree_dirty": bool(git_value(repo, "status", "--porcelain")),
         "python_version": sys.version,
         "package_versions": versions,
-        "config_path": str(manifest_path.relative_to(repo)),
+        "config_path": str(config_path.relative_to(repo)),
+        "config_sha256": sha256_file(config_path),
+        "session_manifest_path": str(manifest_path.relative_to(repo)),
+        "height_source_manifest_path": str(height_manifest_path.relative_to(repo)),
+        "equivalence_evidence_path": str(evidence_path.relative_to(repo)),
+        "equivalence_decision": equivalence.get("decision", "missing"),
         "input_files": inventory_rows,
         "session_definitions": [asdict(spec) for spec in specs],
         "phase0_decision": validation["decision"],
         "blocker_codes": [item["code"] for item in blockers],
         "manual_approval_status": "not_applicable_phase0_failed" if blockers else "pending",
-    }
-    (output_dir.parent / "run_manifest.json").write_text(
+    })
+    run_manifest_path.write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
     print(f"Phase 0 decision: {validation['decision']}")
     print(f"Sessions inspected: {len(specs)}")
-    print(f"Real height CSV fixtures: {len(height_csvs)}")
+    print(f"Registered height CSV measurements: {len(height_csvs)}")
     print(f"Blockers: {len(blockers)}")
     for blocker in blockers:
         print(f"- [{blocker['session_id']}] {blocker['code']}: {blocker['message']}")

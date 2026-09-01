@@ -1,0 +1,24 @@
+{
+  "stage": "WP8_v5_failure_audit",
+  "generated_at_utc": "2026-08-31T06:08:02.798432+00:00",
+  "decision": "STOP_SYSTEMATIC_SHALLOW_FAILURE",
+  "samples": 200,
+  "hard_stops": 27,
+  "shallow_quartile_stop_rate": 0.24,
+  "other_quartiles_stop_rate": 0.1,
+  "risk_ratio_shallow_vs_other": 2.4,
+  "contrast_vs_joint_evidence_correlation": 0.816638839781828,
+  "hard_stop_reason_counts": {
+    "bootstrap CI span above review threshold": 23,
+    "bootstrap CI span above hard maximum": 19,
+    "bootstrap MAD above review threshold": 19,
+    "bootstrap centre distribution is multimodal": 15,
+    "bootstrap MAD above hard maximum": 10,
+    "axis-pair evidence below hard minimum": 8,
+    "segmentation initializer unavailable": 4,
+    "joint evidence below hard minimum": 3,
+    "joint evidence below review threshold": 3
+  },
+  "evidence_level": 3,
+  "note": "All 200 samples used the same frozen v5 estimator and gates. No failed sample was excluded or replaced by a prior method."
+}

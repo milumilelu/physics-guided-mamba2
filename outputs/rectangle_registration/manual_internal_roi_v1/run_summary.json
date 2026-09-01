@@ -1,0 +1,37 @@
+{
+  "stage": "fast_manual_internal_roi_extraction",
+  "generated_at_utc": "2026-09-01T04:31:03.638178+00:00",
+  "decision": "PASS",
+  "method": "manual_internal_roi_v1_fast_80um",
+  "evidence_level": 3,
+  "expected_samples": 200,
+  "exported_samples": 200,
+  "status_counts": {
+    "PASS": 200
+  },
+  "errors": [],
+  "stable_roi": {
+    "width_um": 80.0,
+    "height_um": 80.0,
+    "pixel_um": 0.5,
+    "minimum_valid_fraction": 0.99
+  },
+  "minimum_manual_boundary_clearance_x_um": 56.77201565557728,
+  "minimum_manual_boundary_clearance_y_um": 61.00782778864972,
+  "accepted_conical_components": 157,
+  "total_repaired_pixels": 5593,
+  "config": {
+    "path": "config\\manual_internal_roi_v1.yaml",
+    "sha256": "25DD41BAB102623320E8FD022ADDD021FF36766B0A2ABBF94AD5E5ECC0A29D95"
+  },
+  "annotation": {
+    "path": "outputs\\rectangle_registration\\registration\\manual_v1\\manual_four_edge_validation_frozen.csv",
+    "sha256": "536BF658AD75F1BC7DCC6E9461D821E046F58A7636D26A7EAABF51A80D56AF9D"
+  },
+  "notes": [
+    "Stable ROI is fixed before profile inspection and shared by all samples.",
+    "Raw height is authoritative and is never overwritten.",
+    "Repaired height is a conservative Level-3 derived product with an explicit mask.",
+    "This fast route does not depend on the blocked 260 um H_reg export."
+  ]
+}

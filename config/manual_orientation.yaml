@@ -1,0 +1,28 @@
+schema_version: 1
+coordinate_convention:
+  raw_plus_x: image_right
+  raw_plus_y: image_down
+  canonical_plus_x: hatch_or_adjacent_scan_line_direction
+  canonical_plus_y: long_serpentine_scan_direction
+confirmation_scope: session_fixed
+confirmed_by: user
+confirmed_at_local: '2026-08-31'
+sessions:
+  zro2_120_formal:
+    status: confirmed
+    d4_transform: identity
+    canonical_plus_x_in_raw_image: right
+    canonical_plus_y_in_raw_image: down
+    evidence: User confirmed all sessions use canonical +x=image right and canonical +y=image down.
+  zro2_60_pass:
+    status: confirmed
+    d4_transform: identity
+    canonical_plus_x_in_raw_image: right
+    canonical_plus_y_in_raw_image: down
+    evidence: User confirmed all sessions use canonical +x=image right and canonical +y=image down.
+  zro2_20_supplement:
+    status: confirmed
+    d4_transform: identity
+    canonical_plus_x_in_raw_image: right
+    canonical_plus_y_in_raw_image: down
+    evidence: User confirmed all sessions use canonical +x=image right and canonical +y=image down.

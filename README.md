@@ -1,5 +1,14 @@
 # Physics-Guided Mamba-2：超快激光烧蚀形貌预测
 
+> **当前实际主路线（2026-09-01）**：200 个矩形槽的人工四边已经冻结，快速
+> 预处理已完成“measurement 级背景调平 → 固定中心稳定区 → 矩形面锥坑保守
+> 修复 → raw/repaired 数据集打包”。唯一执行说明见
+> `任务说明书/WORKBUDDY_下一阶段_人工框内稳定ROI_v1.md`，仓库入口与历史边界
+> 见 `CURRENT_PIPELINE.md`。
+>
+> 本 README 其余部分记录早期单线形貌与专利相关实验，保留作审计，不代表当前
+> 矩形稳定 ROI 的执行入口。`专利/` 及专利材料保持原状。
+
 面向氧化锆（ZrO₂）超快激光多脉冲烧蚀的**部分可观测条件下跨尺度物理引导隐状态动力学建模**课题。
 
 核心科学问题：在只能观测到「单线/槽压缩观测量」的条件下，用隐状态动力学模型刻画**历史材料状态 $Z_n$** 的选择性演化，从而由脉冲历史预测烧蚀形貌。
@@ -16,7 +25,7 @@ $$
 physics-guided Mamba-2/
 ├── export_height_csv.py               # ★ CAG → 高度矩阵 CSV 批量导出（与官方导出逐字节一致）
 ├── extract_zro2_single_line.py        # ★ 主流水线：CAG 解码 → 几何提取 → 特征表
-├── depth_mechanism_transition_virtual_data_v2.py   # 机理递推 + 虚拟数据增强（含 .patch）
+├── experiments/mechanism_virtual_augmentation/     # 独立、未完成的虚拟增强实验
 ├── compare_raw_vs_repaired.py         # 圆锥伪影修复对观测算子 Y=[W_line, D_line] 的影响
 ├── inventory_cone_repair.py           # 15 个 pilot 组的圆锥修复盘点与质检
 ├── preview_cag_group.py               # 单组 CAG 预览（高度图 + 斜视点云，自包含）
@@ -40,7 +49,8 @@ physics-guided Mamba-2/
 │   ├── cone_repair_inventory/          # 290 个圆锥伪影的逐个体检表
 │   ├── cag_preview/ 与 cag_raw_verification/      # 解码正确性验证
 │
-├── CODEX_机理事件虚拟数据增强_实验说明.md   # E1/E2/E5 机理事件增强的对照实验设计
+├── archive/rectangle_registration_history/  # 自动配准 v2-v7 与旧计划，只读历史
+├── 任务说明书/WORKBUDDY_下一阶段_人工框内稳定ROI_v1.md  # 当前执行规范
 ├── pasted.txt                          # 论文主线收敛笔记（部分可观测 + 隐状态动力学）
 └── 超快激光多脉冲烧蚀形貌预测_专利技术交底书_V3_微观宏观耦合版 (1).docx
 ```
@@ -168,5 +178,5 @@ powershell -ExecutionPolicy Bypass -File scripts/setup_environment.ps1 `
 - [x] 圆锥缺失伪影检测与修复（15 组共修复 290 个锥、48,256 像素，残余强缺陷 0 处）
 - [x] 单线几何提取 pilot，输出 `W_line / D_line` 及完整 QC 字段
 - [x] 量化修复对观测算子的偏差影响（`outputs/cone_repair_impact`）
-- [ ] 机理事件（E1/E2/E5）虚拟数据增强的严格对照实验（设计见 `CODEX_机理事件虚拟数据增强_实验说明.md`）
+- [ ] 机理事件（E1/E2/E5）虚拟数据增强的严格对照实验（独立存放于 `experiments/mechanism_virtual_augmentation/`，不属于当前 ROI 路线）
 - [ ] Physics-guided Mamba-2 主体模型

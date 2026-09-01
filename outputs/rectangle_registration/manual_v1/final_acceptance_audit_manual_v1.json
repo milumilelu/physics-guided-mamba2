@@ -1,0 +1,124 @@
+{
+  "stage": "WP6_final_acceptance_audit",
+  "generated_at_utc": "2026-09-01T02:15:00.566483+00:00",
+  "acceptance_state": "BLOCKED",
+  "phase_a_decision": "BLOCKED",
+  "blockers": [
+    {
+      "id": "policy:zro2_20_supplement",
+      "scope": "zro2_20_supplement",
+      "samples": 20,
+      "disposition": "remeasurement_required",
+      "statement": "Paired acquisition layout provides only 198.38 um common centred FOV under manual_v1 centres (13 of 20 samples cannot support a full 200 um square without extrapolation), below the 260 um registered-grid minimum."
+    },
+    {
+      "id": "BLK-1",
+      "scope": "zro2_20_supplement",
+      "samples": 20,
+      "disposition": "blocker",
+      "statement": "zro2_20_supplement cannot be exported with the registered grid, so 20 of 200 samples fail the all-sample common-canvas and mask gates. Resolution requires remeasurement of the session or a formally amended acceptance criterion. Until then Phase A stays BLOCKED and must not be switched to PASS manually."
+    }
+  ],
+  "failed_auto_checks": [
+    "all_200_samples_have_registered_exports",
+    "l_reg_ge_260um_all_samples",
+    "final_leveling_all_pass",
+    "final_leveling_reference_sufficient",
+    "registered_npz_complete_all_samples",
+    "provenance_hash_chain_closed"
+  ],
+  "audit_failures": [],
+  "audit_integrity_ok": true,
+  "notes": {
+    "stage_sequence_observed": [
+      "WP6_pre_run_environment_check",
+      "WP6_pre_run_test_suite",
+      "WP1_freeze_manual_registration_v1",
+      "WP2_manual_vs_automatic_consistency",
+      "WP3_build_manual_registration_v1",
+      "WP9_common_fov_gate_manual_v1",
+      "WP9_resampling_and_final_leveling_manual_v1",
+      "WP5_phase_a_qa_manual_v1"
+    ],
+    "stage_exit_codes": {
+      "WP6_pre_run_environment_check": 0,
+      "WP6_pre_run_test_suite": 0,
+      "WP1_freeze_manual_registration_v1": 0,
+      "WP2_manual_vs_automatic_consistency": 0,
+      "WP3_build_manual_registration_v1": 0,
+      "WP9_common_fov_gate_manual_v1": 0,
+      "WP9_resampling_and_final_leveling_manual_v1": 0,
+      "WP5_phase_a_qa_manual_v1": 0
+    },
+    "legacy_artifacts": {
+      "outputs\\rectangle_registration\\registration\\translation_metrics_v2.csv": {
+        "exists": false,
+        "sha256": null,
+        "mtime_utc": null
+      },
+      "outputs\\rectangle_registration\\registration\\translation_metrics_v3.csv": {
+        "exists": true,
+        "sha256": "0A3E27A3F589CA5211FC39CE0FDA5CC25142C8A6C3A1629FEE49BED9D87898B0",
+        "mtime_utc": "2026-08-31T05:28:30.452412+00:00"
+      },
+      "outputs\\rectangle_registration\\registration\\translation_metrics_v4.csv": {
+        "exists": true,
+        "sha256": "12E8DAAEAD57689C2A0472B15E2307C0570673FD73BC2A48806B62A853509894",
+        "mtime_utc": "2026-08-31T05:48:47.067812+00:00"
+      },
+      "outputs\\rectangle_registration\\registration\\translation_metrics_v5.csv": {
+        "exists": true,
+        "sha256": "D0CC1AE5629FDFB86A05866FDB30A3D4B720606500BA15119390AAA62FD4FF90",
+        "mtime_utc": "2026-08-31T06:07:09.933651+00:00"
+      },
+      "outputs\\rectangle_registration\\registration\\translation_metrics_v6.csv": {
+        "exists": true,
+        "sha256": "880060F8E555435F06CC671D766B80FEE75E2DBAC8D8AAC0B92CD405FFEB35EB",
+        "mtime_utc": "2026-08-31T06:24:24.253852+00:00"
+      },
+      "outputs\\rectangle_registration\\registration\\translation_metrics_v7.csv": {
+        "exists": true,
+        "sha256": "A80D157A737AAC475519161A6B9E9FA8DACE2E0A79259EB8A65932F42A924E11",
+        "mtime_utc": "2026-08-31T06:37:55.632687+00:00"
+      },
+      "outputs\\rectangle_registration\\registration\\manual_four_edge_validation.csv": {
+        "exists": true,
+        "sha256": "536BF658AD75F1BC7DCC6E9461D821E046F58A7636D26A7EAABF51A80D56AF9D",
+        "mtime_utc": "2026-08-31T11:25:45.041031+00:00"
+      },
+      "outputs\\rectangle_registration\\resampling\\common_fov_summary.json": {
+        "exists": true,
+        "sha256": "BD0FE54A8E8E1797106F1A8BB989A10FB2543F0EBAAE8D2C77B91E315CA28A51",
+        "mtime_utc": "2026-08-31T03:03:02.530251+00:00"
+      },
+      "outputs\\rectangle_registration\\resampling\\session_canvas.csv": {
+        "exists": true,
+        "sha256": "382FC9EC29B31445DE966356FCC93E3832FE4AE12BBB6EB7571D4D5DCFBA2A4A",
+        "mtime_utc": "2026-08-31T03:03:02.530251+00:00"
+      }
+    },
+    "npz_path_columns_present": {
+      "h_reg_path": 180,
+      "h_200_path": 180,
+      "mask_path": 180
+    },
+    "npz_counts": {
+      "h_reg": 180,
+      "h_200": 180,
+      "masks": 180
+    },
+    "exported_rows": 180,
+    "samples_total": 200,
+    "samples_without_export": 20,
+    "qa_summary_sha256": "8A31B691C30A209D8D47AFB5B67FF753F4DFAF3C0C10F5C03DC443D0CA6F0FAB",
+    "approval_status": "BLOCKED",
+    "approval_sha256": "52FA681C73ABCC0544EE7A7A621A9DC8B197727A9394ACCA8F22100CF9E6FB38"
+  },
+  "provenance": {
+    "formal_annotation_table_sha256": "536BF658AD75F1BC7DCC6E9461D821E046F58A7636D26A7EAABF51A80D56AF9D",
+    "manual_annotation_snapshot_sha256": "536BF658AD75F1BC7DCC6E9461D821E046F58A7636D26A7EAABF51A80D56AF9D",
+    "manual_registration_config_sha256": "008B1B92CCED105EC6D8E7E8EE3D6A34FCE8A14AC0AB66025AC2268469AABD42",
+    "run_manifest_sha256": "2E422D9E0BB366CD4B74B3470349D7D5DB2B5522088A64C9767785458FC4207D"
+  },
+  "stopped_at": "Phase A manual_v1 is not approved; Phase B not started (per plan §5)"
+}

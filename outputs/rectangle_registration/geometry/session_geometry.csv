@@ -1,0 +1,4 @@
+﻿session_id,theta_session_deg,theta_session_mad_deg,successful_samples,failed_samples,angle_multimodality_warning,status,warning,d4_transform_session,d4_status,d4_evidence
+zro2_120_formal,-0.7000000000025182,0.04999999999999716,29,1,False,PASS,,identity,confirmed,User confirmed all sessions use canonical +x=image right and canonical +y=image down.
+zro2_60_pass,-0.4500000000025324,0.04999999999999716,15,0,False,PASS,,identity,confirmed,User confirmed all sessions use canonical +x=image right and canonical +y=image down.
+zro2_20_supplement,-0.650000000002521,0.09999999999999432,7,1,False,PASS,,identity,confirmed,User confirmed all sessions use canonical +x=image right and canonical +y=image down.

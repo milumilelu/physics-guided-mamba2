@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>超快激光专利交底书优化方案 V1</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif; background: #F4F3EE; color: #1A1B1C; line-height: 1.7; padding: 24px; }
+  .container { max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: #1A1B1C; }
+  .subtitle { font-size: 14px; color: #6B7280; margin-bottom: 32px; }
+  h2 { font-size: 18px; font-weight: 600; margin: 32px 0 16px; padding-left: 12px; border-left: 4px solid #5B8FF9; }
+  h3 { font-size: 15px; font-weight: 600; margin: 20px 0 10px; color: #333; }
+  p { margin-bottom: 12px; font-size: 14px; }
+  .card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #E4E3DD; }
+  .card-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: #1A1B1C; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th, td { border: 1px solid #E4E3DD; padding: 10px 12px; text-align: left; vertical-align: top; }
+  th { background: #F9F8F4; font-weight: 600; color: #333; }
+  tr:nth-child(even) { background: #FCFBF8; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; margin-right: 4px; }
+  .tag-red { background: #FEF0F0; color: #D4380D; }
+  .tag-green { background: #F0FFF4; color: #389E0D; }
+  .tag-blue { background: #E6F4FF; color: #0958D9; }
+  .tag-orange { background: #FFF7E6; color: #D46B08; }
+  .before-after { display: flex; gap: 16px; margin: 16px 0; flex-wrap: wrap; }
+  .ba-col { flex: 1; min-width: 280px; }
+  .ba-header { font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 8px 8px 0 0; }
+  .ba-before .ba-header { background: #FEF0F0; color: #D4380D; }
+  .ba-after .ba-header { background: #F0FFF4; color: #389E0D; }
+  .ba-body { background: #fff; border: 1px solid #E4E3DD; border-top: none; padding: 12px; font-size: 13px; border-radius: 0 0 8px 8px; }
+  .highlight { background: #FFFBE6; padding: 2px 4px; border-radius: 3px; }
+  ul, ol { margin: 8px 0 12px 24px; font-size: 14px; }
+  li { margin-bottom: 6px; }
+  .priority-high { color: #D4380D; font-weight: 600; }
+  .priority-mid { color: #D46B08; font-weight: 600; }
+  .priority-low { color: #389E0D; font-weight: 600; }
+  .flow-box { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .flow-node { background: #E6F4FF; border: 1px solid #91CAFF; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 500; }
+  .flow-arrow { color: #8C8C8C; font-size: 18px; }
+  .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #E4E3DD; font-size: 12px; color: #8C8C8C; }
+  .metric-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+  .metric-card { flex: 1; min-width: 140px; background: linear-gradient(135deg, rgba(91,143,249,0.08), rgba(91,143,249,0.15)); border-radius: 10px; padding: 14px; }
+  .metric-value { font-size: 22px; font-weight: 700; color: #0958D9; }
+  .metric-label { font-size: 12px; color: #6B7280; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>超快激光多脉冲烧蚀形貌预测专利交底书优化方案</h1>
+<div class="subtitle">基于《专利技术交底书1》写作范式对比分析 | V1.0 | 2026-09-01</div>
+
+<!-- 执行摘要 -->
+<div class="card">
+  <div class="card-title">执行摘要</div>
+  <p>当前V4版交底书存在<strong>结构层级过深、语言抽象学术化、符号密度过高、具体实施细节不足、实验验证缺失、元信息混入正文</strong>六大核心问题。参考《专利技术交底书1》的标准范式，建议回归<strong>标准6节结构</strong>，语言工程化，补充具体参数与实验数据，将代理人参考材料独立为附录。优化后预计可将正文可读性提升约40%，技术方案可实施性显著增强。</p>
+  <div class="metric-row">
+    <div class="metric-card"><div class="metric-value">6</div><div class="metric-label">核心问题数</div></div>
+    <div class="metric-card"><div class="metric-value">8</div><div class="metric-label">优化维度</div></div>
+    <div class="metric-card"><div class="metric-value">3</div><div class="metric-label">实施优先级</div></div>
+    <div class="metric-card"><div class="metric-value">~40%</div><div class="metric-label">预计可读性提升</div></div>
+  </div>
+</div>
+
+<!-- 第一部分：对比分析 -->
+<h2>一、两份交底书多维度对比分析</h2>
+
+<table>
+  <thead>
+    <tr><th style="width:18%">对比维度</th><th style="width:38%">《专利交底书1》（参考范式）</th><th style="width:38%">V4超快激光版（当前版本）</th><th style="width:6%">差距</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>整体结构</strong></td>
+      <td>标准6节：技术问题→背景→缺点/目的→方案→关键点→替代方案，层级浅（最多2级）</td>
+      <td>0/1/2/3/4/5/6+附录A+参考资料+代理人提示，0节内含0.1-0.3，4节内含4.1-4.10，层级深（最多3级）</td>
+      <td><span class="tag tag-red">大</span></td>
+    </tr>
+    <tr>
+      <td><strong>语言风格</strong></td>
+      <td>朴实工程化："怎么做""用什么""得到什么结果"，直接描述动作和对象</td>
+      <td>抽象学术化："矛盾一""核心技术链""功能耦合整体""信息互补的约束"，概念嵌套多</td>
+      <td><span class="tag tag-red">大</span></td>
+    </tr>
+    <tr>
+      <td><strong>符号密度</strong></td>
+      <td>符号少（主要是坐标变换公式），每个公式紧跟物理含义和数值示例</td>
+      <td>符号密集：Hₙ/Zₙ/πₘ,ₙ/Aₘ/uₙ/S_θ/G_θ/O_line/O_groove/L_line等20+符号，部分符号缺少直观解释</td>
+      <td><span class="tag tag-red">大</span></td>
+    </tr>
+    <tr>
+      <td><strong>实施细节</strong></td>
+      <td>具体到型号（Basler_acA2440-75uc）、参数（500mm×500mm, 0.05mm）、算法流程（SIFT→KNN→RANSAC→单应性矩阵）</td>
+      <td>有公式框架但缺少：网络层数/维度、学习率/训练轮数、具体优化器、状态向量维度、门控网络结构、数据预处理脚本参数</td>
+      <td><span class="tag tag-orange">中</span></td>
+    </tr>
+    <tr>
+      <td><strong>实验验证</strong></td>
+      <td>完整实验章节：步骤→原始数据（像素坐标592.514,770.605）→计算结果（比例尺0.4815mm/px）→验证结论（机床坐标误差&lt;0.05mm）</td>
+      <td>4.8节仅罗列"现有540组槽实验"，4.9节是"验证设计"（M0-M4消融），无实际实验结果数据</td>
+      <td><span class="tag tag-red">大</span></td>
+    </tr>
+    <tr>
+      <td><strong>图文规范</strong></td>
+      <td>图1-图4统一编号，每图有标题和详细文字说明，图随文走</td>
+      <td>图1-图4有编号但部分图仅标注"图X"无详细说明，表格散乱（多个独立TABLE块）</td>
+      <td><span class="tag tag-orange">中</span></td>
+    </tr>
+    <tr>
+      <td><strong>元信息管理</strong></td>
+      <td>无元信息混入正文，正文纯技术内容</td>
+      <td>"撰写说明""阅读导引""交代理人特别提示""写作规避建议"等混在正文中</td>
+      <td><span class="tag tag-red">大</span></td>
+    </tr>
+    <tr>
+      <td><strong>替代方案</strong></td>
+      <td>具体可操作：背光源、均值/高斯/中值滤波、投影仪投影特征点、激光笔对准角点</td>
+      <td>偏算法罗列：状态空间/GRU/LSTM/Mamba/Koopman/神经ODE/SINDy，缺少各方案的适用场景和取舍说明</td>
+      <td><span class="tag tag-orange">中</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- 第二部分：核心问题诊断 -->
+<h2>二、V4版六大核心问题诊断</h2>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-red">问题1</span> 结构层级过深，阅读导引冗余</div>
+  <p>V4设置了独立的"0、阅读导引"章节（含0.1工程场景、0.2三个矛盾、0.3核心概念），将本应融入正文的背景解释单独抽出，导致读者需要在"导引"和"正文"之间来回跳转。4节技术方案细分为4.1-4.10共10个子节，部分子节内容仅1-2段，过度切割破坏了技术方案的连贯性。</p>
+  <p><strong>影响：</strong>代理人和审查员需要花费额外精力梳理逻辑主线，关键技术特征容易被淹没在层级中。</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-red">问题2</span> 语言抽象学术化，工程感不足</div>
+  <p>V4大量使用哲学化/学术化表述："矛盾一：看得见的表面形貌，不等于材料的完整状态""核心技术链可以先记成一句话""功能耦合整体""信息互补的约束"。这些表述在论文中可以接受，但专利交底书需要的是<strong>直接、确定、可执行</strong>的技术描述。</p>
+  <p><strong>对比参考范式：</strong>Ref1直接说"用切割头在工件上打一个圆孔并将此时的机床坐标设置为原点"，而不是"建立机床坐标系与工件坐标系的初始映射关系"。</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-red">问题3</span> 符号密度过高，阅读门槛大</div>
+  <p>V4在4.2-4.6节集中引入了20+数学符号：Hₙ、Zₙ、uₙ、Sₙ、S_θ、πₘ,ₙ、G_θ、Aₘ、ΔHₙ、U、O_line、O_groove、Y_line、Y_groove、L、L_line、L_groove、L_physics、L_state、L_gate、Cₙ、Θₙ、T_C、T_T、Φ_C、Φ_T等。部分符号（如U、S_θ、G_θ）仅给出公式未说明具体网络结构和参数维度。</p>
+  <p><strong>影响：</strong>非本领域的代理人难以快速建立符号-物理含义的映射，增加了沟通成本和误解风险。</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-orange">问题4</span> 具体实施细节不足，可操作性弱</div>
+  <p>V4给出了公式框架，但缺少专利充分公开所需的具体实施参数：</p>
+  <ul>
+    <li>Zₙ状态向量的具体维度和各分量的物理含义（仅说"可为标量、向量或空间场"）</li>
+    <li>门控网络G_θ的具体结构（几层？每层多少神经元？激活函数？）</li>
+    <li>材料去除状态子模型Aₘ的具体数量M和各子模型的参数范围</li>
+    <li>训练超参数：学习率、batch size、优化器、训练轮数、早停策略</li>
+    <li>点云预处理的具体参数：参考面拟合阶数、异常点剔除阈值、插值方法</li>
+    <li>压缩观测提取的具体规则：线宽阈值定义（半高全宽？特定深度处宽度？）、评价区域大小</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-red">问题5</span> 实验验证缺失，只有设计没有结果</div>
+  <p>V4的4.8节"现有实验数据与可实施性"仅罗列了数据规模（540组槽实验、5种材料），4.9节"算法验证与消融实验设计"给出了M0-M4的实验设计，但<strong>全文没有任何实际实验结果数据</strong>。没有预测误差数值、没有消融对比结果、没有跨工况泛化表现。</p>
+  <p><strong>对比参考范式：</strong>Ref1用具体数据完成了完整验证链——原始像素坐标→比例尺计算→坐标变换→验证点回代→误差结论（&lt;0.05mm）。</p>
+  <p><strong>影响：</strong>专利审查中，技术效果需要有实验数据支撑；仅有实验设计而无结果会削弱创造性论证的说服力。</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-red">问题6</span> 元信息混入正文，代理人参考材料未独立</div>
+  <p>V4正文中混入了大量面向代理人的元信息：开头"撰写说明"、0节"阅读导引"、2.2节"阅读这一节时要抓住一个判断标准"、5节"V4仅在前文增加工程背景…保留V3的限定关系"、5.1节"建议的独立权利要求技术骨架（供代理人参考）"、"写作规避建议"、文末"交代理人特别提示"。</p>
+  <p><strong>影响：</strong>这些内容不属于技术方案本身，混入正文会干扰技术逻辑的连贯性，也不符合交底书"技术内容为主"的撰写规范。</p>
+</div>
+
+<!-- 第三部分：优化方案 -->
+<h2>三、具体优化方案</h2>
+
+<h3>3.1 整体结构重构：回归标准6节+附录</h3>
+
+<div class="card">
+  <div class="card-title">优化前后结构对比</div>
+  <div class="flow-box">
+    <div class="flow-node" style="background:#FEF0F0;border-color:#FFCCC7;">V4：0导引→1问题→2背景→3缺点→4方案(4.1-4.10)→5关键点+5.1独权→6替代→附录A→参考→代理人提示</div>
+  </div>
+  <div class="flow-box">
+    <div class="flow-node" style="background:#F0FFF4;border-color:#B7EB8F;">优化后：1技术问题→2技术背景→3缺点/目的/效果→4技术方案(4.1-4.6)→5关键点→6替代方案→附录A(代理人参考)→附录B(实验数据)</div>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th>优化动作</th><th>具体内容</th><th>优先级</th></tr></thead>
+  <tbody>
+    <tr><td><strong>删除0节"阅读导引"</strong></td><td>0.1工程场景融入第1节技术问题；0.2三个矛盾改写为第3节的三个现有技术缺点；0.3核心概念移至第4节开头的"术语定义"小节</td><td><span class="priority-high">高</span></td></tr>
+    <tr><td><strong>合并4.1-4.10为4.1-4.6</strong></td><td>4.1总体路线+输入定义；4.2双状态递推；4.3去除状态门控；4.4压缩观测与多尺度联合约束；4.5训练目标与算法实现；4.6实验验证（新增实际结果）</td><td><span class="priority-high">高</span></td></tr>
+    <tr><td><strong>5.1独权骨架移至附录A</strong></td><td>第5节仅保留8个技术关键点的精炼表述；S1-S8独权骨架、查新对比表、规避建议统一放入附录A"代理人参考材料"</td><td><span class="priority-high">高</span></td></tr>
+    <tr><td><strong>新增4.6实验验证节</strong></td><td>用现有540组槽实验+单线数据，给出至少1种材料的完整验证结果：M0-M4误差对比、跨频率泛化结果、典型形貌预测对比</td><td><span class="priority-high">高</span></td></tr>
+    <tr><td><strong>删除正文元信息</strong></td><td>"撰写说明""阅读这一节时要抓住""V4仅在前文增加"等元表述全部删除；代理人提示移至附录A末尾</td><td><span class="priority-mid">中</span></td></tr>
+    <tr><td><strong>统一表格</strong></td><td>现有技术对比表、压缩观测信息表、算法模块表统一编号为表1-表3，移入对应正文位置或附录</td><td><span class="priority-low">低</span></td></tr>
+  </tbody>
+</table>
+
+<h3>3.2 语言风格转换：从学术化到工程化</h3>
+
+<p>核心原则：<strong>用动词开头描述动作，用名词短语描述对象，避免"矛盾""核心技术链""功能耦合"等哲学化表述</strong>。以下为典型段落的改写示例：</p>
+
+<div class="before-after">
+  <div class="ba-col ba-before">
+    <div class="ba-header">V4原文（抽象学术化）</div>
+    <div class="ba-body">
+      <p><strong>矛盾一：</strong>看得见的表面形貌，不等于材料的完整状态。两个位置即使当前几何形貌相近，如果此前经历的脉冲能量、时间间隔或扫描顺序不同，后续烧蚀响应仍可能不同。因此，仅用表面形貌 Hₙ 作为历史信息是不够的。</p>
+      <p><strong>核心技术链：</strong>在可见的表面形貌状态 Hₙ 之外增加独立历史材料状态 Zₙ；由 Hₙ、Zₙ 和当前脉冲条件共同决定多个材料去除状态子模型的贡献；再用单线与槽两类尺度不同的实验观测共同校准同一个微观模型。</p>
+    </div>
+  </div>
+  <div class="ba-col ba-after">
+    <div class="ba-header">优化后（工程化表述）</div>
+    <div class="ba-body">
+      <p><strong>现有技术缺点一：</strong>现有逐脉冲模型仅将当前表面形貌作为历史信息载体。然而，两个几何形貌相近的位置，如果此前承受的脉冲能量、脉冲间隔或扫描顺序不同，其后续烧蚀响应可能存在显著差异。仅用表面形貌无法区分这些历史差异，导致预测精度受限。</p>
+      <p><strong>本发明技术路线：</strong>（1）在表面形貌状态之外，增设一个由脉冲历史递推得到的材料状态变量；（2）根据当前形貌、材料状态和脉冲参数，计算多个材料去除模型的加权贡献；（3）使用单线加工和槽加工两类实验数据，共同训练同一套模型参数。</p>
+    </div>
+  </div>
+</div>
+
+<div class="before-after">
+  <div class="ba-col ba-before">
+    <div class="ba-header">V4原文（符号密集）</div>
+    <div class="ba-body">
+      <p>门控函数根据 Hₙ、Zₙ、uₙ 计算权重：πₙ = G_θ(Hₙ, Zₙ, uₙ), πₘ,ₙ ≥ 0, Σₘπₘ,ₙ = 1。当前脉冲材料去除增量为：ΔHₙ = Σₘ πₘ,ₙ · Aₘ(Hₙ, Zₙ, uₙ)。Hₙ₊₁ = U(Hₙ, ΔHₙ)。</p>
+    </div>
+  </div>
+  <div class="ba-col ba-after">
+    <div class="ba-header">优化后（符号+文字+实施细节）</div>
+    <div class="ba-body">
+      <p><strong>步骤3：计算当前脉冲的材料去除量。</strong></p>
+      <p>本发明设置M个材料去除状态子模型（优选M=2或3），分别对应不同加工阶段的去除响应。门控网络根据当前形貌Hₙ、材料状态Zₙ和脉冲参数uₙ，输出各子模型的权重πₘ,ₙ（非负且和为1）。当前脉冲的去除深度为各子模型输出的加权和：</p>
+      <p style="text-align:center;font-family:monospace;background:#F9F8F4;padding:8px;border-radius:6px;">ΔHₙ = Σₘ πₘ,ₙ · Aₘ(Hₙ, Zₙ, uₙ)</p>
+      <p><strong>实施细节：</strong>门控网络优选为2层全连接网络（隐藏层64维，ReLU激活，输出层Softmax）；子模型Aₘ优选采用阈值-对数烧蚀形式，各子模型具有独立的阈值和烧蚀率参数。去除量计算后，更新表面形貌Hₙ₊₁ = Hₙ - ΔHₙ，并同步更新材料状态Zₙ₊₁。</p>
+    </div>
+  </div>
+</div>
+
+<h3>3.3 符号管理规范</h3>
+
+<table>
+  <thead><tr><th>规范项</th><th>具体要求</th><th>示例</th></tr></thead>
+  <tbody>
+    <tr><td><strong>符号首次出现</strong></td><td>必须同时给出"符号=中文名称+物理含义"，不能只给符号</td><td>"定义表面形貌状态Hₙ（第n个脉冲作用前的材料表面高度场）"</td></tr>
+    <tr><td><strong>公式后紧跟解释</strong></td><td>每个公式后用1-2句话说明物理意义，不能公式堆砌</td><td>公式后加"该式表示当前脉冲去除量为M个子模型输出的加权组合"</td></tr>
+    <tr><td><strong>减少不必要符号</strong></td><td>能用文字描述的不用符号；辅助函数（如U、S_θ、G_θ）可简化为文字描述</td><td>"Hₙ₊₁ = Hₙ - ΔHₙ" 替代 "Hₙ₊₁ = U(Hₙ, ΔHₙ)"</td></tr>
+    <tr><td><strong>符号表</strong></td><td>在4节开头或附录中提供完整符号对照表</td><td>表格列出：符号、中文名称、物理含义、维度/类型</td></tr>
+    <tr><td><strong>下标规范</strong></td><td>统一使用n表示脉冲序号，m表示子模型序号，避免混用</td><td>πₘ,ₙ 表示第n个脉冲下第m个子模型的权重</td></tr>
+  </tbody>
+</table>
+
+<h3>3.4 补充具体实施细节清单</h3>
+
+<div class="card">
+  <div class="card-title">必须补充的实施参数（按优先级排序）</div>
+  <table>
+    <thead><tr><th>类别</th><th>需补充的具体内容</th><th>优先级</th></tr></thead>
+    <tbody>
+      <tr><td><strong>状态定义</strong></td><td>Zₙ的优选维度（如4维：孵化状态C、残余热Θ、光学状态Q、粗糙度代理R）；各分量的初始值范围和物理边界</td><td><span class="priority-high">高</span></td></tr>
+      <tr><td><strong>网络结构</strong></td><td>状态更新网络S_θ：层数、维度、激活函数；门控网络G_θ：层数、维度、输出激活；子模型Aₘ：具体函数形式和参数范围</td><td><span class="priority-high">高</span></td></tr>
+      <tr><td><strong>训练超参</strong></td><td>优化器（AdamW?）、学习率（如1e-3）、batch size（如32）、训练轮数（如500）、早停patience（如50）、权重衰减</td><td><span class="priority-high">高</span></td></tr>
+      <tr><td><strong>数据预处理</strong></td><td>参考面拟合方法（最小二乘平面?二阶多项式?）、异常点剔除阈值（如3σ）、插值方法（克里金?双线性?）、评价区域尺寸（如槽中段±1mm）</td><td><span class="priority-mid">中</span></td></tr>
+      <tr><td><strong>压缩观测定义</strong></td><td>线宽定义（深度为最大深度50%处的宽度?）、线深定义（最低点相对参考面的深度?）、Sa/Sq/Sz的计算区域和滤波参数</td><td><span class="priority-mid">中</span></td></tr>
+      <tr><td><strong>损失函数权重</strong></td><td>λ_L、λ_G、λ_P、λ_S、λ_M的具体取值或取值范围；各损失项的归一化方式</td><td><span class="priority-low">低</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>3.5 实验验证章节撰写模板</h3>
+
+<p>参考Ref1的验证范式，新增4.6节应包含以下完整链条：</p>
+
+<div class="card">
+  <div class="card-title">实验验证章节结构模板</div>
+  <ol>
+    <li><strong>实验设置：</strong>材料（如SiC）、设备（激光器型号、脉宽、波长）、数据规模（如单线XX组、槽XX组）、评价指标（MAE、RMSE、R²）</li>
+    <li><strong>基线对比：</strong>M0（黑箱）、M1（单状态）、M2（双状态单模型）、M3（双状态门控）、M4（多尺度联合）的误差对比表</li>
+    <li><strong>跨工况泛化：</strong>leave-one-frequency-out的结果表，展示未见频率下的预测误差</li>
+    <li><strong>典型案例：</strong>1-2组典型工艺参数下，预测形貌/槽深/粗糙度与实测值的对比</li>
+    <li><strong>消融分析：</strong>逐一验证Zₙ、门控、多尺度约束各自带来的误差下降幅度</li>
+    <li><strong>结论：</strong>本发明方法相比基线的提升幅度（如槽深MAE降低XX%，跨频率泛化误差降低XX%）</li>
+  </ol>
+  <p style="margin-top:12px;color:#D46B08;font-size:13px;"><strong>注意：</strong>若当前实验尚未完成，应至少完成1种材料（如SiC）的M0-M4初步结果，用真实数据填充；不能仅保留"实验设计"。</p>
+</div>
+
+<h3>3.6 附录结构：代理人参考材料独立</h3>
+
+<table>
+  <thead><tr><th>附录编号</th><th>内容</th><th>来源（V4中的位置）</th></tr></thead>
+  <tbody>
+    <tr><td><strong>附录A</strong></td><td>代理人参考材料：A.1独立权利要求骨架（S1-S8）；A.2查新对比表（7篇现有技术）；A.3写作规避建议；A.4交代理人特别提示</td><td>5.1节 + 2.2节 + 文末表格 + 文末提示</td></tr>
+    <tr><td><strong>附录B</strong></td><td>实验数据明细：B.1数据整理清单；B.2最小算法实验配置；B.3完整实验结果表</td><td>附录A（原） + 4.8/4.9节 + 新增结果</td></tr>
+    <tr><td><strong>附录C</strong></td><td>符号对照表：所有数学符号的中文名称、物理含义、维度/类型</td><td>散见于4.2-4.6节</td></tr>
+    <tr><td><strong>参考文献</strong></td><td>10篇参考文献统一编号</td><td>原参考资料节</td></tr>
+  </tbody>
+</table>
+
+<!-- 第四部分：实施路线图 -->
+<h2>四、实施路线图与优先级</h2>
+
+<table>
+  <thead><tr><th>阶段</th><th>任务</th><th>预计工作量</th><th>优先级</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>第一阶段<br>结构重构</strong></td>
+      <td>
+        1. 删除0节，内容拆分融入1/3/4节<br>
+        2. 合并4.1-4.10为4.1-4.6<br>
+        3. 5.1独权骨架+查新表+代理人提示移至附录A<br>
+        4. 删除正文所有元信息表述
+      </td>
+      <td>0.5天</td>
+      <td><span class="priority-high">高</span></td>
+    </tr>
+    <tr>
+      <td><strong>第二阶段<br>语言改写</strong></td>
+      <td>
+        1. 全文语言工程化，替换"矛盾""核心技术链"等表述<br>
+        2. 每个公式后补充物理含义解释<br>
+        3. 整理符号对照表（附录C）<br>
+        4. 统一图表编号和说明
+      </td>
+      <td>1天</td>
+      <td><span class="priority-high">高</span></td>
+    </tr>
+    <tr>
+      <td><strong>第三阶段<br>细节补充</strong></td>
+      <td>
+        1. 补充Zₙ维度、网络结构、训练超参<br>
+        2. 补充点云预处理参数和压缩观测定义<br>
+        3. 补充子模型Aₘ的具体函数形式和参数范围<br>
+        4. 补充损失函数权重取值
+      </td>
+      <td>0.5天</td>
+      <td><span class="priority-mid">中</span></td>
+    </tr>
+    <tr>
+      <td><strong>第四阶段<br>实验填充</strong></td>
+      <td>
+        1. 完成至少1种材料的M0-M4初步实验<br>
+        2. 撰写4.6节实验验证（含误差对比表、泛化结果、典型案例）<br>
+        3. 附录B补充完整实验数据明细
+      </td>
+      <td>2-3天（含实验运行）</td>
+      <td><span class="priority-high">高</span></td>
+    </tr>
+    <tr>
+      <td><strong>第五阶段<br>终审校验</strong></td>
+      <td>
+        1. 全文通读，检查逻辑连贯性<br>
+        2. 核对所有公式、符号、引用的一致性<br>
+        3. 确认8个技术关键点在正文中均有充分公开<br>
+        4. 确认实验数据支撑技术效果声明
+      </td>
+      <td>0.5天</td>
+      <td><span class="priority-mid">中</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="card" style="background:linear-gradient(135deg, rgba(91,143,249,0.06), rgba(91,143,249,0.12));border-color:#91CAFF;">
+  <div class="card-title">优化后预期效果</div>
+  <ul>
+    <li><strong>可读性：</strong>正文从约15000字精简至约12000字（元信息移除），层级从3级降至2级，代理人阅读时间预计减少30-40%</li>
+    <li><strong>可实施性：</strong>补充网络结构、超参、预处理参数后，本领域技术人员可直接复现</li>
+    <li><strong>创造性说服力：</strong>实验数据支撑技术效果，M0-M4消融逐一对应8个技术关键点</li>
+    <li><strong>代理人友好度：</strong>技术内容与代理人参考材料分离，独权骨架、查新表、规避建议集中在附录A</li>
+  </ul>
+</div>
+
+<div class="footer">
+  <p>本方案基于《专利技术交底书1》（采用照相拼图的工件定位方法和装置）的写作范式，对《超快激光多脉冲烧蚀形貌预测_专利技术交底书_V4》进行对比分析后形成。优化建议仅涉及撰写结构和语言风格，不改变V4的核心技术路线和权利要求保护范围。</p>
+</div>
+
+</div>
+</body>
+</html>

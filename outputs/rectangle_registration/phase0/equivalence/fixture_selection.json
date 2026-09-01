@@ -1,0 +1,205 @@
+{
+  "rule_id": "fixture-selection-v4-user-fixture-set-before-comparison",
+  "generated_utc": "2026-08-31T01:58:00.582574+00:00",
+  "target_per_session": 6,
+  "min_per_session": 3,
+  "sessions": {
+    "zro2_120_formal": {
+      "n_measurements": 120,
+      "n_existing_official": 6,
+      "n_selected": 6,
+      "n_new_exports_needed": 0,
+      "n_official_after_export": 6,
+      "meets_minimum": true,
+      "factor_level_coverage": {
+        "次数": {
+          "levels_total": 5,
+          "levels_covered": 5
+        },
+        "脉宽": {
+          "levels_total": 5,
+          "levels_covered": 5
+        },
+        "频率": {
+          "levels_total": 5,
+          "levels_covered": 5
+        },
+        "线间距": {
+          "levels_total": 5,
+          "levels_covered": 5
+        },
+        "速度": {
+          "levels_total": 5,
+          "levels_covered": 4
+        }
+      },
+      "median_depth_proxy_um_by_depth_band": {
+        "band_0": null,
+        "band_1": null,
+        "band_2": null
+      },
+      "depth_band_ratios": {
+        "adjacent": [
+          null,
+          null
+        ],
+        "span_max_over_min": null
+      },
+      "min_direction_flip_norm_over_selected": 0.03042378413665535,
+      "transposition_structurally_impossible_all": true,
+      "blocked_reason": null,
+      "selected_measurement_ids": [
+        2,
+        24,
+        38,
+        58,
+        87,
+        107
+      ],
+      "existing_official_measurement_ids": [
+        2,
+        24,
+        38,
+        58,
+        87,
+        107
+      ],
+      "csv_subdir": "120正式",
+      "cag_path": "氧化锆/pass实验数据/120正式.cag"
+    },
+    "zro2_60_pass": {
+      "n_measurements": 30,
+      "n_existing_official": 5,
+      "n_selected": 5,
+      "n_new_exports_needed": 0,
+      "n_official_after_export": 5,
+      "meets_minimum": true,
+      "factor_level_coverage": {
+        "次数": {
+          "levels_total": 4,
+          "levels_covered": 4
+        },
+        "脉宽": {
+          "levels_total": 5,
+          "levels_covered": 4
+        },
+        "频率": {
+          "levels_total": 5,
+          "levels_covered": 4
+        },
+        "线间距": {
+          "levels_total": 5,
+          "levels_covered": 4
+        },
+        "速度": {
+          "levels_total": 5,
+          "levels_covered": 3
+        }
+      },
+      "median_depth_proxy_um_by_depth_band": {
+        "band_0": null,
+        "band_1": null,
+        "band_2": null
+      },
+      "depth_band_ratios": {
+        "adjacent": [
+          null,
+          null
+        ],
+        "span_max_over_min": null
+      },
+      "min_direction_flip_norm_over_selected": 0.013133019588914338,
+      "transposition_structurally_impossible_all": true,
+      "blocked_reason": null,
+      "selected_measurement_ids": [
+        1,
+        5,
+        7,
+        13,
+        15
+      ],
+      "existing_official_measurement_ids": [
+        1,
+        5,
+        7,
+        13,
+        15
+      ],
+      "csv_subdir": "60pass组",
+      "cag_path": "氧化锆/pass实验数据/60Pass组.cag"
+    },
+    "zro2_20_supplement": {
+      "n_measurements": 10,
+      "n_existing_official": 10,
+      "n_selected": 10,
+      "n_new_exports_needed": 0,
+      "n_official_after_export": 10,
+      "meets_minimum": true,
+      "factor_level_coverage": {
+        "次数": {
+          "levels_total": 2,
+          "levels_covered": 2
+        },
+        "脉宽": {
+          "levels_total": 5,
+          "levels_covered": 5
+        },
+        "频率": {
+          "levels_total": 5,
+          "levels_covered": 5
+        },
+        "线间距": {
+          "levels_total": 5,
+          "levels_covered": 5
+        },
+        "速度": {
+          "levels_total": 5,
+          "levels_covered": 5
+        }
+      },
+      "median_depth_proxy_um_by_depth_band": {
+        "band_0": null,
+        "band_1": null,
+        "band_2": null
+      },
+      "depth_band_ratios": {
+        "adjacent": [
+          null,
+          null
+        ],
+        "span_max_over_min": null
+      },
+      "min_direction_flip_norm_over_selected": 0.009407238288516834,
+      "transposition_structurally_impossible_all": true,
+      "blocked_reason": null,
+      "selected_measurement_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "existing_official_measurement_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "csv_subdir": "20补充pass",
+      "cag_path": "氧化锆/pass实验数据/20补充pass.cag"
+    }
+  },
+  "selection_table_path": "config\\equivalence_fixture_selection.csv",
+  "selection_table_sha256": "8b21e533f808aa225d484ab73467cd2748bc81958a8d4e626891d72a691d0e0f"
+}

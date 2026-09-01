@@ -1,0 +1,11 @@
+{
+  "stage": "WP8_constrained_translation_registration",
+  "generated_at_utc": "2026-08-31T03:02:12.629539+00:00",
+  "decision": "REVIEW",
+  "samples": 200,
+  "pass": 92,
+  "review": 108,
+  "failed": 0,
+  "paired_conflict_measurements": 0,
+  "session_geometry_frozen": true
+}

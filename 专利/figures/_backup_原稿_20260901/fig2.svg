@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" font-family="Microsoft YaHei, PingFang SC, SimHei, sans-serif">
+
+  <rect x="0" y="0" width="1400" height="820" fill="#FFFFFF"/>
+
+  <!-- ============ 顶部小节提示 ============ -->
+  <text x="700" y="60" font-size="32" font-weight="bold" fill="#185FA5" text-anchor="middle">两条平行历史路径</text>
+
+  <!-- ============ 路径 A（上半，h=240）============ -->
+
+  <!-- 历史 A（h=240）-->
+  <rect x="40" y="90" width="240" height="240" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
+  <text x="160" y="126" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">脉冲历史 A</text>
+  <text x="160" y="160" font-size="26" fill="#5F5E5A" text-anchor="middle">能量分配、时间间隔、</text>
+  <text x="160" y="186" font-size="26" fill="#5F5E5A" text-anchor="middle">空间重叠或扫描顺序之一</text>
+  <text x="160" y="232" font-size="28" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">{u<tspan dy="5" font-size="20">1</tspan><tspan dy="-5" font-size="18">A</tspan>, u<tspan dy="5" font-size="20">2</tspan><tspan dy="-5" font-size="18">A</tspan>, ..., u<tspan dy="5" font-size="20">n-1</tspan><tspan dy="-5" font-size="18">A</tspan>}</text>
+  <text x="160" y="278" font-size="26" fill="#5F5E5A" text-anchor="middle">（不同能量、时间间隔、</text>
+  <text x="160" y="304" font-size="26" fill="#5F5E5A" text-anchor="middle">扫描顺序的脉冲作用序列）</text>
+
+  <!-- 历史A → 状态A -->
+  <line x1="280" y1="210" x2="332" y2="210" stroke="#5F5E5A" stroke-width="2.4"/>
+  <polygon points="340,210 328,204.5 328,215.5" fill="#5F5E5A"/>
+
+  <!-- 状态 A 卡（h=240）-->
+  <rect x="340" y="90" width="260" height="240" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <text x="470" y="126" font-size="28" font-weight="bold" fill="#0C447C" text-anchor="middle">当前状态（A 路径）</text>
+
+  <!-- 状态A 上半：H_n^A -->
+  <text x="470" y="166" font-size="26" fill="#0C447C" text-anchor="middle">表面形貌状态</text>
+  <text x="470" y="208" font-size="36" fill="#0C447C" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">H<tspan dy="6" font-size="22">n</tspan><tspan dy="-6" font-size="20">A</tspan></text>
+
+  <!-- 分隔 -->
+  <line x1="358" y1="244" x2="582" y2="244" stroke="#185FA5" stroke-width="0.8" stroke-dasharray="4 3"/>
+
+  <!-- 状态A 下半：Z_n^A 红色虚框 -->
+  <rect x="358" y="258" width="224" height="44" rx="4" fill="#FBEAEA" stroke="#A32D2D" stroke-width="2" stroke-dasharray="6 3"/>
+  <text x="470" y="287" font-size="26" fill="#A32D2D" text-anchor="middle">历史材料状态  <tspan font-family="Times New Roman, Times, serif" font-style="italic">Z<tspan dy="5" font-size="20">n</tspan><tspan dy="-5" font-size="18">A</tspan></tspan></text>
+
+  <!-- ============ 中央 u_n 框（w=220, h=300, 缩约 12%）============ -->
+  <rect x="620" y="180" width="220" height="300" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="2.6"/>
+  <text x="730" y="216" font-size="28" font-weight="bold" fill="#633806" text-anchor="middle">相同下一脉冲</text>
+  <text x="730" y="294" font-size="38" fill="#633806" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">u<tspan dy="6" font-size="22">n</tspan></text>
+  <text x="730" y="348" font-size="26" fill="#633806" text-anchor="middle">A/B 路径均输入</text>
+  <text x="730" y="378" font-size="26" fill="#633806" text-anchor="middle">此同一作用条件</text>
+  <text x="730" y="414" font-size="26" fill="#633806" text-anchor="middle">驱动后续可能</text>
+  <text x="730" y="444" font-size="26" fill="#633806" text-anchor="middle">不同的响应</text>
+
+  <!-- 状态A → u_n -->
+  <line x1="600" y1="210" x2="632" y2="210" stroke="#185FA5" stroke-width="2.4"/>
+  <polygon points="640,210 628,204.5 628,215.5" fill="#185FA5"/>
+
+  <!-- u_n → ΔH_n^A -->
+  <line x1="840" y1="210" x2="852" y2="210" stroke="#185FA5" stroke-width="2.4"/>
+  <polygon points="860,210 848,204.5 848,215.5" fill="#185FA5"/>
+
+  <!-- ΔH_n^A 卡（w=290, h=240, 加宽以容纳长文字）-->
+  <rect x="860" y="90" width="290" height="240" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <text x="1005" y="126" font-size="28" font-weight="bold" fill="#0C447C" text-anchor="middle">可能不同的后续响应</text>
+  <text x="1005" y="200" font-size="38" fill="#0C447C" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#916;H<tspan dy="6" font-size="22">n</tspan><tspan dy="-6" font-size="20">A</tspan></text>
+  <line x1="878" y1="232" x2="1132" y2="232" stroke="#185FA5" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <text x="1005" y="266" font-size="26" fill="#5F5E5A" text-anchor="middle">几何相近，但材料历史不同</text>
+  <text x="1005" y="298" font-size="26" fill="#185FA5" text-anchor="middle">→ 后续去除响应可能不同</text>
+
+  <!-- ============ 路径 B（下半，h=240）============ -->
+
+  <!-- 历史 B -->
+  <rect x="40" y="370" width="240" height="240" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
+  <text x="160" y="406" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">脉冲历史 B</text>
+  <text x="160" y="440" font-size="26" fill="#5F5E5A" text-anchor="middle">与历史 A 不同的</text>
+  <text x="160" y="466" font-size="26" fill="#5F5E5A" text-anchor="middle">脉冲作用序列</text>
+  <text x="160" y="512" font-size="28" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">{u<tspan dy="5" font-size="20">1</tspan><tspan dy="-5" font-size="18">B</tspan>, u<tspan dy="5" font-size="20">2</tspan><tspan dy="-5" font-size="18">B</tspan>, ..., u<tspan dy="5" font-size="20">n-1</tspan><tspan dy="-5" font-size="18">B</tspan>}</text>
+  <text x="160" y="558" font-size="26" fill="#5F5E5A" text-anchor="middle">（不同能量、时间间隔、</text>
+  <text x="160" y="584" font-size="26" fill="#5F5E5A" text-anchor="middle">扫描顺序的脉冲作用序列）</text>
+
+  <!-- 历史B → 状态B -->
+  <line x1="280" y1="490" x2="332" y2="490" stroke="#5F5E5A" stroke-width="2.4"/>
+  <polygon points="340,490 328,484.5 328,495.5" fill="#5F5E5A"/>
+
+  <!-- 状态 B 卡（h=240）-->
+  <rect x="340" y="370" width="260" height="240" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <text x="470" y="406" font-size="28" font-weight="bold" fill="#0C447C" text-anchor="middle">当前状态（B 路径）</text>
+
+  <!-- 状态B 上半：H_n^B -->
+  <text x="470" y="446" font-size="26" fill="#0C447C" text-anchor="middle">表面形貌状态</text>
+  <text x="470" y="488" font-size="36" fill="#0C447C" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">H<tspan dy="6" font-size="22">n</tspan><tspan dy="-6" font-size="20">B</tspan></text>
+
+  <!-- 分隔 -->
+  <line x1="358" y1="524" x2="582" y2="524" stroke="#185FA5" stroke-width="0.8" stroke-dasharray="4 3"/>
+
+  <!-- 状态B 下半：Z_n^B 红色虚框 -->
+  <rect x="358" y="538" width="224" height="44" rx="4" fill="#FBEAEA" stroke="#A32D2D" stroke-width="2" stroke-dasharray="6 3"/>
+  <text x="470" y="567" font-size="26" fill="#A32D2D" text-anchor="middle">历史材料状态  <tspan font-family="Times New Roman, Times, serif" font-style="italic">Z<tspan dy="5" font-size="20">n</tspan><tspan dy="-5" font-size="18">B</tspan></tspan></text>
+
+  <!-- 状态B → u_n -->
+  <line x1="600" y1="490" x2="632" y2="490" stroke="#185FA5" stroke-width="2.4"/>
+  <polygon points="640,490 628,484.5 628,495.5" fill="#185FA5"/>
+
+  <!-- u_n → ΔH_n^B -->
+  <line x1="840" y1="490" x2="852" y2="490" stroke="#185FA5" stroke-width="2.4"/>
+  <polygon points="860,490 848,484.5 848,495.5" fill="#185FA5"/>
+
+  <!-- ΔH_n^B 卡（w=290, h=240）-->
+  <rect x="860" y="370" width="290" height="240" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <text x="1005" y="406" font-size="28" font-weight="bold" fill="#0C447C" text-anchor="middle">可能不同的后续响应</text>
+  <text x="1005" y="480" font-size="38" fill="#0C447C" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#916;H<tspan dy="6" font-size="22">n</tspan><tspan dy="-6" font-size="20">B</tspan></text>
+  <line x1="878" y1="512" x2="1132" y2="512" stroke="#185FA5" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <text x="1005" y="546" font-size="26" fill="#5F5E5A" text-anchor="middle">几何相近，但材料历史不同</text>
+  <text x="1005" y="578" font-size="26" fill="#185FA5" text-anchor="middle">→ 后续去除响应可能不同</text>
+
+  <!-- ============ 中间统一说明框（h=70, 压缩为 2 行）============ -->
+  <rect x="200" y="640" width="1000" height="70" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
+  <text x="700" y="670" font-size="28" font-weight="bold" fill="#0C447C" text-anchor="middle">当前表面形貌可相近：  <tspan font-family="Times New Roman, Times, serif" font-style="italic">H<tspan dy="5" font-size="20">n</tspan><tspan dy="-5" font-size="18">A</tspan>  &#8776;  H<tspan dy="5" font-size="20">n</tspan><tspan dy="-5" font-size="18">B</tspan></tspan></text>
+  <text x="700" y="700" font-size="26" fill="#444441" text-anchor="middle">但历史材料状态不由当前形貌唯一确定：  <tspan font-family="Times New Roman, Times, serif" font-style="italic" fill="#A32D2D">Z<tspan dy="5" font-size="20">n</tspan><tspan dy="-5" font-size="18">A</tspan> 与 Z<tspan dy="5" font-size="20">n</tspan><tspan dy="-5" font-size="18">B</tspan> 可不同</tspan></text>
+
+  <!-- ============ 底部对照：传统 vs 本发明（h=90, +15%）============ -->
+  <!-- 传统 -->
+  <rect x="160" y="725" width="500" height="92" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
+  <text x="410" y="758" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">传统描述</text>
+  <line x1="200" y1="772" x2="620" y2="772" stroke="#5F5E5A" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <text x="410" y="804" font-size="28" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">S<tspan dy="5" font-size="22">n</tspan> = H<tspan dy="5" font-size="22">n</tspan></text>
+
+  <!-- 箭头 -->
+  <line x1="670" y1="771" x2="724" y2="771" stroke="#5F5E5A" stroke-width="2.4"/>
+  <polygon points="734,771 722,765.5 722,776.5" fill="#5F5E5A"/>
+
+  <!-- 本发明 -->
+  <rect x="740" y="725" width="500" height="92" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="2.6"/>
+  <text x="990" y="758" font-size="28" font-weight="bold" fill="#0C447C" text-anchor="middle">本发明</text>
+  <line x1="780" y1="772" x2="1200" y2="772" stroke="#185FA5" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <text x="990" y="804" font-size="28" fill="#0C447C" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">S<tspan dy="5" font-size="22">n</tspan> = ( H<tspan dy="5" font-size="22">n</tspan>, Z<tspan dy="5" font-size="22">n</tspan> )</text>
+
+</svg>

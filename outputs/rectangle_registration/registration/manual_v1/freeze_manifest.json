@@ -1,0 +1,69 @@
+{
+  "stage": "WP1_freeze_manual_registration_v1",
+  "generated_at_utc": "2026-09-01T02:08:42.632227+00:00",
+  "config": {
+    "path": "config\\manual_registration_v1.yaml",
+    "sha256": "008B1B92CCED105EC6D8E7E8EE3D6A34FCE8A14AC0AB66025AC2268469AABD42"
+  },
+  "source": {
+    "path": "outputs\\rectangle_registration\\registration\\manual_four_edge_validation.csv",
+    "sha256": "536BF658AD75F1BC7DCC6E9461D821E046F58A7636D26A7EAABF51A80D56AF9D",
+    "expected_sha256": "536BF658AD75F1BC7DCC6E9461D821E046F58A7636D26A7EAABF51A80D56AF9D",
+    "hash_matches_frozen_baseline": true
+  },
+  "row_count": 200,
+  "session_counts": {
+    "zro2_120_formal": 120,
+    "zro2_20_supplement": 20,
+    "zro2_60_pass": 60
+  },
+  "annotator_a_state_counts": {
+    "complete": 200
+  },
+  "annotator_b_all_empty": true,
+  "paired_measurements": 40,
+  "corner_overflow_warnings": 17,
+  "failures": [],
+  "warnings": [
+    "(zro2_20_supplement, 1): manual box corner exceeds raw FOV by 0.65 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 2): manual box corner exceeds raw FOV by 0.46 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 3): manual box corner exceeds raw FOV by 0.15 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 5): manual box corner exceeds raw FOV by 0.91 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 6): manual box corner exceeds raw FOV by 1.67 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 7): manual box corner exceeds raw FOV by 0.28 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 8): manual box corner exceeds raw FOV by 0.03 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 9): manual box corner exceeds raw FOV by 0.96 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 11): manual box corner exceeds raw FOV by 0.34 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 12): manual box corner exceeds raw FOV by 0.78 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 13): manual box corner exceeds raw FOV by 1.78 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 14): manual box corner exceeds raw FOV by 0.17 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 16): manual box corner exceeds raw FOV by 1.26 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 17): manual box corner exceeds raw FOV by 2.17 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 18): manual box corner exceeds raw FOV by 1.05 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 19): manual box corner exceeds raw FOV by 0.32 um (edge-of-field observation, not a gate)",
+    "(zro2_20_supplement, 20): manual box corner exceeds raw FOV by 0.44 um (edge-of-field observation, not a gate)"
+  ],
+  "decision": "PASS",
+  "snapshot": {
+    "path": "outputs\\rectangle_registration\\registration\\manual_v1\\manual_four_edge_validation_frozen.csv",
+    "sha256": "536BF658AD75F1BC7DCC6E9461D821E046F58A7636D26A7EAABF51A80D56AF9D",
+    "reused_existing_snapshot": true
+  },
+  "session_geometry": {
+    "zro2_120_formal": {
+      "theta_session_deg": -0.7000000000025182,
+      "d4_transform_session": "identity",
+      "d4_status": "confirmed"
+    },
+    "zro2_20_supplement": {
+      "theta_session_deg": -0.650000000002521,
+      "d4_transform_session": "identity",
+      "d4_status": "confirmed"
+    },
+    "zro2_60_pass": {
+      "theta_session_deg": -0.4500000000025324,
+      "d4_transform_session": "identity",
+      "d4_status": "confirmed"
+    }
+  }
+}

@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" font-family="Microsoft YaHei, PingFang SC, SimHei, sans-serif">
+
+  <rect x="0" y="0" width="1400" height="820" fill="#FFFFFF"/>
+
+  <text x="700" y="64" font-size="32" font-weight="bold" fill="#185FA5" text-anchor="middle">实验观测 — 同一模型 — 联合反演校准</text>
+
+  <!-- ============ 左实验侧：单线 ============ -->
+  <!-- L1: 单线加工示意 -->
+  <rect x="40" y="100" width="290" height="80" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
+  <text x="185" y="138" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">单线加工</text>
+  <text x="185" y="170" font-size="26" fill="#5F5E5A" text-anchor="middle">样品 + 扫描轨迹示意</text>
+
+  <!-- L2: 共聚焦测量 -->
+  <rect x="40" y="196" width="290" height="80" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
+  <text x="185" y="234" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">共聚焦测量</text>
+  <text x="185" y="266" font-size="26" fill="#5F5E5A" text-anchor="middle">逐线高程点云</text>
+
+  <!-- L3: 压缩观测 Y_line（拆 2 行，h 加大）-->
+  <rect x="40" y="292" width="290" height="116" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
+  <text x="185" y="326" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">压缩观测</text>
+  <text x="185" y="362" font-size="28" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">Y<tspan dy="5" font-size="20">line</tspan> =</text>
+  <text x="185" y="394" font-size="28" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">[ w<tspan dy="5" font-size="20">line</tspan>, d<tspan dy="5" font-size="20">line</tspan> ]</text>
+
+  <!-- L4a: 主要提供 -->
+  <rect x="40" y="424" width="290" height="66" rx="6" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.8"/>
+  <text x="60" y="450" font-size="26" font-weight="bold" fill="#633806" text-anchor="start">主要提供</text>
+  <text x="60" y="478" font-size="26" fill="#5F5E5A" text-anchor="start">局部作用范围、纵向去除能力</text>
+
+  <!-- L4b: 主要约束 -->
+  <rect x="40" y="506" width="290" height="66" rx="6" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.8"/>
+  <text x="60" y="532" font-size="26" font-weight="bold" fill="#633806" text-anchor="start">主要约束</text>
+  <text x="60" y="560" font-size="26" fill="#5F5E5A" text-anchor="start">局部去除响应、部分历史状态</text>
+
+  <!-- 左列内部竖向箭头 -->
+  <line x1="185" y1="180" x2="185" y2="188" stroke="#5F5E5A" stroke-width="2"/>
+  <polygon points="185,196 179,184 191,184" fill="#5F5E5A"/>
+  <line x1="185" y1="276" x2="185" y2="284" stroke="#5F5E5A" stroke-width="2"/>
+  <polygon points="185,292 179,280 191,280" fill="#5F5E5A"/>
+  <line x1="185" y1="408" x2="185" y2="416" stroke="#5F5E5A" stroke-width="2"/>
+  <polygon points="185,424 179,412 191,412" fill="#5F5E5A"/>
+  <line x1="185" y1="490" x2="185" y2="498" stroke="#5F5E5A" stroke-width="2"/>
+  <polygon points="185,506 179,494 191,494" fill="#5F5E5A"/>
+
+  <!-- ============ 中央：同一模型 ============ -->
+  <rect x="460" y="100" width="480" height="380" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="2.8"/>
+  <text x="700" y="138" font-size="28" font-weight="bold" fill="#0C447C" text-anchor="middle">同一脉冲级多脉冲烧蚀模型</text>
+
+  <text x="700" y="208" font-size="36" fill="#0C447C" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">H<tspan dy="6" font-size="24">n</tspan>,  Z<tspan dy="6" font-size="24">n</tspan></text>
+
+  <line x1="700" y1="232" x2="700" y2="258" stroke="#185FA5" stroke-width="2.4"/>
+  <polygon points="700,268 692,254 708,254" fill="#185FA5"/>
+
+  <rect x="540" y="280" width="320" height="60" rx="6" fill="#FFFFFF" stroke="#185FA5" stroke-width="1.8"/>
+  <text x="700" y="318" font-size="28" fill="#0C447C" text-anchor="middle">材料去除响应</text>
+
+  <line x1="700" y1="346" x2="700" y2="372" stroke="#185FA5" stroke-width="2.4"/>
+  <polygon points="700,382 692,368 708,368" fill="#185FA5"/>
+
+  <text x="700" y="438" font-size="36" fill="#0C447C" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">H<tspan dy="6" font-size="24">N</tspan></text>
+
+  <!-- ============ 右实验侧：槽 ============ -->
+  <!-- R1: 槽加工示意 -->
+  <rect x="1070" y="100" width="290" height="80" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
+  <text x="1215" y="138" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">槽加工</text>
+  <text x="1215" y="170" font-size="26" fill="#5F5E5A" text-anchor="middle">矩形槽扫描填充示意</text>
+
+  <!-- R2: 共聚焦测量 -->
+  <rect x="1070" y="196" width="290" height="80" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
+  <text x="1215" y="234" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">共聚焦测量</text>
+  <text x="1215" y="266" font-size="26" fill="#5F5E5A" text-anchor="middle">逐面高程点云</text>
+
+  <!-- R3: 压缩观测 Y_groove（拆 2 行，h 加大）-->
+  <rect x="1070" y="292" width="290" height="116" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
+  <text x="1215" y="326" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">压缩观测</text>
+  <text x="1215" y="362" font-size="28" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">Y<tspan dy="5" font-size="20">groove</tspan> =</text>
+  <text x="1215" y="394" font-size="28" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">[ d<tspan dy="5" font-size="20">groove</tspan>, Sa, Sq, Sz ]</text>
+
+  <!-- R4a: 主要提供 -->
+  <rect x="1070" y="424" width="290" height="66" rx="6" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.8"/>
+  <text x="1090" y="450" font-size="26" font-weight="bold" fill="#633806" text-anchor="start">主要提供</text>
+  <text x="1090" y="478" font-size="26" fill="#5F5E5A" text-anchor="start">长期累积、空间均匀性信息</text>
+
+  <!-- R4b: 主要约束 -->
+  <rect x="1070" y="506" width="290" height="66" rx="6" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.8"/>
+  <text x="1090" y="532" font-size="26" font-weight="bold" fill="#633806" text-anchor="start">主要约束</text>
+  <text x="1090" y="560" font-size="26" fill="#5F5E5A" text-anchor="start">门控参数及空间累积</text>
+
+  <!-- 右列内部竖向箭头 -->
+  <line x1="1215" y1="180" x2="1215" y2="188" stroke="#5F5E5A" stroke-width="2"/>
+  <polygon points="1215,196 1209,184 1221,184" fill="#5F5E5A"/>
+  <line x1="1215" y1="276" x2="1215" y2="284" stroke="#5F5E5A" stroke-width="2"/>
+  <polygon points="1215,292 1209,280 1221,292" fill="#5F5E5A"/>
+  <polygon points="1215,292 1209,280 1221,280" fill="#5F5E5A"/>
+  <line x1="1215" y1="408" x2="1215" y2="416" stroke="#5F5E5A" stroke-width="2"/>
+  <polygon points="1215,424 1209,412 1221,412" fill="#5F5E5A"/>
+  <line x1="1215" y1="490" x2="1215" y2="498" stroke="#5F5E5A" stroke-width="2"/>
+  <polygon points="1215,506 1209,494 1221,494" fill="#5F5E5A"/>
+
+  <!-- ============ 下方：联合约束 / 反演校准（精简 3 行）============ -->
+  <rect x="410" y="596" width="580" height="100" rx="10" fill="#FAEEDA" stroke="#BA7517" stroke-width="2.8"/>
+  <text x="700" y="630" font-size="28" font-weight="bold" fill="#633806" text-anchor="middle">联合约束 / 反演校准</text>
+  <line x1="460" y1="648" x2="940" y2="648" stroke="#BA7517" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="700" y="678" font-size="28" fill="#633806" text-anchor="middle">单线 + 槽联合约束  →  反演 / 校准  →  更新模型</text>
+
+  <!-- 左 Y_line → 联合约束 -->
+  <line x1="330" y1="342" x2="330" y2="640" stroke="#BA7517" stroke-width="2.4"/>
+  <polygon points="330,652 324,638 336,638" fill="#BA7517"/>
+  <line x1="330" y1="640" x2="402" y2="640" stroke="#BA7517" stroke-width="2.4"/>
+  <polygon points="410,640 398,634 398,646" fill="#BA7517"/>
+
+  <!-- 右 Y_groove → 联合约束 -->
+  <line x1="1070" y1="342" x2="1070" y2="640" stroke="#BA7517" stroke-width="2.4"/>
+  <polygon points="1070,652 1064,638 1076,638" fill="#BA7517"/>
+  <line x1="1070" y1="640" x2="998" y2="640" stroke="#BA7517" stroke-width="2.4"/>
+  <polygon points="990,640 1002,634 1002,646" fill="#BA7517"/>
+
+  <!-- 联合约束 → 中央模型（向上更新）-->
+  <line x1="700" y1="596" x2="700" y2="490" stroke="#BA7517" stroke-width="2.4"/>
+  <polygon points="700,482 694,496 706,496" fill="#BA7517"/>
+
+</svg>

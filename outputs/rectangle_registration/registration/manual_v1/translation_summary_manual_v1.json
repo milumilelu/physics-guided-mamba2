@@ -1,0 +1,42 @@
+{
+  "stage": "WP3_build_manual_registration_v1",
+  "generated_at_utc": "2026-09-01T02:08:46.248519+00:00",
+  "decision": "PASS",
+  "method": "manual_four_edge_a_v1",
+  "evidence_level": 3,
+  "center_source": "midpoint_of_four_manual_edges",
+  "config": {
+    "path": "config\\manual_registration_v1.yaml",
+    "sha256": "008B1B92CCED105EC6D8E7E8EE3D6A34FCE8A14AC0AB66025AC2268469AABD42"
+  },
+  "inputs": {
+    "frozen_snapshot": {
+      "path": "outputs\\rectangle_registration\\registration\\manual_v1\\manual_four_edge_validation_frozen.csv",
+      "sha256": "536BF658AD75F1BC7DCC6E9461D821E046F58A7636D26A7EAABF51A80D56AF9D"
+    },
+    "session_geometry": {
+      "path": "outputs\\rectangle_registration\\geometry\\session_geometry.csv"
+    }
+  },
+  "row_count": 200,
+  "unique_keys": 200,
+  "status_counts": {
+    "PASS": 200
+  },
+  "geometry_gate_pass": 200,
+  "paired_gate_pass": 200,
+  "center_within_fov": 200,
+  "box_corner_overflow_samples": 17,
+  "samplewise_fallback": false,
+  "qa_v6_field_role": "QA only; v6 statuses remain frozen and never influence manual_v1 status",
+  "qa_v6_status_counts": {
+    "PASS": 190,
+    "REVIEW": 2,
+    "STOP": 8
+  },
+  "nominal_box_um": [
+    200.0,
+    200.0
+  ],
+  "manual_box_sizes_are_qa_only": true
+}

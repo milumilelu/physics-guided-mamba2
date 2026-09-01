@@ -1,0 +1,12 @@
+{
+  "stage": "WP8_v7_feasible_domain_block_consensus",
+  "generated_at_utc": "2026-08-31T06:37:55.632687+00:00",
+  "method_frozen_before_run": "METHOD_V7_平衡对边共识四边配准.md",
+  "evidence_level": 3,
+  "decision": "STOP",
+  "samples": 200,
+  "pass": 183,
+  "review": 0,
+  "stop": 17,
+  "paired_conflict_measurements": 0
+}

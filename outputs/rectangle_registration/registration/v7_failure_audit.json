@@ -1,0 +1,24 @@
+{
+  "stage": "WP8_v7_failure_audit",
+  "generated_at_utc": "2026-08-31T06:39:07.537861+00:00",
+  "decision": "STOP_SYSTEMATIC_SHALLOW_FAILURE",
+  "samples": 200,
+  "hard_stops": 17,
+  "shallow_quartile_stop_rate": 0.14,
+  "other_quartiles_stop_rate": 0.06666666666666667,
+  "risk_ratio_shallow_vs_other": 2.1,
+  "contrast_vs_joint_evidence_correlation": 0.7957075765922722,
+  "hard_stop_reason_counts": {
+    "delete-one centre distribution is multimodal": 10,
+    "axis-pair evidence below hard minimum": 9,
+    "delete-one CI span above review threshold": 9,
+    "delete-one CI span above hard maximum": 6,
+    "delete-one MAD above review threshold": 2,
+    "segmentation initializer unavailable": 2,
+    "joint evidence below hard minimum": 1,
+    "joint evidence below review threshold": 1
+  },
+  "local_search_boundary_hits": 0,
+  "global_search_boundary_hits": 0,
+  "evidence_level": 3
+}

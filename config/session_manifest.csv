@@ -1,4 +1,4 @@
-session_id,cag_path,design_path,input_format,mapping_rule,rois_per_measurement,mapping_provenance,expected_design_rows
-zro2_120_formal,氧化锆/pass实验数据/120正式.cag,氧化锆/pass实验数据/120正式_design记录表_0516.csv,cag,one_to_one_measurement_id,1,user_confirmed_2026-08-30,120
-zro2_60_pass,氧化锆/pass实验数据/60Pass组.cag,氧化锆/pass实验数据/60pass_design.csv,cag,paired_left_to_right_odd_even,2,user_confirmed_2026-08-30,60
-zro2_20_supplement,氧化锆/pass实验数据/20补充pass.cag,氧化锆/pass实验数据/20补充_pass5_6实验.csv,cag,paired_left_to_right_odd_even,2,user_confirmed_2026-08-30,20
+session_id,cag_path,design_path,csv_subdir,fixture_subdir,input_format,mapping_rule,rois_per_measurement,mapping_provenance,expected_design_rows
+zro2_120_formal,氧化锆/pass实验数据/120正式.cag,氧化锆/pass实验数据/120正式_design记录表_0516.csv,120正式,120正式,cag,one_to_one_measurement_id,1,user_confirmed_2026-08-30,120
+zro2_60_pass,氧化锆/pass实验数据/60Pass组.cag,氧化锆/pass实验数据/60pass_design.csv,60pass组,60pass,cag,paired_slot_from_cag_data_name,2,user_confirmed_2026-08-30,60
+zro2_20_supplement,氧化锆/pass实验数据/20补充pass.cag,氧化锆/pass实验数据/20补充_pass5_6实验.csv,20补充pass,,cag,paired_slot_from_cag_data_name,2,user_confirmed_2026-08-30,20

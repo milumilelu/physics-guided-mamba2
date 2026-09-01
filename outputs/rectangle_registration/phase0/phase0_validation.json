@@ -1,21 +1,14 @@
 {
   "phase": "Phase 0",
-  "pass": false,
-  "decision": "STOP",
-  "height_csv_count": 0,
+  "pass": true,
+  "decision": "PASS",
+  "height_csv_count": 160,
+  "measurement_count": 160,
+  "sample_count": 200,
   "session_count": 3,
-  "blockers": [
-    {
-      "code": "no_real_height_csv_fixture",
-      "session_id": "all",
-      "message": "No *_高度.csv exists in the workspace outside outputs/.venv"
-    },
-    {
-      "code": "cag_csv_equivalence_not_established",
-      "session_id": "all",
-      "message": "No same-series CSV fixtures are available for CAG height/mask equivalence testing"
-    }
-  ],
+  "equivalence_decision": "PASS",
+  "equivalence_evidence_path": "outputs\\rectangle_registration\\phase0\\equivalence\\cag_csv_equivalence.json",
+  "blockers": [],
   "warnings": [],
   "session_details": {
     "zro2_120_formal": {
@@ -23,6 +16,7 @@
         "session_id": "zro2_120_formal",
         "cag_path": "氧化锆/pass实验数据/120正式.cag",
         "design_path": "氧化锆/pass实验数据/120正式_design记录表_0516.csv",
+        "csv_subdir": "120正式",
         "input_format": "cag",
         "mapping_rule": "one_to_one_measurement_id",
         "rois_per_measurement": 1,
@@ -306,8 +300,9 @@
         "session_id": "zro2_60_pass",
         "cag_path": "氧化锆/pass实验数据/60Pass组.cag",
         "design_path": "氧化锆/pass实验数据/60pass_design.csv",
+        "csv_subdir": "60pass组",
         "input_format": "cag",
-        "mapping_rule": "paired_left_to_right_odd_even",
+        "mapping_rule": "paired_slot_from_cag_data_name",
         "rois_per_measurement": 2,
         "mapping_provenance": "user_confirmed_2026-08-30",
         "expected_design_rows": 60
@@ -409,8 +404,9 @@
         "session_id": "zro2_20_supplement",
         "cag_path": "氧化锆/pass实验数据/20补充pass.cag",
         "design_path": "氧化锆/pass实验数据/20补充_pass5_6实验.csv",
+        "csv_subdir": "20补充pass",
         "input_format": "cag",
-        "mapping_rule": "paired_left_to_right_odd_even",
+        "mapping_rule": "paired_slot_from_cag_data_name",
         "rois_per_measurement": 2,
         "mapping_provenance": "user_confirmed_2026-08-30",
         "expected_design_rows": 20

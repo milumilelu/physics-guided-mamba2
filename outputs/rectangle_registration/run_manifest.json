@@ -1,6 +1,1250 @@
 {
-  "timestamp_utc": "2026-08-30T08:06:52.752051+00:00",
-  "git_commit_hash": "85c0feaef3d72a2484860b112696c79277e8fc5a",
+  "schema_version": 1,
+  "stage": "WP8_v7_rejected_v6_blocked",
+  "generated_at_local": "2026-08-30T19:27:44+08:00",
+  "git": {
+    "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+    "commit_short": "b31a83f",
+    "branch": "main",
+    "worktree_dirty": true,
+    "porcelain": [
+      "M config/session_manifest.csv",
+      " M export_height_csv.py",
+      " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+      " M outputs/rectangle_registration/phase0/input_inventory.csv",
+      " M outputs/rectangle_registration/phase0/phase0_validation.json",
+      " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+      " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+      " M outputs/rectangle_registration/run_manifest.json",
+      " M requirements.txt",
+      " M scripts/00_validate_inputs.py",
+      " M scripts/verify_environment.py",
+      " D \"超快激光多脉冲烧蚀形貌预测_专利技术交底书_V3_微观宏观耦合版 (1).docx\"",
+      "?? METHOD_V3_受约束四边稳健配准.md",
+      "?? METHOD_V4_多尺度联合四边Bootstrap配准.md",
+      "?? METHOD_V5_多带宽积分阶跃四边配准.md",
+      "?? METHOD_V6_全可行域多块共识四边配准.md",
+      "?? METHOD_V7_平衡对边共识四边配准.md",
+      "?? WORKBUDDY_EXECUTION_PLAN_矩形加工区配准与稳定ROI.md",
+      "?? config/equivalence_fixture_selection.csv",
+      "?? config/height_source_manifest.csv",
+      "?? config/manual_orientation.yaml",
+      "?? config/phase_a_exclusions.yaml",
+      "?? config/rectangle_registration.yaml",
+      "?? outputs/rectangle_registration/PHASE_A_APPROVAL.md",
+      "?? outputs/rectangle_registration/calibration/",
+      "?? outputs/rectangle_registration/geometry/",
+      "?? outputs/rectangle_registration/inventory/",
+      "?? outputs/rectangle_registration/metrics/",
+      "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+      "?? outputs/rectangle_registration/phase0/equivalence/",
+      "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+      "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+      "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+      "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+      "?? outputs/rectangle_registration/qa/",
+      "?? outputs/rectangle_registration/registered/",
+      "?? outputs/rectangle_registration/registration/",
+      "?? outputs/rectangle_registration/resampling/",
+      "?? scripts/00a_build_height_source_manifest.py",
+      "?? scripts/00b_select_equivalence_fixtures.py",
+      "?? scripts/00b_validate_cag_csv_equivalence.py",
+      "?? scripts/01_inventory_height_maps.py",
+      "?? scripts/02_prepare_calibration.py",
+      "?? scripts/03_estimate_session_geometry.py",
+      "?? scripts/03a_render_orientation_review.py",
+      "?? scripts/04_register_translations.py",
+      "?? scripts/04b_register_four_edges_v3.py",
+      "?? scripts/04c_audit_v3_failures.py",
+      "?? scripts/04d_register_joint_edges_v4.py",
+      "?? scripts/04f_register_step_contrast_v5.py",
+      "?? scripts/04g_audit_v5_failures.py",
+      "?? scripts/04h_render_v5_failure_diagnostics.py",
+      "?? scripts/04i_register_step_consensus_v6.py",
+      "?? scripts/04j_audit_v6_failures.py",
+      "?? scripts/04k_render_v6_nonpass.py",
+      "?? scripts/04m_register_balanced_edges_v7.py",
+      "?? scripts/04n_prepare_manual_validation.py",
+      "?? scripts/05_resolve_common_canvas.py",
+      "?? scripts/06_resample_and_final_level.py",
+      "?? scripts/07_generate_phase_a_qa.py",
+      "?? scripts/probe_session_decode.py",
+      "?? scripts/update_run_manifest.py",
+      "?? src/",
+      "?? tests/",
+      "?? 专利/"
+    ]
+  },
+  "environment": {
+    "python_version": "3.12.13",
+    "python_implementation": "CPython",
+    "executable": "C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\.venv\\Scripts\\python.exe",
+    "platform": "Windows-11-10.0.26100-SP0",
+    "packages": {
+      "numpy": "2.3.5",
+      "pandas": "3.0.1",
+      "scipy": "1.18.1",
+      "sklearn": "1.7.2",
+      "matplotlib": "3.10.7",
+      "PIL": "12.3.0",
+      "yaml": "6.0.3"
+    },
+    "optional_packages": {
+      "torch": "not installed",
+      "pytest": "not installed",
+      "catboost": "1.2.10",
+      "xgboost": "3.4.1"
+    },
+    "pytest_used": false,
+    "test_runner": "stdlib unittest (tests not yet created; WP2)"
+  },
+  "config": {
+    "path": "config/rectangle_registration.yaml",
+    "sha256": "c07c19bc41e096563723453aba5a0ae39c57903f6251d03c2e06f92ef23e8d0b",
+    "bytes": 17553,
+    "parsed_ok": true,
+    "parser": "PyYAML safe_load"
+  },
+  "spec_documents": {
+    "execution_plan": {
+      "path": "WORKBUDDY_EXECUTION_PLAN_矩形加工区配准与稳定ROI.md",
+      "sha256": "e50648813b2af223f65e7be7ed3fc689202f8c382bacbf3c5071d26e3d2f9198"
+    },
+    "methodology_spec_v2": {
+      "path": "CODEX_TASK_矩形加工区配准与稳定ROI_v2.md",
+      "sha256": "eda8083519df3bcd3390a48603705cc9e49ec6b16e27f5bf645546fb02b93b92"
+    }
+  },
+  "random_seed": 42,
+  "resolved_auto_parameters": {
+    "registered_canvas.pixel_um": {
+      "status": "UNRESOLVED",
+      "depends_on": [
+        "WP5 inventory (input pixel sizes)",
+        "WP9 L_reg"
+      ],
+      "rule": "N = floor(L_reg / max_input_pixel_um); pixel_um = L_reg / N",
+      "expected_max_input_pixel_um": 0.344174,
+      "expected_example": "L_reg=300 -> N=871 -> pixel_um=0.344431"
+    },
+    "resampling.maximum_gap_um": {
+      "status": "UNRESOLVED",
+      "depends_on": [
+        "WP5 inventory (input pixel sizes)"
+      ],
+      "rule": "maximum_gap_um = 2.0 * max_input_pixel_um",
+      "expected_example": "0.688348 um"
+    }
+  },
+  "manual_approval_status": "pending",
+  "plan_revisions_applied": [
+    "R1 baseline commit -> b31a83f",
+    "R2 60pass CSV count -> 30/30, all derived",
+    "R3 paired slot->sample must read CAG data name",
+    "R4 exclude _待清理_ dirs"
+  ],
+  "open_gaps_blocking_phase0": [],
+  "fixture_availability_forecast": {
+    "zro2_20_supplement": {
+      "official_export_candidates": 10,
+      "meets_min_3": true,
+      "forecast": "may PASS"
+    },
+    "zro2_120_formal": {
+      "official_export_candidates": 0,
+      "meets_min_3": false,
+      "forecast": "STOP"
+    },
+    "zro2_60_pass": {
+      "official_export_candidates": 0,
+      "meets_min_3": false,
+      "forecast": "STOP"
+    }
+  },
+  "warnings": [
+    "PyYAML 6.0.3 was installed and pinned into requirements.txt; verify_environment.py updated accordingly.",
+    "No test suite exists yet; WP0 acceptance accepts this and WP2 must create tests/.",
+    "Design-table stage coordinates (中心X/中心Y) are pre-registered as search-domain priors only; they may not be used to report absolute registration error until WP7 session geometry is calibrated.",
+    "All 160 measurements contain zero sentinel pixels, so the raw-mask machinery currently has nothing to exclude; it is retained because claiming \"no invalid points\" without it would be an unverified assumption.",
+    "Because there are no invalid points, WP3 s8.3 invalid-point comparison is vacuous: report it as \"neither side has invalid points; the official mask representation rule remains unevidenced\", not as mask equivalence.",
+    "All 160 CAG measurements are all-valid; mask PASS is limited to the observed all-valid case and does not validate future sentinel behavior.",
+    "H_reg export is intentionally blocked until session-level D4 is manually confirmed.",
+    "67 registrations require review; none failed and no paired slot conflicts were detected.",
+    "60Pass reaches 265.80 um if measurement 27 is excluded; 20 supplement is structurally incompatible with the 260 um minimum and 13/20 samples cannot even support a full 200 um centred square without extrapolation.",
+    "Phase A stopped: 89/178 included samples exceed the preregistered 3 um weight-sensitivity tolerance.",
+    "Frozen v3 four-edge method stopped 36/200 samples; Q1 shallow stop rate 38.0% versus 11.3% in other quartiles, so exclusion would create selection bias.",
+    "Frozen v4 stopped 28/200 samples; shallow-quartile stop rate 32% versus 8% in other quartiles.",
+    "v5 remains blocked: failures are shallow-enriched and horizontal-axis bootstrap multimodality is directional; do not export H_reg/H_200 from v5.",
+    "Phase A remains blocked. v6 has 8 hard failures with shallow enrichment; v7 was rejected. Independent blinded four-edge validation is required before further automated revision or export."
+  ],
+  "next_action": "Freeze v5 integrated step-contrast four-edge bootstrap; do not relax v4 gates or exclude failures",
+  "stage_history": [
+    {
+      "stage": "WP2_decode_probe",
+      "recorded_at_local": "2026-08-30T20:36:34+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/verify_environment.py",
+          "?? WORKBUDDY_EXECUTION_PLAN_矩形加工区配准与稳定ROI.md",
+          "?? config/height_source_manifest.csv",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/"
+        ]
+      },
+      "decision": "PASS",
+      "unit_tests": {
+        "command": "python -m unittest discover -s tests -v",
+        "ran": 53,
+        "passed": 53,
+        "failed": 0
+      },
+      "decode_probe": {
+        "command": "scripts/probe_session_decode.py --groups 0",
+        "measurements_decoded": 160,
+        "sessions": {
+          "zro2_120_formal": 120,
+          "zro2_60_pass": 30,
+          "zro2_20_supplement": 10
+        },
+        "shape": [
+          2048,
+          1536
+        ],
+        "pitch_um": 0.344174,
+        "field_of_view_um": [
+          704.868096,
+          529.131264
+        ],
+        "valid_fraction": 1.0,
+        "total_invalid_pixels": 0,
+        "palette_derived_bytes": 776,
+        "structural_check_failures": 0
+      },
+      "slot_mapping": {
+        "source_of_truth": "cag_data_name",
+        "reversed_data_names_60pass": 12,
+        "reversed_groups": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24
+        ],
+        "reversed_names": [
+          "14 13",
+          "16 15",
+          "18 17",
+          "20 19",
+          "22 21",
+          "24 23",
+          "38 37",
+          "40 39",
+          "42 41",
+          "44 43",
+          "46 45",
+          "48 47"
+        ],
+        "set_matches_design_table": true
+      },
+      "lut_verification": {
+        "primary": "derive_lut_bytes from the 18-entry VK4 section table",
+        "secondary": "seam scan, reported not gated",
+        "seam_headroom": {
+          "zro2_120_formal": "41-55 (conclusive)",
+          "zro2_20_supplement": "15-18 (conclusive)",
+          "zro2_60_pass": "4.9-7.5 (INCONCLUSIVE)"
+        },
+        "seam_inconclusive_reason": "machined rectangle sits mid-field; both edges are untouched surface at nearly the same height (44.457 vs 45.857 um), so the wrap jump (1.417 um) is the same size as a real machining step (1.039 um)"
+      },
+      "byte_identity_evidence": {
+        "20_supplement_group_2": "derived export sha256 == official 3 4_height.csv",
+        "60pass_all_30": "30/30 byte-identical to a fresh preserve_nan export",
+        "artifact": "phase0/derived_csv_parity_60pass.json"
+      },
+      "plan_revisions_added": [
+        "R5 npz height float64 not float32"
+      ],
+      "closes_gaps": [
+        "G1",
+        "G8",
+        "G9"
+      ],
+      "warnings_added": [
+        "All 160 measurements contain zero sentinel pixels, so the raw-mask machinery currently has nothing to exclude; it is retained because claiming \"no invalid points\" without it would be an unverified assumption.",
+        "Because there are no invalid points, WP3 s8.3 invalid-point comparison is vacuous: report it as \"neither side has invalid points; the official mask representation rule remains unevidenced\", not as mask equivalence."
+      ]
+    },
+    {
+      "stage": "WP3_equivalence_gate",
+      "recorded_at_local": "2026-08-31T09:10:09+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+          " M outputs/rectangle_registration/phase0/input_inventory.csv",
+          " M outputs/rectangle_registration/phase0/phase0_validation.json",
+          " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+          " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/00_validate_inputs.py",
+          " M scripts/verify_environment.py",
+          "?? WORKBUDDY_EXECUTION_PLAN_鐭╁舰鍔犲伐鍖洪厤鍑嗕笌绋冲畾ROI.md",
+          "?? config/equivalence_fixture_selection.csv",
+          "?? config/height_source_manifest.csv",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/equivalence/",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/00b_select_equivalence_fixtures.py",
+          "?? scripts/00b_validate_cag_csv_equivalence.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/"
+        ]
+      },
+      "decision": "STOP",
+      "phase0_decision": "STOP",
+      "equivalence_decision": "STOP",
+      "blocker_codes": [
+        "insufficient_independent_fixtures"
+      ],
+      "next_action": "Use KEYENCE software to export the frozen official fixtures for zro2_120_formal and zro2_60_pass, then rerun 00a, 00b validation, and Phase 0.",
+      "tests": {
+        "passed": 59,
+        "failed": 0
+      },
+      "measurements": 160,
+      "samples": 200,
+      "verified_height_fixtures": {
+        "zro2_20_supplement": 10,
+        "zro2_60_pass": 1,
+        "zro2_120_formal": 0
+      },
+      "closes_gaps": [
+        "G2",
+        "G3",
+        "G5",
+        "G6",
+        "G7"
+      ],
+      "warnings_added": [
+        "All 160 CAG measurements are all-valid; mask PASS is limited to the observed all-valid case and does not validate future sentinel behavior."
+      ]
+    },
+    {
+      "stage": "WP5_height_inventory",
+      "recorded_at_local": "2026-08-31T10:04:34+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+          " M outputs/rectangle_registration/phase0/input_inventory.csv",
+          " M outputs/rectangle_registration/phase0/phase0_validation.json",
+          " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+          " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/00_validate_inputs.py",
+          " M scripts/verify_environment.py",
+          "?? WORKBUDDY_EXECUTION_PLAN_鐭╁舰鍔犲伐鍖洪厤鍑嗕笌绋冲畾ROI.md",
+          "?? config/equivalence_fixture_selection.csv",
+          "?? config/height_source_manifest.csv",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/inventory/",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/equivalence/",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/00b_select_equivalence_fixtures.py",
+          "?? scripts/00b_validate_cag_csv_equivalence.py",
+          "?? scripts/01_inventory_height_maps.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/"
+        ]
+      },
+      "decision": "PASS",
+      "phase0_decision": "PASS",
+      "equivalence_decision": "PASS",
+      "blocker_codes": [],
+      "next_action": "WP6 robust coarse leveling and stratified calibration selection",
+      "tests": {
+        "passed": 64,
+        "failed": 0
+      },
+      "measurements": 160,
+      "samples": 200,
+      "official_fixtures": {
+        "zro2_120_formal": 6,
+        "zro2_60_pass": 5,
+        "zro2_20_supplement": 10
+      },
+      "closes_gaps": [
+        "G4"
+      ]
+    },
+    {
+      "stage": "WP6_leveling_and_calibration_selection",
+      "recorded_at_local": "2026-08-31T10:10:01+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+          " M outputs/rectangle_registration/phase0/input_inventory.csv",
+          " M outputs/rectangle_registration/phase0/phase0_validation.json",
+          " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+          " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/00_validate_inputs.py",
+          " M scripts/verify_environment.py",
+          "?? WORKBUDDY_EXECUTION_PLAN_鐭╁舰鍔犲伐鍖洪厤鍑嗕笌绋冲畾ROI.md",
+          "?? config/equivalence_fixture_selection.csv",
+          "?? config/height_source_manifest.csv",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/calibration/",
+          "?? outputs/rectangle_registration/inventory/",
+          "?? outputs/rectangle_registration/metrics/",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/equivalence/",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/00b_select_equivalence_fixtures.py",
+          "?? scripts/00b_validate_cag_csv_equivalence.py",
+          "?? scripts/01_inventory_height_maps.py",
+          "?? scripts/02_prepare_calibration.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/"
+        ]
+      },
+      "decision": "PASS",
+      "measurements_fitted": 160,
+      "calibration_samples": 53,
+      "calibration_by_session": {
+        "zro2_120_formal": 30,
+        "zro2_60_pass": 15,
+        "zro2_20_supplement": 8
+      },
+      "all_process_levels_represented": true,
+      "coarse_reference_frame_width_um": 50.0,
+      "errors": [],
+      "next_action": "WP7 session-level continuous-angle estimation and D4 orientation evidence gate"
+    },
+    {
+      "stage": "WP7_session_geometry",
+      "recorded_at_local": "2026-08-31T10:18:27+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+          " M outputs/rectangle_registration/phase0/input_inventory.csv",
+          " M outputs/rectangle_registration/phase0/phase0_validation.json",
+          " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+          " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/00_validate_inputs.py",
+          " M scripts/verify_environment.py",
+          "?? WORKBUDDY_EXECUTION_PLAN_鐭╁舰鍔犲伐鍖洪厤鍑嗕笌绋冲畾ROI.md",
+          "?? config/equivalence_fixture_selection.csv",
+          "?? config/height_source_manifest.csv",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/calibration/",
+          "?? outputs/rectangle_registration/geometry/",
+          "?? outputs/rectangle_registration/inventory/",
+          "?? outputs/rectangle_registration/metrics/",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/equivalence/",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/00b_select_equivalence_fixtures.py",
+          "?? scripts/00b_validate_cag_csv_equivalence.py",
+          "?? scripts/01_inventory_height_maps.py",
+          "?? scripts/02_prepare_calibration.py",
+          "?? scripts/03_estimate_session_geometry.py",
+          "?? scripts/03a_render_orientation_review.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/"
+        ]
+      },
+      "decision": "AWAITING_MANUAL_CONFIRMATION",
+      "theta_gate_pass": true,
+      "d4_gate_pass": false,
+      "h_reg_export_allowed": false,
+      "calibration_fits": 53,
+      "successful_angle_fits": 51,
+      "theta_by_session_deg": {
+        "zro2_120_formal": -0.7,
+        "zro2_60_pass": -0.45,
+        "zro2_20_supplement": -0.65
+      },
+      "theta_mad_by_session_deg": {
+        "zro2_120_formal": 0.05,
+        "zro2_60_pass": 0.05,
+        "zro2_20_supplement": 0.1
+      },
+      "blocker_codes": [
+        "D4_MANUAL_CONFIRMATION_REQUIRED"
+      ],
+      "next_action": "User confirms canonical +x/+y directions for each session from independent microscope or scan-path evidence; then write config/manual_orientation.yaml and rerun WP7",
+      "warnings_added": [
+        "H_reg export is intentionally blocked until session-level D4 is manually confirmed."
+      ]
+    },
+    {
+      "stage": "WP7_session_geometry_confirmed",
+      "recorded_at_local": "2026-08-31T10:22:52+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+          " M outputs/rectangle_registration/phase0/input_inventory.csv",
+          " M outputs/rectangle_registration/phase0/phase0_validation.json",
+          " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+          " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/00_validate_inputs.py",
+          " M scripts/verify_environment.py",
+          "?? WORKBUDDY_EXECUTION_PLAN_鐭╁舰鍔犲伐鍖洪厤鍑嗕笌绋冲畾ROI.md",
+          "?? config/equivalence_fixture_selection.csv",
+          "?? config/height_source_manifest.csv",
+          "?? config/manual_orientation.yaml",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/calibration/",
+          "?? outputs/rectangle_registration/geometry/",
+          "?? outputs/rectangle_registration/inventory/",
+          "?? outputs/rectangle_registration/metrics/",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/equivalence/",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/00b_select_equivalence_fixtures.py",
+          "?? scripts/00b_validate_cag_csv_equivalence.py",
+          "?? scripts/01_inventory_height_maps.py",
+          "?? scripts/02_prepare_calibration.py",
+          "?? scripts/03_estimate_session_geometry.py",
+          "?? scripts/03a_render_orientation_review.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/"
+        ]
+      },
+      "decision": "PASS",
+      "theta_gate_pass": true,
+      "d4_gate_pass": true,
+      "h_reg_export_allowed": true,
+      "d4_by_session": {
+        "zro2_120_formal": "identity",
+        "zro2_60_pass": "identity",
+        "zro2_20_supplement": "identity"
+      },
+      "blocker_codes": [],
+      "next_action": "WP8 constrained per-sample translation registration with frozen session angle and D4"
+    },
+    {
+      "stage": "WP8_constrained_translation_registration",
+      "recorded_at_local": "2026-08-31T10:31:34+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+          " M outputs/rectangle_registration/phase0/input_inventory.csv",
+          " M outputs/rectangle_registration/phase0/phase0_validation.json",
+          " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+          " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/00_validate_inputs.py",
+          " M scripts/verify_environment.py",
+          "?? WORKBUDDY_EXECUTION_PLAN_鐭╁舰鍔犲伐鍖洪厤鍑嗕笌绋冲畾ROI.md",
+          "?? config/equivalence_fixture_selection.csv",
+          "?? config/height_source_manifest.csv",
+          "?? config/manual_orientation.yaml",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/calibration/",
+          "?? outputs/rectangle_registration/geometry/",
+          "?? outputs/rectangle_registration/inventory/",
+          "?? outputs/rectangle_registration/metrics/",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/equivalence/",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? outputs/rectangle_registration/registration/",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/00b_select_equivalence_fixtures.py",
+          "?? scripts/00b_validate_cag_csv_equivalence.py",
+          "?? scripts/01_inventory_height_maps.py",
+          "?? scripts/02_prepare_calibration.py",
+          "?? scripts/03_estimate_session_geometry.py",
+          "?? scripts/03a_render_orientation_review.py",
+          "?? scripts/04_register_translations.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/"
+        ]
+      },
+      "decision": "REVIEW",
+      "samples": 200,
+      "pass": 133,
+      "review": 67,
+      "failed": 0,
+      "paired_conflict_measurements": 0,
+      "review_reasons": {
+        "weight_sensitivity": 51,
+        "center_search_boundary": 13,
+        "segmentation_initializer": 4
+      },
+      "next_action": "WP9 common-FOV feasibility gate before any resampling",
+      "warnings_added": [
+        "67 registrations require review; none failed and no paired slot conflicts were detected."
+      ]
+    },
+    {
+      "stage": "WP9_common_fov_gate",
+      "recorded_at_local": "2026-08-31T10:34:32+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+          " M outputs/rectangle_registration/phase0/input_inventory.csv",
+          " M outputs/rectangle_registration/phase0/phase0_validation.json",
+          " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+          " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/00_validate_inputs.py",
+          " M scripts/verify_environment.py",
+          "?? WORKBUDDY_EXECUTION_PLAN_鐭╁舰鍔犲伐鍖洪厤鍑嗕笌绋冲畾ROI.md",
+          "?? config/equivalence_fixture_selection.csv",
+          "?? config/height_source_manifest.csv",
+          "?? config/manual_orientation.yaml",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/calibration/",
+          "?? outputs/rectangle_registration/geometry/",
+          "?? outputs/rectangle_registration/inventory/",
+          "?? outputs/rectangle_registration/metrics/",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/equivalence/",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? outputs/rectangle_registration/registration/",
+          "?? outputs/rectangle_registration/resampling/",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/00b_select_equivalence_fixtures.py",
+          "?? scripts/00b_validate_cag_csv_equivalence.py",
+          "?? scripts/01_inventory_height_maps.py",
+          "?? scripts/02_prepare_calibration.py",
+          "?? scripts/03_estimate_session_geometry.py",
+          "?? scripts/03a_render_orientation_review.py",
+          "?? scripts/04_register_translations.py",
+          "?? scripts/05_resolve_common_canvas.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/"
+        ]
+      },
+      "decision": "STOP",
+      "resampling_performed": false,
+      "common_fov_by_session_um": {
+        "zro2_120_formal": 436.72,
+        "zro2_60_pass": 248.85,
+        "zro2_20_supplement": 197.39
+      },
+      "blocker_codes": [
+        "COMMON_FOV_BELOW_MINIMUM_60PASS",
+        "COMMON_FOV_BELOW_NOMINAL_20SUPPLEMENT"
+      ],
+      "next_action": "User decision required: approve exclusion of zro2_60_pass measurement 27 and exclude/re-measure zro2_20_supplement; no resampling or H_reg export performed",
+      "warnings_added": [
+        "60Pass reaches 265.80 um if measurement 27 is excluded; 20 supplement is structurally incompatible with the 260 um minimum and 13/20 samples cannot even support a full 200 um centred square without extrapolation."
+      ]
+    },
+    {
+      "stage": "WP9_resampling_and_final_leveling",
+      "recorded_at_local": "2026-08-31T11:19:43+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+          " M outputs/rectangle_registration/phase0/input_inventory.csv",
+          " M outputs/rectangle_registration/phase0/phase0_validation.json",
+          " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+          " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/00_validate_inputs.py",
+          " M scripts/verify_environment.py",
+          "?? WORKBUDDY_EXECUTION_PLAN_鐭╁舰鍔犲伐鍖洪厤鍑嗕笌绋冲畾ROI.md",
+          "?? config/equivalence_fixture_selection.csv",
+          "?? config/height_source_manifest.csv",
+          "?? config/manual_orientation.yaml",
+          "?? config/phase_a_exclusions.yaml",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/PHASE_A_APPROVAL.md",
+          "?? outputs/rectangle_registration/calibration/",
+          "?? outputs/rectangle_registration/geometry/",
+          "?? outputs/rectangle_registration/inventory/",
+          "?? outputs/rectangle_registration/metrics/",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/equivalence/",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? outputs/rectangle_registration/qa/",
+          "?? outputs/rectangle_registration/registered/",
+          "?? outputs/rectangle_registration/registration/",
+          "?? outputs/rectangle_registration/resampling/",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/00b_select_equivalence_fixtures.py",
+          "?? scripts/00b_validate_cag_csv_equivalence.py",
+          "?? scripts/01_inventory_height_maps.py",
+          "?? scripts/02_prepare_calibration.py",
+          "?? scripts/03_estimate_session_geometry.py",
+          "?? scripts/03a_render_orientation_review.py",
+          "?? scripts/04_register_translations.py",
+          "?? scripts/05_resolve_common_canvas.py",
+          "?? scripts/06_resample_and_final_level.py",
+          "?? scripts/07_generate_phase_a_qa.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/"
+        ]
+      },
+      "decision": "PASS",
+      "included_samples": 178,
+      "excluded_samples": 22,
+      "exported_h_reg": 178,
+      "exported_h_200": 178,
+      "final_leveling_failures": 0,
+      "registered_fov_by_session_um": {
+        "zro2_120_formal": 300.0,
+        "zro2_60_pass": 264.5911
+      },
+      "blocker_codes": [],
+      "next_action": "WP10 Phase A QA"
+    },
+    {
+      "stage": "WP10_phase_a_qa",
+      "recorded_at_local": "2026-08-31T11:19:43+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+          " M outputs/rectangle_registration/phase0/input_inventory.csv",
+          " M outputs/rectangle_registration/phase0/phase0_validation.json",
+          " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+          " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/00_validate_inputs.py",
+          " M scripts/verify_environment.py",
+          "?? WORKBUDDY_EXECUTION_PLAN_鐭╁舰鍔犲伐鍖洪厤鍑嗕笌绋冲畾ROI.md",
+          "?? config/equivalence_fixture_selection.csv",
+          "?? config/height_source_manifest.csv",
+          "?? config/manual_orientation.yaml",
+          "?? config/phase_a_exclusions.yaml",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/PHASE_A_APPROVAL.md",
+          "?? outputs/rectangle_registration/calibration/",
+          "?? outputs/rectangle_registration/geometry/",
+          "?? outputs/rectangle_registration/inventory/",
+          "?? outputs/rectangle_registration/metrics/",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/equivalence/",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? outputs/rectangle_registration/qa/",
+          "?? outputs/rectangle_registration/registered/",
+          "?? outputs/rectangle_registration/registration/",
+          "?? outputs/rectangle_registration/resampling/",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/00b_select_equivalence_fixtures.py",
+          "?? scripts/00b_validate_cag_csv_equivalence.py",
+          "?? scripts/01_inventory_height_maps.py",
+          "?? scripts/02_prepare_calibration.py",
+          "?? scripts/03_estimate_session_geometry.py",
+          "?? scripts/03a_render_orientation_review.py",
+          "?? scripts/04_register_translations.py",
+          "?? scripts/05_resolve_common_canvas.py",
+          "?? scripts/06_resample_and_final_level.py",
+          "?? scripts/07_generate_phase_a_qa.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/"
+        ]
+      },
+      "decision": "AUTO_CHECKS_FAILED",
+      "samples": 178,
+      "registration_pass": 86,
+      "registration_review": 92,
+      "center_search_boundary_hits": 1,
+      "weight_sensitivity_over_tolerance": 89,
+      "manual_approval_status": "PENDING",
+      "blocker_codes": [
+        "WEIGHT_SENSITIVITY_GATE_FAILED",
+        "PHASE_A_MANUAL_APPROVAL_PENDING"
+      ],
+      "next_action": "Revise and independently justify the region/edge centre objective or collect independent centre annotations; Phase B is forbidden until Phase A auto checks and manual approval pass",
+      "warnings_added": [
+        "Phase A stopped: 89/178 included samples exceed the preregistered 3 um weight-sensitivity tolerance."
+      ]
+    },
+    {
+      "stage": "WP8_v3_constrained_four_edge_registration",
+      "recorded_at_local": "2026-08-31T13:34:16+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+          " M outputs/rectangle_registration/phase0/input_inventory.csv",
+          " M outputs/rectangle_registration/phase0/phase0_validation.json",
+          " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+          " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/00_validate_inputs.py",
+          " M scripts/verify_environment.py",
+          " D \"超快激光多脉冲烧蚀形貌预测_专利技术交底书_V3_微观宏观耦合版 (1).docx\"",
+          "?? METHOD_V3_受约束四边稳健配准.md",
+          "?? WORKBUDDY_EXECUTION_PLAN_矩形加工区配准与稳定ROI.md",
+          "?? config/equivalence_fixture_selection.csv",
+          "?? config/height_source_manifest.csv",
+          "?? config/manual_orientation.yaml",
+          "?? config/phase_a_exclusions.yaml",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/PHASE_A_APPROVAL.md",
+          "?? outputs/rectangle_registration/calibration/",
+          "?? outputs/rectangle_registration/geometry/",
+          "?? outputs/rectangle_registration/inventory/",
+          "?? outputs/rectangle_registration/metrics/",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/equivalence/",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? outputs/rectangle_registration/qa/",
+          "?? outputs/rectangle_registration/registered/",
+          "?? outputs/rectangle_registration/registration/",
+          "?? outputs/rectangle_registration/resampling/",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/00b_select_equivalence_fixtures.py",
+          "?? scripts/00b_validate_cag_csv_equivalence.py",
+          "?? scripts/01_inventory_height_maps.py",
+          "?? scripts/02_prepare_calibration.py",
+          "?? scripts/03_estimate_session_geometry.py",
+          "?? scripts/03a_render_orientation_review.py",
+          "?? scripts/04_register_translations.py",
+          "?? scripts/04b_register_four_edges_v3.py",
+          "?? scripts/04c_audit_v3_failures.py",
+          "?? scripts/05_resolve_common_canvas.py",
+          "?? scripts/06_resample_and_final_level.py",
+          "?? scripts/07_generate_phase_a_qa.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/",
+          "?? 专利/"
+        ]
+      },
+      "decision": "STOP_SYSTEMATIC_SHALLOW_FAILURE",
+      "method": "constrained_four_signed_edge_profiles",
+      "evidence_level": 3,
+      "samples": 200,
+      "pass": 126,
+      "review": 38,
+      "stop": 36,
+      "paired_conflict_measurements": 0,
+      "shallow_quartile_stop_rate": 0.38,
+      "other_quartiles_stop_rate": 0.1133333333,
+      "blocker_codes": [
+        "V3_HARD_EDGE_GATE_FAILURES",
+        "SYSTEMATIC_SHALLOW_FAILURE"
+      ],
+      "next_action": "Do not exclude v3 failures or enter Phase B; obtain independent annotations or design a separately versioned fallback for low-SNR edges",
+      "warnings_added": [
+        "Frozen v3 four-edge method stopped 36/200 samples; Q1 shallow stop rate 38.0% versus 11.3% in other quartiles, so exclusion would create selection bias."
+      ]
+    },
+    {
+      "stage": "WP8_v4_joint_edge_bootstrap",
+      "recorded_at_local": "2026-08-31T13:50:47+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+          " M outputs/rectangle_registration/phase0/input_inventory.csv",
+          " M outputs/rectangle_registration/phase0/phase0_validation.json",
+          " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+          " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/00_validate_inputs.py",
+          " M scripts/verify_environment.py",
+          " D \"超快激光多脉冲烧蚀形貌预测_专利技术交底书_V3_微观宏观耦合版 (1).docx\"",
+          "?? METHOD_V3_受约束四边稳健配准.md",
+          "?? METHOD_V4_多尺度联合四边Bootstrap配准.md",
+          "?? WORKBUDDY_EXECUTION_PLAN_矩形加工区配准与稳定ROI.md",
+          "?? config/equivalence_fixture_selection.csv",
+          "?? config/height_source_manifest.csv",
+          "?? config/manual_orientation.yaml",
+          "?? config/phase_a_exclusions.yaml",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/PHASE_A_APPROVAL.md",
+          "?? outputs/rectangle_registration/calibration/",
+          "?? outputs/rectangle_registration/geometry/",
+          "?? outputs/rectangle_registration/inventory/",
+          "?? outputs/rectangle_registration/metrics/",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/equivalence/",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? outputs/rectangle_registration/qa/",
+          "?? outputs/rectangle_registration/registered/",
+          "?? outputs/rectangle_registration/registration/",
+          "?? outputs/rectangle_registration/resampling/",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/00b_select_equivalence_fixtures.py",
+          "?? scripts/00b_validate_cag_csv_equivalence.py",
+          "?? scripts/01_inventory_height_maps.py",
+          "?? scripts/02_prepare_calibration.py",
+          "?? scripts/03_estimate_session_geometry.py",
+          "?? scripts/03a_render_orientation_review.py",
+          "?? scripts/04_register_translations.py",
+          "?? scripts/04b_register_four_edges_v3.py",
+          "?? scripts/04c_audit_v3_failures.py",
+          "?? scripts/04d_register_joint_edges_v4.py",
+          "?? scripts/05_resolve_common_canvas.py",
+          "?? scripts/06_resample_and_final_level.py",
+          "?? scripts/07_generate_phase_a_qa.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/",
+          "?? 专利/"
+        ]
+      },
+      "decision": "STOP_SYSTEMATIC_SHALLOW_FAILURE",
+      "method": "multiscale_joint_four_edge_block_bootstrap",
+      "evidence_level": 3,
+      "samples": 200,
+      "pass": 161,
+      "review": 11,
+      "stop": 28,
+      "paired_conflict_measurements": 0,
+      "shallow_quartile_stop_rate": 0.32,
+      "other_quartiles_stop_rate": 0.08,
+      "blocker_codes": [
+        "V4_BOOTSTRAP_GATE_FAILURES",
+        "SYSTEMATIC_SHALLOW_FAILURE"
+      ],
+      "next_action": "Freeze v5 integrated step-contrast four-edge bootstrap; do not relax v4 gates or exclude failures",
+      "warnings_added": [
+        "Frozen v4 stopped 28/200 samples; shallow-quartile stop rate 32% versus 8% in other quartiles."
+      ]
+    },
+    {
+      "stage": "WP8_v5_integrated_step_contrast_bootstrap",
+      "recorded_at_local": "2026-08-31T14:08:58+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+          " M outputs/rectangle_registration/phase0/input_inventory.csv",
+          " M outputs/rectangle_registration/phase0/phase0_validation.json",
+          " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+          " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/00_validate_inputs.py",
+          " M scripts/verify_environment.py",
+          " D \"超快激光多脉冲烧蚀形貌预测_专利技术交底书_V3_微观宏观耦合版 (1).docx\"",
+          "?? METHOD_V3_受约束四边稳健配准.md",
+          "?? METHOD_V4_多尺度联合四边Bootstrap配准.md",
+          "?? METHOD_V5_多带宽积分阶跃四边配准.md",
+          "?? WORKBUDDY_EXECUTION_PLAN_矩形加工区配准与稳定ROI.md",
+          "?? config/equivalence_fixture_selection.csv",
+          "?? config/height_source_manifest.csv",
+          "?? config/manual_orientation.yaml",
+          "?? config/phase_a_exclusions.yaml",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/PHASE_A_APPROVAL.md",
+          "?? outputs/rectangle_registration/calibration/",
+          "?? outputs/rectangle_registration/geometry/",
+          "?? outputs/rectangle_registration/inventory/",
+          "?? outputs/rectangle_registration/metrics/",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/equivalence/",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? outputs/rectangle_registration/qa/",
+          "?? outputs/rectangle_registration/registered/",
+          "?? outputs/rectangle_registration/registration/",
+          "?? outputs/rectangle_registration/resampling/",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/00b_select_equivalence_fixtures.py",
+          "?? scripts/00b_validate_cag_csv_equivalence.py",
+          "?? scripts/01_inventory_height_maps.py",
+          "?? scripts/02_prepare_calibration.py",
+          "?? scripts/03_estimate_session_geometry.py",
+          "?? scripts/03a_render_orientation_review.py",
+          "?? scripts/04_register_translations.py",
+          "?? scripts/04b_register_four_edges_v3.py",
+          "?? scripts/04c_audit_v3_failures.py",
+          "?? scripts/04d_register_joint_edges_v4.py",
+          "?? scripts/04f_register_step_contrast_v5.py",
+          "?? scripts/04g_audit_v5_failures.py",
+          "?? scripts/05_resolve_common_canvas.py",
+          "?? scripts/06_resample_and_final_level.py",
+          "?? scripts/07_generate_phase_a_qa.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/",
+          "?? 专利/"
+        ]
+      },
+      "decision": "STOP_SYSTEMATIC_SHALLOW_FAILURE",
+      "evidence_level": 3,
+      "samples": 200,
+      "pass": 149,
+      "review": 24,
+      "stop": 27,
+      "shallow_quartile_stop_rate": 0.24,
+      "other_quartiles_stop_rate": 0.1,
+      "risk_ratio": 2.4,
+      "paired_conflicts": 0,
+      "known_defect": "local +/-20 um edge-search boundary hits are not separately flagged",
+      "warnings_added": [
+        "v5 remains blocked: failures are shallow-enriched and horizontal-axis bootstrap multimodality is directional; do not export H_reg/H_200 from v5."
+      ]
+    },
+    {
+      "stage": "WP8_v7_rejected_v6_blocked",
+      "recorded_at_local": "2026-08-31T14:41:08+08:00",
+      "git": {
+        "commit": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
+        "commit_short": "b31a83f",
+        "branch": "main",
+        "worktree_dirty": true,
+        "porcelain": [
+          "M config/session_manifest.csv",
+          " M export_height_csv.py",
+          " M outputs/rectangle_registration/phase0/PHASE0_RESULT.md",
+          " M outputs/rectangle_registration/phase0/input_inventory.csv",
+          " M outputs/rectangle_registration/phase0/phase0_validation.json",
+          " M outputs/rectangle_registration/phase0/sample_design_mapping.csv",
+          " M outputs/rectangle_registration/phase0/session_manifest_resolved.csv",
+          " M outputs/rectangle_registration/run_manifest.json",
+          " M requirements.txt",
+          " M scripts/00_validate_inputs.py",
+          " M scripts/verify_environment.py",
+          " D \"超快激光多脉冲烧蚀形貌预测_专利技术交底书_V3_微观宏观耦合版 (1).docx\"",
+          "?? METHOD_V3_受约束四边稳健配准.md",
+          "?? METHOD_V4_多尺度联合四边Bootstrap配准.md",
+          "?? METHOD_V5_多带宽积分阶跃四边配准.md",
+          "?? METHOD_V6_全可行域多块共识四边配准.md",
+          "?? METHOD_V7_平衡对边共识四边配准.md",
+          "?? WORKBUDDY_EXECUTION_PLAN_矩形加工区配准与稳定ROI.md",
+          "?? config/equivalence_fixture_selection.csv",
+          "?? config/height_source_manifest.csv",
+          "?? config/manual_orientation.yaml",
+          "?? config/phase_a_exclusions.yaml",
+          "?? config/rectangle_registration.yaml",
+          "?? outputs/rectangle_registration/PHASE_A_APPROVAL.md",
+          "?? outputs/rectangle_registration/calibration/",
+          "?? outputs/rectangle_registration/geometry/",
+          "?? outputs/rectangle_registration/inventory/",
+          "?? outputs/rectangle_registration/metrics/",
+          "?? outputs/rectangle_registration/phase0/derived_csv_parity_60pass.json",
+          "?? outputs/rectangle_registration/phase0/equivalence/",
+          "?? outputs/rectangle_registration/phase0/height_file_inventory.csv",
+          "?? outputs/rectangle_registration/phase0/height_inventory_validation.json",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.csv",
+          "?? outputs/rectangle_registration/phase0/session_decode_probe.json",
+          "?? outputs/rectangle_registration/qa/",
+          "?? outputs/rectangle_registration/registered/",
+          "?? outputs/rectangle_registration/registration/",
+          "?? outputs/rectangle_registration/resampling/",
+          "?? scripts/00a_build_height_source_manifest.py",
+          "?? scripts/00b_select_equivalence_fixtures.py",
+          "?? scripts/00b_validate_cag_csv_equivalence.py",
+          "?? scripts/01_inventory_height_maps.py",
+          "?? scripts/02_prepare_calibration.py",
+          "?? scripts/03_estimate_session_geometry.py",
+          "?? scripts/03a_render_orientation_review.py",
+          "?? scripts/04_register_translations.py",
+          "?? scripts/04b_register_four_edges_v3.py",
+          "?? scripts/04c_audit_v3_failures.py",
+          "?? scripts/04d_register_joint_edges_v4.py",
+          "?? scripts/04f_register_step_contrast_v5.py",
+          "?? scripts/04g_audit_v5_failures.py",
+          "?? scripts/04h_render_v5_failure_diagnostics.py",
+          "?? scripts/04i_register_step_consensus_v6.py",
+          "?? scripts/04j_audit_v6_failures.py",
+          "?? scripts/04k_render_v6_nonpass.py",
+          "?? scripts/04m_register_balanced_edges_v7.py",
+          "?? scripts/04n_prepare_manual_validation.py",
+          "?? scripts/05_resolve_common_canvas.py",
+          "?? scripts/06_resample_and_final_level.py",
+          "?? scripts/07_generate_phase_a_qa.py",
+          "?? scripts/probe_session_decode.py",
+          "?? scripts/update_run_manifest.py",
+          "?? src/",
+          "?? tests/",
+          "?? 专利/"
+        ]
+      },
+      "decision": "BLOCKED_PENDING_INDEPENDENT_FOUR_EDGE_VALIDATION",
+      "evidence_level": 3,
+      "selected_automated_candidate": "v6",
+      "v6": {
+        "pass": 190,
+        "review": 2,
+        "stop": 8,
+        "shallow_stop_rate": 0.1,
+        "other_stop_rate": 0.02
+      },
+      "v7": {
+        "decision": "REJECTED",
+        "pass": 183,
+        "review": 0,
+        "stop": 17,
+        "new_stops_vs_v6": 12
+      },
+      "registered_exports": "v2_archival_only",
+      "warnings_added": [
+        "Phase A remains blocked. v6 has 8 hard failures with shallow enrichment; v7 was rejected. Independent blinded four-edge validation is required before further automated revision or export."
+      ]
+    }
+  ],
+  "stage_last_updated_local": "2026-08-31T14:41:08+08:00",
+  "timestamp_utc": "2026-08-31T01:59:52.636629+00:00",
+  "git_commit_hash": "b31a83fb768c2423907b9fa4dbeda5cea3eb4205",
   "git_worktree_dirty": true,
   "python_version": "3.12.13 (main, Aug  7 2026, 02:26:41) [MSC v.1944 64 bit (AMD64)]",
   "package_versions": {
@@ -9,9 +1253,15 @@
     "Pillow": "12.3.0",
     "matplotlib": "3.10.7",
     "scikit-learn": "1.7.2",
-    "scipy": "1.18.1"
+    "scipy": "1.18.1",
+    "PyYAML": "6.0.3"
   },
-  "config_path": "config\\session_manifest.csv",
+  "config_path": "config\\rectangle_registration.yaml",
+  "config_sha256": "b8d183be27c526dc75f8385e0b563883c4a49d6aec4589dece05ad8c65bdc155",
+  "session_manifest_path": "config\\session_manifest.csv",
+  "height_source_manifest_path": "config\\height_source_manifest.csv",
+  "equivalence_evidence_path": "outputs\\rectangle_registration\\phase0\\equivalence\\cag_csv_equivalence.json",
+  "equivalence_decision": "PASS",
   "input_files": [
     {
       "session_id": "zro2_120_formal",
@@ -19,7 +1269,7 @@
       "path": "氧化锆\\pass实验数据\\120正式.cag",
       "exists": 1,
       "bytes": 9502214871,
-      "sha256": "bfa2a95bac75d7cac0f8f4f7d097b5bfde64b3f23d81b9c86d445e953fdb6657"
+      "sha256": "bf5cb81ea6229d8ba4e5583385ee569978d49ca02651278b2de68e605899f7a7"
     },
     {
       "session_id": "zro2_120_formal",
@@ -60,6 +1310,1286 @@
       "exists": 1,
       "bytes": 700,
       "sha256": "a0245dbcc4d1641264e23363d42ed83a4315e9d2472d48930e7903df58f2736f"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/1_高度.csv",
+      "exists": 1,
+      "bytes": 28279846,
+      "sha256": "c7638379689597b0be2a0bbc0fed71da18c665bae06e7e9ea3588dc5d9a90707"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/fixture/120正式/2_高度.csv",
+      "exists": 1,
+      "bytes": 28291343,
+      "sha256": "a12f116436762ff3d7978c6e5f595dbc9aa782b59384d408dbbc04ff5a4bcd56"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/3_高度.csv",
+      "exists": 1,
+      "bytes": 28298008,
+      "sha256": "9ca18bc9076b1728a6a782e7281d3a9b24ab6d63d561767665c552d4c8c31ea9"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/4_高度.csv",
+      "exists": 1,
+      "bytes": 28303265,
+      "sha256": "600ec589b4cae373cfaa99600758bff7a79eb93a77ec84cbd8c87fb1af9b1baf"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/5_高度.csv",
+      "exists": 1,
+      "bytes": 28302466,
+      "sha256": "c276d7bf62aba36a989db33e31f3730570bc505dff5f4ecc8f7d2fd5ab8148f5"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/6_高度.csv",
+      "exists": 1,
+      "bytes": 28312078,
+      "sha256": "b4ef6cb9f527f6bec4cccbbb6db81f6f441529f5da8230212b162ea913ef63d1"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/7_高度.csv",
+      "exists": 1,
+      "bytes": 28305189,
+      "sha256": "73fe3a1b024e17290aece7d642f72733b038720ab5f2347c41749e6913a206e6"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/8_高度.csv",
+      "exists": 1,
+      "bytes": 28303108,
+      "sha256": "7c63d01f403a152b0a4e496edd2040edb1739980d3ce1fc26e5ffa78db38a0a9"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/9_高度.csv",
+      "exists": 1,
+      "bytes": 28084102,
+      "sha256": "0a02da293031715ffac7f75d56c268c656d3d57dd879a6a41f8a260b11d6c9ad"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/10_高度.csv",
+      "exists": 1,
+      "bytes": 28312870,
+      "sha256": "f20de26acf566e8e5534dabe01a5a1fce9a9d57a375eee85f68a3eed1a1d39eb"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/11_高度.csv",
+      "exists": 1,
+      "bytes": 28141179,
+      "sha256": "ff3aec63b8ffa4b70df451f63c10b267ae5c80f5d80d05f0dcd16461b137d8cd"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/12_高度.csv",
+      "exists": 1,
+      "bytes": 28275174,
+      "sha256": "e3cdf1f80963691a6575c36361a0cd3e62e58741d4b891448ca7394001f2ddfe"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/13_高度.csv",
+      "exists": 1,
+      "bytes": 28255063,
+      "sha256": "484319a623461a9ee2c8ce07e98045913ced4dab997d20218b895dc84dd0f7e4"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/14_高度.csv",
+      "exists": 1,
+      "bytes": 28292083,
+      "sha256": "372879f05ce99ea05a4d9856c7727f2b7e8ae3c5a7f519764b28ce2066632278"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/15_高度.csv",
+      "exists": 1,
+      "bytes": 28303290,
+      "sha256": "a4c461ceb3b7455051569ef828e2c3bd5fa53714ef82382c2c936b1407852242"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/16_高度.csv",
+      "exists": 1,
+      "bytes": 28092393,
+      "sha256": "93c530744336e9a3fc07c6540169b77d841b0e5fd787c1d19552f18931eacfca"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/17_高度.csv",
+      "exists": 1,
+      "bytes": 28086593,
+      "sha256": "03409bf4105d66f72580af6832c4553186444246a76ba1c6fdc53d1fe9e8f770"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/18_高度.csv",
+      "exists": 1,
+      "bytes": 28299652,
+      "sha256": "db73deb7e2e9b295d8fb8be2149b7b94c456db3da8d63d8b3e903b77840c620e"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/19_高度.csv",
+      "exists": 1,
+      "bytes": 28302601,
+      "sha256": "28a9cc4c8c7ab85e74a1ba2875cc986d9bdb22c3f1c6720c989022cdec94fd7a"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/20_高度.csv",
+      "exists": 1,
+      "bytes": 28240914,
+      "sha256": "5ede77430249f905f2f524a5085b54625bb96a52c26eaca9a65a4c5d1b9dd48f"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/21_高度.csv",
+      "exists": 1,
+      "bytes": 28082487,
+      "sha256": "5d75147e7810180de576c0db36c97d3d3492330ffcb414fb48ae8a0670d52672"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/22_高度.csv",
+      "exists": 1,
+      "bytes": 28090368,
+      "sha256": "1ab81d51486056bc0453cdc2dc68e6979bc58e03876a959fd6b49efc76884495"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/23_高度.csv",
+      "exists": 1,
+      "bytes": 28231133,
+      "sha256": "3b6dba2878c4ec1ce13bf4834f428182d43ddb1bfc3f97b322179ced0af1e9a6"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/fixture/120正式/24_高度.csv",
+      "exists": 1,
+      "bytes": 28264643,
+      "sha256": "d87a101d77d6f4b6f53d54d18454c7db768036b16757f34c907d69510dc5526c"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/25_高度.csv",
+      "exists": 1,
+      "bytes": 28275349,
+      "sha256": "3f829b8365e97ee625df8e6f1b961c0dfcb3be274289205dae53f627cf4682f9"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/26_高度.csv",
+      "exists": 1,
+      "bytes": 28310036,
+      "sha256": "48cb590d2c98335f314a33d8c66c2c0557610a60d7aaa81f53ca04b2ff432bf4"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/27_高度.csv",
+      "exists": 1,
+      "bytes": 28095221,
+      "sha256": "939d2fb258b23abef5b185eef7705c7de6ac8b1594e9a061447cf72bf993e897"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/28_高度.csv",
+      "exists": 1,
+      "bytes": 28281594,
+      "sha256": "d62379861bb2d3640ce731641696ce153920f1090b9bb44e6ce9f84231f627eb"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/29_高度.csv",
+      "exists": 1,
+      "bytes": 28094862,
+      "sha256": "5f2900d19192319dacfd87fc4ee04d31df2951f6cdf48ed193cf5b467a09d725"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/30_高度.csv",
+      "exists": 1,
+      "bytes": 28265440,
+      "sha256": "be59498a64180b20c11206ba62d4e20f5cef1ece4ea48487a869bb623fdacd87"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/31_高度.csv",
+      "exists": 1,
+      "bytes": 28278773,
+      "sha256": "dca152e93fdee5785c5c21296c3aa82119e0b2e90931967c8c3950281a023f84"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/32_高度.csv",
+      "exists": 1,
+      "bytes": 28058025,
+      "sha256": "ca8c91f974a53add62a0071727f9b4d843212daaeb6cb9ea01bf1586406bfc00"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/33_高度.csv",
+      "exists": 1,
+      "bytes": 28081781,
+      "sha256": "ed9dc2dbec1bfe3d6945c84baf9fff47bfb4b8c3ced6372fa001649b124e2c1e"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/34_高度.csv",
+      "exists": 1,
+      "bytes": 28074171,
+      "sha256": "db710cb7a6db3e66116366e76addae795dee13acd6d4e46cb339bb58c20ab0d7"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/35_高度.csv",
+      "exists": 1,
+      "bytes": 28232593,
+      "sha256": "4bcd4736b403dcc606bac74c554d86073f12afcf532ec2e3bc84c85af0cee8d2"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/36_高度.csv",
+      "exists": 1,
+      "bytes": 28103313,
+      "sha256": "a35f0490cf3880da788d21e3b81f398b3c0b81da4ddfda5a4bd854b1a29570a7"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/37_高度.csv",
+      "exists": 1,
+      "bytes": 28185518,
+      "sha256": "d0eae31536b64aab59f60624eaf3aba012420938ccd44a938b7c0258bcba4475"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/fixture/120正式/38_高度.csv",
+      "exists": 1,
+      "bytes": 28105551,
+      "sha256": "380e7b872f72e41a94a6e3493602e94e4581e00003ee5a2d326f5d839b07ecdd"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/39_高度.csv",
+      "exists": 1,
+      "bytes": 28297757,
+      "sha256": "3520e22662f8e153ae69857811e324b18cd72652ba95c751c7a42c652a92d5ef"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/40_高度.csv",
+      "exists": 1,
+      "bytes": 28123438,
+      "sha256": "17cad6fbbea9e723a421bccd0d49016282a61211b5392e17495a6188661cc85d"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/41_高度.csv",
+      "exists": 1,
+      "bytes": 28109556,
+      "sha256": "48cea9b53afcdc84790db90ec4ecad7847a4a2a7012602c4f7d238e328cce3a1"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/42_高度.csv",
+      "exists": 1,
+      "bytes": 28093658,
+      "sha256": "06c9f014f9c2389da331b1ecfaa2a05df8797d9dfb5e50f01703609db7b150cd"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/43_高度.csv",
+      "exists": 1,
+      "bytes": 28071661,
+      "sha256": "c2207ee683cc0a5a3866ad877e39b290880d8210e1e2fc05242057107e737bd2"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/44_高度.csv",
+      "exists": 1,
+      "bytes": 28160466,
+      "sha256": "67b1763ee3a45a55699ef09790251d2e324b3ee0beed842ccf32192872138b00"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/45_高度.csv",
+      "exists": 1,
+      "bytes": 28143487,
+      "sha256": "e9cf156703151945d7654381acc0719d2b257ec66e0f10568873ad3476eaaf2d"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/46_高度.csv",
+      "exists": 1,
+      "bytes": 28126624,
+      "sha256": "661292421d7b18cbf5e4bb24249f88b5163f7e77d4c08b59dbd907a86c567d06"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/47_高度.csv",
+      "exists": 1,
+      "bytes": 28093221,
+      "sha256": "9b6d9c0d93c5c8797f6797cd697dc1b9f373a821bbf3ba7f5cfaa7e5f101eacb"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/48_高度.csv",
+      "exists": 1,
+      "bytes": 28095989,
+      "sha256": "9ed6f1d1b81bc087597103e92d2bb8a3746a9d9e0c941394df6cc90753e9b8ce"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/49_高度.csv",
+      "exists": 1,
+      "bytes": 28288819,
+      "sha256": "f20fcd2a1623a2efbd6b4366770527647142487deecadbccf0ecc5537f82b1d8"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/50_高度.csv",
+      "exists": 1,
+      "bytes": 28289129,
+      "sha256": "cd02f6207727d08d47234bf7d8c12cfed4cf6a9309fe13141325b7e4572f1920"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/51_高度.csv",
+      "exists": 1,
+      "bytes": 28303186,
+      "sha256": "e1bad4ecf42667b1acfac94d013c42ebebe632c7d55bba093d7e541af98d97a8"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/52_高度.csv",
+      "exists": 1,
+      "bytes": 28133006,
+      "sha256": "82753143bfcb7b75c495745456567662e9f1431ca2ae9c30addb0622e59d151a"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/53_高度.csv",
+      "exists": 1,
+      "bytes": 28132612,
+      "sha256": "f0cb3eded9f392e3b4ddb9cb686ead2090638b823dee64717f5f63e844366706"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/54_高度.csv",
+      "exists": 1,
+      "bytes": 28060392,
+      "sha256": "bcd0be9bbfc99e8428e5a7bda194f3ba9eee372ff41c7bb3a3fba8b7499bb2d1"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/55_高度.csv",
+      "exists": 1,
+      "bytes": 28068236,
+      "sha256": "35c338eee0edd7c0ab58d539a2b31c417a8a75f0493d523e96fdca2754de12c4"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/56_高度.csv",
+      "exists": 1,
+      "bytes": 28048079,
+      "sha256": "1a386b2c2ec0f45a5b395bd7fcc01bf29bbd9ce5fd6e42aa5567736417060845"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/57_高度.csv",
+      "exists": 1,
+      "bytes": 28059451,
+      "sha256": "38d93ba92816fd1402383ce188995f8b2d9eb34e883cd90540dd5fbaa321afd9"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/fixture/120正式/58_高度.csv",
+      "exists": 1,
+      "bytes": 28076904,
+      "sha256": "fc4f9fde52af75a031f32a7f8a048677b734415020c3878c99fb62f7fa706e27"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/59_高度.csv",
+      "exists": 1,
+      "bytes": 28094004,
+      "sha256": "583115f8d1009c650b13402e71b3b7a9c5fbc59ca2ffe80bd521285de439a1aa"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/60_高度.csv",
+      "exists": 1,
+      "bytes": 28312564,
+      "sha256": "788c6aa5bd1560bbb71b0d875053ffc1c41a480f49f42834a8664d603660117c"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/61_高度.csv",
+      "exists": 1,
+      "bytes": 28132678,
+      "sha256": "8998b9b432e63cc62b3cd70e96b1390c58ede23cdaeaa67eee35ee6d42dd2a0e"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/62_高度.csv",
+      "exists": 1,
+      "bytes": 28130471,
+      "sha256": "45a8f2b5280f82c71c0144593f1db9fc7fcd251f77762c22396c105f2f613870"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/63_高度.csv",
+      "exists": 1,
+      "bytes": 28117305,
+      "sha256": "50fc148bd6bdd9c561a3617e3738d266710956975aa2024bd32c73c839f71ce7"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/64_高度.csv",
+      "exists": 1,
+      "bytes": 28048085,
+      "sha256": "174af314b157df793ca366225efba8d6375dc49680874a3180fdc04a8008755a"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/65_高度.csv",
+      "exists": 1,
+      "bytes": 28050268,
+      "sha256": "2fcf788ac9873aba96cbb7bb2c4fbf8ee9a53d0b45a3318fc78935bb56e7efd1"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/66_高度.csv",
+      "exists": 1,
+      "bytes": 28103702,
+      "sha256": "3ca2d2e9aa1670d6b3a39892a9fa59ff319544614edcff6116d96bd4e8de78a3"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/67_高度.csv",
+      "exists": 1,
+      "bytes": 28156056,
+      "sha256": "9ecff9ee008d985e5aba342eef39507405468a24ef5cfce9165c5f87180d0deb"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/68_高度.csv",
+      "exists": 1,
+      "bytes": 28145537,
+      "sha256": "591788b22e918889df41912e443436e3c5a6e268774552d277c3063fdd585ec0"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/69_高度.csv",
+      "exists": 1,
+      "bytes": 28279577,
+      "sha256": "0d8a2e2a1b45d6e3de4e803645ff529f2bd9840a433ff3b28d11f87902644b7f"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/70_高度.csv",
+      "exists": 1,
+      "bytes": 28110774,
+      "sha256": "5e4296213b18ab2c49a623e95bb3cf29e4eaa2fe3ab5596cba88d7324ba6da9b"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/71_高度.csv",
+      "exists": 1,
+      "bytes": 28296633,
+      "sha256": "91b84fca7a4b10c569efc4571625cc7c896e8d513290b1935595563e722e6d7f"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/72_高度.csv",
+      "exists": 1,
+      "bytes": 28074169,
+      "sha256": "af95813078d11ef5fbf4898a7e9f58eb021f467809556bbb89f215b9dc294d78"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/73_高度.csv",
+      "exists": 1,
+      "bytes": 28025961,
+      "sha256": "d89b32be669fab3040cc0c2669e0d68dde5ad0c44a7e38a83b417af693aed333"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/74_高度.csv",
+      "exists": 1,
+      "bytes": 28262864,
+      "sha256": "987b54f4f0d372052db420fb65f7447271c80d922add34cc7526c8e7a6e18fc1"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/75_高度.csv",
+      "exists": 1,
+      "bytes": 28136038,
+      "sha256": "b4eab25251b441841b0dbfd22b228be0111a876aabefb0a2be6428981eb5de70"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/76_高度.csv",
+      "exists": 1,
+      "bytes": 28235487,
+      "sha256": "c879a25792615e3c128f48a075c1dae78daba2117fd3cf75a62f467f3a614e73"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/77_高度.csv",
+      "exists": 1,
+      "bytes": 28248454,
+      "sha256": "2eef10d6492677fd9e9083582231683e93c9dfef96e56eeb8d93cae342e4eaaf"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/78_高度.csv",
+      "exists": 1,
+      "bytes": 28089418,
+      "sha256": "47ac84d43a366dac04ec49601fab752f787beee85eba39e812eecb9b51626dc6"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/79_高度.csv",
+      "exists": 1,
+      "bytes": 28273192,
+      "sha256": "8448313f2d5872bf1020b47a696a5cfb424f27429f1c9fb31322695aad985cbf"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/80_高度.csv",
+      "exists": 1,
+      "bytes": 28058990,
+      "sha256": "eeb087750313fa8ebc23576240e8370ed2e31c5bb28a701d52808d98a785219c"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/81_高度.csv",
+      "exists": 1,
+      "bytes": 28062054,
+      "sha256": "7bcb487c946dae3db193cdc5855eb831bf36c27bbfe0389aea8a5d9b9ab6c08d"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/82_高度.csv",
+      "exists": 1,
+      "bytes": 28079748,
+      "sha256": "72ebece285c0bb9c56afb30c0a6213408240331de45569516bedc07d4559cc62"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/83_高度.csv",
+      "exists": 1,
+      "bytes": 28068379,
+      "sha256": "51a7de8f47be409b2587ad9e293aaf934572ad7c6d302e6095eed7d04fffed2e"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/84_高度.csv",
+      "exists": 1,
+      "bytes": 28058530,
+      "sha256": "42e4ae396c7a850a4ae87b9546fd26247b1a35c3f3102e51e0c3d53a4ac0a53e"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/85_高度.csv",
+      "exists": 1,
+      "bytes": 28022234,
+      "sha256": "188eaa6039f7f0a8f234679054b2d035ace7c3c1bebbe1d70523e20147e92b05"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/86_高度.csv",
+      "exists": 1,
+      "bytes": 28301235,
+      "sha256": "620f06214bc68ef34488402df4bafa11a3f66a15842f436b384092acfc88c74a"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/fixture/120正式/87_高度.csv",
+      "exists": 1,
+      "bytes": 28101194,
+      "sha256": "d61a115b7c548693255900644e624e1b1d9b40f6ac255b094446951da9ebf7e7"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/88_高度.csv",
+      "exists": 1,
+      "bytes": 28051579,
+      "sha256": "3c4d2ff68b92b11b8e85c202b8372b25cb03ea2c2a08d5b63a7ee597d8079fbc"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/89_高度.csv",
+      "exists": 1,
+      "bytes": 28037140,
+      "sha256": "2b94328f2b105cbddd5a0ec948a28e4e3c4b82fb78ff73a220fce870c8787bff"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/90_高度.csv",
+      "exists": 1,
+      "bytes": 28044585,
+      "sha256": "f6c3413184543fb95aa0b75438441ff84b3b099a6aa8acc93b7e7f6926d4e0d0"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/91_高度.csv",
+      "exists": 1,
+      "bytes": 28072651,
+      "sha256": "21bce19a525a1d8d2f3d2b29458ba5b3633ba188e061cee4263fd37dbda37389"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/92_高度.csv",
+      "exists": 1,
+      "bytes": 28026877,
+      "sha256": "7de67820ba0666858bdcc1b9b7067037cf0a3d2451fd400c99b72087c4de18a0"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/93_高度.csv",
+      "exists": 1,
+      "bytes": 28032962,
+      "sha256": "94d2843f39a9256aa25e41e5635c1f07d5455ecb902322cc07a4f838d159eeaf"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/94_高度.csv",
+      "exists": 1,
+      "bytes": 28062686,
+      "sha256": "a5621f108b2b3f2897604f4c54195044a207c2b381c55059dd037f1efbda5070"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/95_高度.csv",
+      "exists": 1,
+      "bytes": 28079769,
+      "sha256": "e6ef1f271551d05de8b9063886746b923468d4868191c79d2271f9374bcbbf16"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/96_高度.csv",
+      "exists": 1,
+      "bytes": 28085537,
+      "sha256": "c9fe67af54234c9090e0ed9722ef1bbd197be79ff5e2fb69ad751c1169f90852"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/97_高度.csv",
+      "exists": 1,
+      "bytes": 28023098,
+      "sha256": "8027222509c85a4a013eae8f11995c3d9bb35d6db78a447d819e4c7c272daeb8"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/98_高度.csv",
+      "exists": 1,
+      "bytes": 28211417,
+      "sha256": "6f9ad2e7f1ecf7a01c2b899026436456df55131f504035e20cdc993ad0741945"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/99_高度.csv",
+      "exists": 1,
+      "bytes": 28195800,
+      "sha256": "e4c9123c21c077eb6079a2083b1df4a3ee2e8e01b49a3f88c5c4d1df6eddacbd"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/100_高度.csv",
+      "exists": 1,
+      "bytes": 28166128,
+      "sha256": "7f4cf85520b9cd44c5ee9b781c4f59f28b22044f7928c461e039b62b27df85af"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/101_高度.csv",
+      "exists": 1,
+      "bytes": 28287393,
+      "sha256": "c8730a08706845386b8b989c8262d3ed877cc108488643621400d20a2931eaf6"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/102_高度.csv",
+      "exists": 1,
+      "bytes": 28300138,
+      "sha256": "456a3d701512805efac068194fb5b4154ab42a7a5fc36b302b55e60171592ad2"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/103_高度.csv",
+      "exists": 1,
+      "bytes": 28285451,
+      "sha256": "bcf123fdb8def3bd557e746f2b117f5bf782d7ae9e1adf77ecf2448a6f59df60"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/104_高度.csv",
+      "exists": 1,
+      "bytes": 28038300,
+      "sha256": "f86d8c584deb8da5df3a5f73586560c7afd029d6fb9791f1789e3c77c74f90b4"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/105_高度.csv",
+      "exists": 1,
+      "bytes": 28051115,
+      "sha256": "ddd4794607c25397d8a5961914f80468faf8428ff1ef505bcd6b7b25eb1171e1"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/106_高度.csv",
+      "exists": 1,
+      "bytes": 28041809,
+      "sha256": "bce50689feea14c6a09dec30793a9f2abe1e6559e76166257dd9652a64161dd4"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/fixture/120正式/107_高度.csv",
+      "exists": 1,
+      "bytes": 28231644,
+      "sha256": "4d3e865062dcb19f5f4279d9578ca2affbc549dddcba2d81bcc0b502e8c02ada"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/108_高度.csv",
+      "exists": 1,
+      "bytes": 28243175,
+      "sha256": "f31263b0317ea566afe0b3594a172d67dd43ce5490c44b14dd175dee0f997d5f"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/109_高度.csv",
+      "exists": 1,
+      "bytes": 27964922,
+      "sha256": "340fb4b0cce16e2dc1fab40c268033d617d062ea2b5ac7362f1d2c05701b95bd"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/110_高度.csv",
+      "exists": 1,
+      "bytes": 28040195,
+      "sha256": "66ff074d772480ba4d91ea3a0bd7cc2415dd00b7b8496bde5cc840c330f7dd0b"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/111_高度.csv",
+      "exists": 1,
+      "bytes": 28237872,
+      "sha256": "0f351e6031d3bc1faa648ba60b1d91292020be4083834a85aa3e72b8b10db089"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/112_高度.csv",
+      "exists": 1,
+      "bytes": 28221236,
+      "sha256": "f0b9cbe6aba90f1c39a596151982eee76b361aa4f3cb69bf9faf3c8951299cf7"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/113_高度.csv",
+      "exists": 1,
+      "bytes": 28046387,
+      "sha256": "49048beb721503ddcf21dae21bf8f9ff341ce6f05355ebe9f50531ff7a420f0e"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/114_高度.csv",
+      "exists": 1,
+      "bytes": 28077854,
+      "sha256": "c5631d091bffb20538a33abe61eb7cd1b0a767e00c8425786af990ef668ae336"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/115_高度.csv",
+      "exists": 1,
+      "bytes": 28061265,
+      "sha256": "de7a2d2e1c4aa728db545b043a2810b1674a957c6d54e0966570634f3a38fed0"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/116_高度.csv",
+      "exists": 1,
+      "bytes": 28042204,
+      "sha256": "52ba02864d18495e2a1fa1f6b1d194bb2e23f97c1f55eff476b78431d8e2e012"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/117_高度.csv",
+      "exists": 1,
+      "bytes": 28298404,
+      "sha256": "49dae6206afd6340acb0223c32dc8d841805d944690d3e190ef41c2a854e2221"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/118_高度.csv",
+      "exists": 1,
+      "bytes": 28302951,
+      "sha256": "76390483f0296ab3f607a699d17fe1859198007e826b3a01be86f82b9ec7c875"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/119_高度.csv",
+      "exists": 1,
+      "bytes": 28092857,
+      "sha256": "0e7314f00d063c5a6280657843bb570b51fe8430678b01d258af1e0aa554924f"
+    },
+    {
+      "session_id": "zro2_120_formal",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/120正式/120_高度.csv",
+      "exists": 1,
+      "bytes": 28120780,
+      "sha256": "f0fcaaa654562bbe42687a138079c03898add6c5125cd8fd8d31fae6421b6c2a"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/fixture/60pass/1 2_高度.csv",
+      "exists": 1,
+      "bytes": 28149430,
+      "sha256": "1c2ecfa2fc31e505f6f9aecc122f609be38ef37f5b6a8e385df1d86193229245"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/3 4_高度.csv",
+      "exists": 1,
+      "bytes": 28084994,
+      "sha256": "5878976c1428a6bb4c2afad7659d9fa48a8d18ba4f6636a3105a3233fe5e3f18"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/5 6_高度.csv",
+      "exists": 1,
+      "bytes": 28041155,
+      "sha256": "22b53c40d992fcc5cafed47187d931be94244b3ddce410dd53bf2249e619a17d"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/7 8_高度.csv",
+      "exists": 1,
+      "bytes": 28097888,
+      "sha256": "8c5255964d4dfacb7736a364992b3353a0fa427e69e125d8420461b7130f8ecc"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/fixture/60pass/9 10_高度.csv",
+      "exists": 1,
+      "bytes": 28213053,
+      "sha256": "811fe21881daadbcf7dc6d4b1be3c94b8b53842280ccf672f1985fc76e300673"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/11 12_高度.csv",
+      "exists": 1,
+      "bytes": 27961700,
+      "sha256": "f8dc1e2fbac787bdea33e475db7822e9daae37018bb2271eee96d2c962da7fbb"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/fixture/60pass/14 13_高度.csv",
+      "exists": 1,
+      "bytes": 28084764,
+      "sha256": "f8ca772175a7d21c330789c08cdc2f084f86af6e38589dc061cae83d13348170"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/16 15_高度.csv",
+      "exists": 1,
+      "bytes": 28113580,
+      "sha256": "2c1debee297f6c98f334805a2097f674d6404cdac9fde6c06d5d821b09aa98ae"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/18 17_高度.csv",
+      "exists": 1,
+      "bytes": 28012728,
+      "sha256": "4a1a169f2ba3fdb5a8ef79bff8dae415f69d97d5e8d7e584ebe2c625f27ff686"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/20 19_高度.csv",
+      "exists": 1,
+      "bytes": 28097389,
+      "sha256": "37dbbbda11ac4115000b15a99f4e7c2020fb840fca0eb2b2f54c3e1b2bf9acae"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/22 21_高度.csv",
+      "exists": 1,
+      "bytes": 28261143,
+      "sha256": "09af883bfb1e858cfbae878ffe17cfd50727ca1c0aa6d86eca699d927551c6b0"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/24 23_高度.csv",
+      "exists": 1,
+      "bytes": 28032620,
+      "sha256": "6a5b941b8df68078897675951118b9883c19975489c570824bafb6e46aef13b4"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/fixture/60pass/25 26_高度.csv",
+      "exists": 1,
+      "bytes": 28214750,
+      "sha256": "29737f4fa687cc331024aabf52368aa1cd87c00ca2dada58c6b5b1c46baa2c51"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/27 28_高度.csv",
+      "exists": 1,
+      "bytes": 28280508,
+      "sha256": "72f3551b7f89b21f8d83c70ee1a07fb62f82322eae216019e2cd2cc6f4316602"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/fixture/60pass/29 30_高度.csv",
+      "exists": 1,
+      "bytes": 28073837,
+      "sha256": "870a6d152380e1628a74d90b78a2aa55c33bb59f349dd866dfe90e11ab023c3e"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/31 32_高度.csv",
+      "exists": 1,
+      "bytes": 28017664,
+      "sha256": "f3d8e4340e42aa251a4f18d46729ebcfbe4dc0aaac6c32d87f29d43cb2157cf1"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/33 34_高度.csv",
+      "exists": 1,
+      "bytes": 28291189,
+      "sha256": "bd946832d7cb25bf4dbe1b695644a510f3968ee7101bcc33c19242a43eae36b0"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/35 36_高度.csv",
+      "exists": 1,
+      "bytes": 28286019,
+      "sha256": "847a8dd21a46bf53d73595f02c4585edd9239f3255dcfb63f46396ddb89ca3c8"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/38 37_高度.csv",
+      "exists": 1,
+      "bytes": 28177933,
+      "sha256": "6810cd2188277ac59119a2c7df0a1b61aef2b2599637da770854541b58c6d985"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/40 39_高度.csv",
+      "exists": 1,
+      "bytes": 28063600,
+      "sha256": "9fa45ddc13a95c919b898bdeed4dadb604d25b42d0993fe283392d26ef975954"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/42 41_高度.csv",
+      "exists": 1,
+      "bytes": 28004292,
+      "sha256": "3b779069c52202441c95177b3f2855812ccbebcf03d11c7c519a015f72f41617"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/44 43_高度.csv",
+      "exists": 1,
+      "bytes": 28133684,
+      "sha256": "dac6f02883c41889b559679a0c746742375defc21dc01847bbb0c8546959b304"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/46 45_高度.csv",
+      "exists": 1,
+      "bytes": 28286421,
+      "sha256": "7abf90e216e220abaff356cc545194c682653bf574b9a84817bc75307b19be20"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/48 47_高度.csv",
+      "exists": 1,
+      "bytes": 28286590,
+      "sha256": "76f25bc50108086f57e74bf5c4316e0e9c6560be673b6ba1090955e55eaa2148"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/49 50_高度.csv",
+      "exists": 1,
+      "bytes": 28269757,
+      "sha256": "6a688bdc39a04c16c03831b3ef3aa27f597904040186f5e7cc64b1436f1d3b63"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/51 52_高度.csv",
+      "exists": 1,
+      "bytes": 28274771,
+      "sha256": "5f85f9737d7eeb66dec786aa446da32ba4c2a7bd89a055557a3bb84aa7aa4d95"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/53 54_高度.csv",
+      "exists": 1,
+      "bytes": 28260174,
+      "sha256": "38e25c17f37e878dc855a5151e5b2d01e0ff9917ea2d4233d9162e28b5e59284"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/55 56_高度.csv",
+      "exists": 1,
+      "bytes": 28235513,
+      "sha256": "1c3483313e4cb26cbac3c6a8fa5e151d37508181723916217e8c57677f0b6658"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/57 58_高度.csv",
+      "exists": 1,
+      "bytes": 28251386,
+      "sha256": "eab0ba2543df7a86891add7b27b3f233aacc822b7311056e91bb0ea3621282b7"
+    },
+    {
+      "session_id": "zro2_60_pass",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/60pass组/59 60_高度.csv",
+      "exists": 1,
+      "bytes": 28234922,
+      "sha256": "dcd207b3bf3cf8380b9cbcf5ab125efb983f3eb7c61004172a5625ae807529d7"
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/20补充pass/1 2_高度.csv",
+      "exists": 1,
+      "bytes": 28264955,
+      "sha256": "dfd108c6633f99b3d9458d86921113070c04993cd80a6b27fdb9ad98fdedf53c"
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/20补充pass/3 4_高度.csv",
+      "exists": 1,
+      "bytes": 28215270,
+      "sha256": "2c0913b38b1d2665c4f275f03e95fe28be98afa312ac52a211a4d42229d37d68"
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/20补充pass/5 6_高度.csv",
+      "exists": 1,
+      "bytes": 27933624,
+      "sha256": "967217b308ac05db42115f4b45262cdd0ff1726353caf18ced562f3854d2465e"
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/20补充pass/7 8_高度.csv",
+      "exists": 1,
+      "bytes": 27883914,
+      "sha256": "03de5035481144cf976e1f4f90f956ddfe5f4fe3ef303b00fde27bf2d8586a61"
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/20补充pass/9 10_高度.csv",
+      "exists": 1,
+      "bytes": 27814645,
+      "sha256": "60077a06b9733519b7cea74223dd58b8f7129ffe6d437469dfed5756f3057841"
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/20补充pass/11 12_高度.csv",
+      "exists": 1,
+      "bytes": 28245055,
+      "sha256": "55d945f0493d0b1f787cab153574ac406e4477854f7a7799c68cd25c8e4283d5"
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/20补充pass/13 14_高度.csv",
+      "exists": 1,
+      "bytes": 27774439,
+      "sha256": "afa09a5aa218f50dd6bbc71a55d01dcd67ab7674375a4ea92dc88213f89b70df"
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/20补充pass/15 16_高度.csv",
+      "exists": 1,
+      "bytes": 27814277,
+      "sha256": "301307b111df1ef77aa9dd8f99f139fe2d70d9cca7f26b9156016720afa6ce61"
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/20补充pass/17 18_高度.csv",
+      "exists": 1,
+      "bytes": 28203124,
+      "sha256": "431b590e729d9fe7c789757b2aabb13566ab0ad6775f99efd162c787d7133f54"
+    },
+    {
+      "session_id": "zro2_20_supplement",
+      "role": "height_csv",
+      "path": "氧化锆/pass实验数据/csv文件/20补充pass/19 20_高度.csv",
+      "exists": 1,
+      "bytes": 28010467,
+      "sha256": "55d83952eadc93129fa2db414c996df7cce3fa9462324cc58eca7ab7560c5109"
     }
   ],
   "session_definitions": [
@@ -67,6 +2597,7 @@
       "session_id": "zro2_120_formal",
       "cag_path": "氧化锆/pass实验数据/120正式.cag",
       "design_path": "氧化锆/pass实验数据/120正式_design记录表_0516.csv",
+      "csv_subdir": "120正式",
       "input_format": "cag",
       "mapping_rule": "one_to_one_measurement_id",
       "rois_per_measurement": 1,
@@ -77,8 +2608,9 @@
       "session_id": "zro2_60_pass",
       "cag_path": "氧化锆/pass实验数据/60Pass组.cag",
       "design_path": "氧化锆/pass实验数据/60pass_design.csv",
+      "csv_subdir": "60pass组",
       "input_format": "cag",
-      "mapping_rule": "paired_left_to_right_odd_even",
+      "mapping_rule": "paired_slot_from_cag_data_name",
       "rois_per_measurement": 2,
       "mapping_provenance": "user_confirmed_2026-08-30",
       "expected_design_rows": 60
@@ -87,17 +2619,18 @@
       "session_id": "zro2_20_supplement",
       "cag_path": "氧化锆/pass实验数据/20补充pass.cag",
       "design_path": "氧化锆/pass实验数据/20补充_pass5_6实验.csv",
+      "csv_subdir": "20补充pass",
       "input_format": "cag",
-      "mapping_rule": "paired_left_to_right_odd_even",
+      "mapping_rule": "paired_slot_from_cag_data_name",
       "rois_per_measurement": 2,
       "mapping_provenance": "user_confirmed_2026-08-30",
       "expected_design_rows": 20
     }
   ],
-  "phase0_decision": "STOP",
+  "phase0_decision": "PASS",
   "blocker_codes": [
-    "no_real_height_csv_fixture",
-    "cag_csv_equivalence_not_established"
+    "V4_BOOTSTRAP_GATE_FAILURES",
+    "SYSTEMATIC_SHALLOW_FAILURE"
   ],
-  "manual_approval_status": "not_applicable_phase0_failed"
+  "decision": "BLOCKED_PENDING_INDEPENDENT_FOUR_EDGE_VALIDATION"
 }

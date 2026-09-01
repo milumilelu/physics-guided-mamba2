@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "stage": "WP3_cag_csv_equivalence",
+  "generated_at_utc": "2026-08-31T01:59:20.274971+00:00",
+  "decision": "PASS",
+  "height_gate_all_sessions": true,
+  "mask_gate_all_sessions": true,
+  "require_mask_evidence": true,
+  "tolerances": {
+    "pitch_abs_um": 5e-07,
+    "height_abs_um": 5e-12,
+    "height_rule": "exact after CAG half-up rounding to 0.001 um"
+  },
+  "input_hashes": {
+    "config": "b8d183be27c526dc75f8385e0b563883c4a49d6aec4589dece05ad8c65bdc155",
+    "height_source_manifest": "74e3312a36d2bd8ad71854666d33b841dcc475ba825649b5d603ca3173eeb1ca",
+    "fixture_selection": "8b21e533f808aa225d484ab73467cd2748bc81958a8d4e626891d72a691d0e0f"
+  },
+  "sessions": {
+    "zro2_120_formal": {
+      "selected": 6,
+      "official_fixtures_compared": 6,
+      "minimum_required": 3,
+      "height_decision": "PASS",
+      "mask_decision": "PASS",
+      "decision": "PASS",
+      "cag_path": "氧化锆\\pass实验数据\\120正式.cag",
+      "cag_sha256": "bf5cb81ea6229d8ba4e5583385ee569978d49ca02651278b2de68e605899f7a7"
+    },
+    "zro2_60_pass": {
+      "selected": 5,
+      "official_fixtures_compared": 5,
+      "minimum_required": 3,
+      "height_decision": "PASS",
+      "mask_decision": "PASS",
+      "decision": "PASS",
+      "cag_path": "氧化锆\\pass实验数据\\60Pass组.cag",
+      "cag_sha256": "9b9d1ed67d2e1268584506fa27779c6f23c8253bdc884dfad11c5c6612ad3fe0"
+    },
+    "zro2_20_supplement": {
+      "selected": 10,
+      "official_fixtures_compared": 10,
+      "minimum_required": 3,
+      "height_decision": "PASS",
+      "mask_decision": "PASS",
+      "decision": "PASS",
+      "cag_path": "氧化锆\\pass实验数据\\20补充pass.cag",
+      "cag_sha256": "3880da8e64c312ffef3b7367590d38da939425d148770eeb5a98cff3406159a9"
+    }
+  },
+  "blockers": [],
+  "notes": [
+    "Heights are compared only on CAG raw-valid pixels.",
+    "ImageDataCsv has no independent validity mask; an exact height match does not by itself close the mask gate.",
+    "The mask sub-gate may pass with scope PASS_ALL_VALID_CASE only when CAG has zero sentinels and the official CSV is numeric at every pixel; this does not validate future sentinel behaviour.",
+    "Decoder-derived CSV files are never accepted as fixtures."
+  ]
+}

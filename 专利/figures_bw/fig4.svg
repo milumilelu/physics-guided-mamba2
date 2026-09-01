@@ -1,0 +1,124 @@
+<!-- BLACK-AND-WHITE VERSION: derived by figures/fig_bw_convert.py; for CNIPA paper-filing -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" font-family="Microsoft YaHei, PingFang SC, SimHei, sans-serif">
+
+  <rect x="0" y="0" width="1400" height="820" fill="none"/>
+
+  <text x="700" y="48" font-size="32" font-weight="bold" fill="#000000" text-anchor="middle">基于双状态递推与多尺度观测联合约束的总体技术路线</text>
+
+  <!-- ============ 上层泳道：前向预测 ============ -->
+  <rect x="20" y="80" width="1360" height="340" rx="10" fill="none" stroke="#808080" stroke-width="1.5"/>
+  <text x="44" y="116" font-size="28" font-weight="bold" fill="#000000">前向预测</text>
+
+  <!-- A 加工条件 -->
+  <rect x="40" y="197" width="200" height="125" rx="8" fill="none" stroke="#000000" stroke-width="2"/>
+  <text x="140" y="225" font-size="26" font-weight="bold" fill="#000000" text-anchor="middle">加工条件</text>
+  <text x="140" y="255" font-size="26" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">P, f, &#964;<tspan dy="6" font-size="20">p</tspan><tspan font-size="18" fill="#000000" dx="4"> 3</tspan></text>
+  <text x="140" y="285" font-size="26" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">v, h, N<tspan dy="6" font-size="20">pass</tspan></text>
+  <text x="140" y="312" font-size="24" fill="#000000" text-anchor="middle">材料及扫描轨迹</text>
+
+  <!-- A→B -->
+  <line x1="240" y1="260" x2="272" y2="260" stroke="#000000" stroke-width="2.4"/>
+  <polygon points="280,260 268,254.5 268,265.5" fill="#000000"/>
+
+  <!-- B 脉冲事件序列（h=145） -->
+  <rect x="280" y="187" width="200" height="145" rx="8" fill="none" stroke="#000000" stroke-width="2"/>
+  <text x="380" y="217" font-size="26" font-weight="bold" fill="#000000" text-anchor="middle">脉冲事件序列</text>
+  <line x1="298" y1="231" x2="462" y2="231" stroke="#000000" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <text x="380" y="259" font-size="26" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">u<tspan dy="5" font-size="20">1</tspan>, u<tspan dy="5" font-size="20">2</tspan>, … , u<tspan dy="5" font-size="20">N</tspan></text>
+  <text x="380" y="289" font-size="26" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">E<tspan dy="5" font-size="20">p</tspan>, &#916;t, &#916;x</text>
+  <text x="380" y="319" font-size="26" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">x<tspan dy="5" font-size="20">n</tspan>, y<tspan dy="5" font-size="20">n</tspan></text>
+
+  <!-- B→C -->
+  <line x1="480" y1="260" x2="512" y2="260" stroke="#000000" stroke-width="2.4"/>
+  <polygon points="520,260 508,254.5 508,265.5" fill="#000000"/>
+
+  <!-- C 双状态逐脉冲递推模型（核心，最大） -->
+  <rect x="520" y="160" width="340" height="200" rx="10" fill="none" stroke="#000000" stroke-width="2.8"/>
+  <text x="690" y="188" font-size="26" font-weight="bold" fill="#000000" text-anchor="middle">双状态逐脉冲递推模型<tspan font-size="18" fill="#000000" dx="4"> 6</tspan></text>
+  <text x="690" y="220" font-size="26" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">(H<tspan dy="5" font-size="20">n</tspan><tspan dy="-5">, Z</tspan><tspan dy="5" font-size="20">n</tspan><tspan dy="-5">) + u</tspan><tspan dy="5" font-size="20">n</tspan></text>
+  <line x1="690" y1="232" x2="690" y2="244" stroke="#000000" stroke-width="2"/>
+  <polygon points="690,250 684,238 696,238" fill="#000000"/>
+  <text x="690" y="274" font-size="24" fill="#000000" text-anchor="middle">材料去除状态计算</text>
+  <line x1="690" y1="284" x2="690" y2="296" stroke="#000000" stroke-width="2"/>
+  <polygon points="690,302 684,290 696,290" fill="#000000"/>
+  <text x="690" y="332" font-size="28" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#916;H<tspan dy="6" font-size="20">n</tspan></text>
+  <text x="690" y="378" font-size="22" fill="#000000" text-anchor="middle">循环至加工过程结束</text>
+
+  <!-- C→D -->
+  <line x1="860" y1="260" x2="892" y2="260" stroke="#000000" stroke-width="2.4"/>
+  <polygon points="900,260 888,254.5 888,265.5" fill="#000000"/>
+
+  <!-- D 预测最终形貌 -->
+  <rect x="900" y="197" width="200" height="125" rx="8" fill="none" stroke="#000000" stroke-width="2"/>
+  <text x="1000" y="225" font-size="26" font-weight="bold" fill="#000000" text-anchor="middle">预测最终形貌</text>
+  <text x="1000" y="258" font-size="30" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">H<tspan dy="6" font-size="22">N</tspan></text>
+  <path d="M930 282 L962 282 L988 302 L1014 282 L1070 282" fill="none" stroke="#000000" stroke-width="2.2" stroke-linejoin="round"/>
+
+  <!-- D→E -->
+  <line x1="1100" y1="260" x2="1132" y2="260" stroke="#000000" stroke-width="2.4"/>
+  <polygon points="1140,260 1128,254.5 1128,265.5" fill="#000000"/>
+
+  <!-- E 预测压缩观测（加宽以容纳公式，加高） -->
+  <rect x="1140" y="160" width="220" height="200" rx="8" fill="none" stroke="#000000" stroke-width="2"/>
+  <text x="1250" y="190" font-size="26" font-weight="bold" fill="#000000" text-anchor="middle">预测压缩观测</text>
+  <line x1="1156" y1="206" x2="1344" y2="206" stroke="#000000" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <text x="1250" y="232" font-size="24" fill="#000000" text-anchor="middle">单线</text>
+  <text x="1250" y="262" font-size="26" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">ŵ<tspan dx="8">, d̂</tspan></text>
+  <line x1="1156" y1="282" x2="1344" y2="282" stroke="#000000" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <text x="1250" y="308" font-size="24" fill="#000000" text-anchor="middle">槽</text>
+  <text x="1250" y="338" font-size="22" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">d̂<tspan dy="3" font-size="18">g</tspan>, Ŝ<tspan dy="3" font-size="18">a</tspan>, Ŝ<tspan dy="3" font-size="18">q</tspan>, Ŝ<tspan dy="3" font-size="18">z</tspan></text>
+
+  <!-- ============ 下层泳道：实验校准 ============ -->
+  <rect x="20" y="450" width="1360" height="290" rx="10" fill="none" stroke="#808080" stroke-width="1.5"/>
+  <text x="44" y="486" font-size="28" font-weight="bold" fill="#000000">实验校准</text>
+
+  <!-- F 共聚焦实验 -->
+  <rect x="180" y="520" width="240" height="140" rx="8" fill="none" stroke="#000000" stroke-width="2"/>
+  <text x="300" y="556" font-size="27" font-weight="bold" fill="#000000" text-anchor="middle">共聚焦实验</text>
+  <text x="300" y="600" font-size="24" fill="#000000" text-anchor="middle">单线点云</text>
+  <text x="300" y="638" font-size="24" fill="#000000" text-anchor="middle">槽点云</text>
+
+  <!-- F→G -->
+  <line x1="420" y1="590" x2="452" y2="590" stroke="#000000" stroke-width="2.4"/>
+  <polygon points="460,590 448,584.5 448,595.5" fill="#000000"/>
+
+  <!-- G 实测压缩观测 -->
+  <rect x="460" y="520" width="240" height="140" rx="8" fill="none" stroke="#000000" stroke-width="2"/>
+  <text x="580" y="554" font-size="26" font-weight="bold" fill="#000000" text-anchor="middle">实测压缩观测</text>
+  <text x="580" y="590" font-size="26" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">Y<tspan dy="5" font-size="20">line</tspan> = [w, d]</text>
+  <text x="580" y="624" font-size="24" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">Y<tspan dy="5" font-size="20">groove</tspan> =</text>
+  <text x="580" y="650" font-size="22" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">[d<tspan dy="4" font-size="18">g</tspan>, S<tspan dy="4" font-size="18">a</tspan>, S<tspan dy="4" font-size="18">q</tspan>, S<tspan dy="4" font-size="18">z</tspan>]</text>
+
+  <!-- G→H -->
+  <line x1="700" y1="590" x2="732" y2="590" stroke="#000000" stroke-width="2.4"/>
+  <polygon points="740,590 728,584.5 728,595.5" fill="#000000"/>
+
+  <!-- H 单线—槽联合校准（下层视觉中心） -->
+  <rect x="740" y="520" width="240" height="140" rx="8" fill="none" stroke="#000000" stroke-width="2.8"/>
+  <text x="860" y="554" font-size="25" font-weight="bold" fill="#000000" text-anchor="middle">单线—槽联合校准</text>
+  <text x="860" y="590" font-size="23" fill="#000000" text-anchor="middle">比较预测与实测</text>
+  <line x1="860" y1="600" x2="860" y2="612" stroke="#000000" stroke-width="2"/>
+  <polygon points="860,618 854,607 866,607" fill="#000000"/>
+  <text x="860" y="644" font-size="25" font-weight="bold" fill="#000000" text-anchor="middle">联合反演 / 训练<tspan font-size="18" fill="#000000" dx="4"> 7</tspan></text>
+
+  <!-- H→I -->
+  <line x1="980" y1="590" x2="1012" y2="590" stroke="#000000" stroke-width="2.4"/>
+  <polygon points="1020,590 1008,584.5 1008,595.5" fill="#000000"/>
+
+  <!-- I 模型参数更新 -->
+  <rect x="1020" y="520" width="240" height="140" rx="8" fill="none" stroke="#000000" stroke-width="2"/>
+  <text x="1140" y="554" font-size="27" font-weight="bold" fill="#000000" text-anchor="middle">模型参数更新</text>
+  <text x="1140" y="590" font-size="23" fill="#000000" text-anchor="middle">历史状态转移参数</text>
+  <text x="1140" y="618" font-size="23" fill="#000000" text-anchor="middle">门控参数</text>
+  <text x="1140" y="646" font-size="22" fill="#000000" text-anchor="middle">材料去除子模型参数</text>
+
+  <!-- ============ 唯一一根上下连接：预测压缩观测 → 联合校准（变细变淡） ============ -->
+  <path d="M1250 360 L1250 420 L860 420 L860 512" fill="none" stroke="#808080" stroke-width="1.6" stroke-dasharray="6 4"/>
+  <polygon points="860,520 854,508 866,508" fill="#808080"/>
+
+  <!-- ============ 唯一一根反馈线：参数更新 → 核心模型（底部90°折线，变细变淡） ============ -->
+  <path d="M1140 660 L1140 770 L690 770 L690 368" fill="none" stroke="#808080" stroke-width="1.6" stroke-dasharray="6 4"/>
+  <polygon points="690,360 684,372 696,372" fill="#808080"/>
+  <text x="930" y="763" font-size="22" fill="#000000" text-anchor="middle">反馈更新模型参数</text>
+
+</svg>
