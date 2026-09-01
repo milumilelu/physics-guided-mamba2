@@ -1,8 +1,0 @@
-roi_size_um,edge_core_gradient_ratio_median,edge_core_gradient_ratio_p90,edge_core_gradient_ratio_max,edge_core_height_contrast_median_um,edge_core_height_contrast_p90_um,Sa_median_um
-120,1.052,1.343,1.807,0.347,1.500,0.709
-110,1.036,1.207,1.624,0.262,1.139,0.664
-100,1.027,1.148,1.394,0.207,0.875,0.626
-90,1.019,1.139,1.316,0.145,0.635,0.569
-80,1.007,1.124,1.266,0.106,0.462,0.519
-70,1.016,1.130,1.445,0.126,0.462,0.470
-60,1.014,1.161,1.511,0.108,0.378,0.443

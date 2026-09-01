@@ -1,10 +1,9 @@
 method: manual_internal_roi_v1_fast_80um
 evidence_level: 3
-annotation_csv: outputs/rectangle_registration/registration/manual_v1/manual_four_edge_validation_frozen.csv
-registration_csv: outputs/rectangle_registration/registration/manual_v1/translation_metrics_manual_v1.csv
-plane_csv: outputs/rectangle_registration/metrics/coarse_leveling_metrics.csv
+annotation_csv: annotations/manual_four_edge_validation_frozen.csv
+registration_csv: config/frozen/manual_registration_200.csv
+plane_csv: config/frozen/measurement_planes_160.csv
 session_manifest: config/session_manifest.csv
-height_source_manifest: config/height_source_manifest.csv
 output_root: outputs/rectangle_registration/manual_internal_roi_v1
 
 stable_roi:

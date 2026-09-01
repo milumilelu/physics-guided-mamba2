@@ -14,7 +14,6 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
 from src.io_npz import load_height_npz  # noqa: E402
-from src.stage_manifest import sha256_of  # noqa: E402
 
 ROOT = REPO/"outputs/rectangle_registration/manual_internal_roi_v1"
 
@@ -76,7 +75,7 @@ def main() -> int:
         "primary_array": "height_raw",
         "optional_array": "height_repaired",
         "warning": "repair is Level-3 model-derived; retain repair_mask and use raw as authority",
-        "metrics_sha256": sha256_of(metrics_path),
+        "metrics": str(metrics_path.relative_to(REPO)),
     }
     np.savez_compressed(
         bundle,
@@ -99,9 +98,7 @@ def main() -> int:
         "decision": "PASS", "samples": 200,
         "shape": [200, 160, 160], "dtype": "float32",
         "bundle": str(bundle.relative_to(REPO)),
-        "bundle_sha256": sha256_of(bundle),
         "index": str(index_path.relative_to(REPO)),
-        "index_sha256": sha256_of(index_path),
         "primary": "height_raw", "optional": "height_repaired",
     }
     (ROOT/"dataset/dataset_summary.json").write_text(
@@ -112,4 +109,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -13,7 +13,6 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import yaml
 from matplotlib.widgets import Button, RectangleSelector
 
 REPO = Path(__file__).resolve().parents[1]
@@ -38,10 +37,6 @@ class FourEdgeAnnotator:
         self.prefix = f"annotator_{self.annotator}_"
         self.table_path = table_path
         self.crop_um = float(crop_um)
-        self.config = yaml.safe_load(
-            (REPO / "config/rectangle_registration.yaml").read_text(encoding="utf-8")
-        )
-        self.root = REPO / self.config["paths"]["outputs_root"]
         self.table = pd.read_csv(table_path, keep_default_na=False)
         self._validate_table()
         for column in self.table.columns:
@@ -49,21 +44,21 @@ class FourEdgeAnnotator:
                 self.table[column] = self.table[column].astype(object)
         self.sessions = {
             row["session_id"]: row for row in pd.read_csv(
-                REPO / self.config["paths"]["session_manifest"],
+                REPO / "config/session_manifest.csv",
                 keep_default_na=False
             ).to_dict("records")
         }
-        planes = pd.read_csv(self.root / "metrics/coarse_leveling_metrics.csv")
+        planes = pd.read_csv(REPO / "config/frozen/measurement_planes_160.csv")
         self.planes = {
             (row["session_id"], int(row["measurement_id"])): row
             for row in planes.to_dict("records")
         }
-        geometry = pd.read_csv(self.root / "geometry/session_geometry.csv")
+        geometry = pd.read_csv(REPO / "annotations/session_geometry.csv")
         self.theta = {
             row["session_id"]: float(row["theta_session_deg"])
             for row in geometry.to_dict("records")
         }
-        views = pd.read_csv(self.root / "inventory/sample_view_manifest.csv")
+        views = pd.read_csv(REPO / "annotations/sample_view_manifest.csv")
         self.views = {
             (row["session_id"], int(row["sample_id"])): row
             for row in views.to_dict("records")
@@ -442,7 +437,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--annotator", required=True, choices=("A", "B", "a", "b"))
     parser.add_argument("--table", type=Path, default=(
-        REPO / "outputs/rectangle_registration/registration/manual_four_edge_validation.csv"))
+        REPO / "annotations/manual_four_edge_validation.csv"))
     parser.add_argument("--crop-um", type=float, default=400.0)
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--render-smoke", type=Path,

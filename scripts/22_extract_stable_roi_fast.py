@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-"""Fast full extraction of 200 fixed-size manual-centred stable ROIs.
-
-The script reuses the already-passed measurement outer-plane fits, never
-depends on the blocked 260 um H_reg route, and writes raw plus conservatively
-repaired height maps with explicit masks and provenance.
-"""
+"""Extract 200 fixed-size manual-centred raw/repaired stable ROIs."""
 
 from __future__ import annotations
 
@@ -12,6 +7,7 @@ import argparse
 import csv
 import json
 import math
+import shutil
 import sys
 from dataclasses import asdict
 from datetime import datetime, timezone
@@ -32,7 +28,6 @@ from src.data_contracts import HeightMap  # noqa: E402
 from src.io_cag import CagHeightReader  # noqa: E402
 from src.io_npz import save_height_npz  # noqa: E402
 from src.resampling import resample_to_canonical  # noqa: E402
-from src.stage_manifest import sha256_of  # noqa: E402
 
 
 def read_csv(path: Path) -> list[dict]:
@@ -135,10 +130,14 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path,
                         default=Path("config/manual_internal_roi_v1.yaml"))
+    parser.add_argument("--fresh", action="store_true",
+                        help="replace the regenerable output directory")
     args = parser.parse_args(argv)
     config_path = (REPO/args.config).resolve()
     cfg = yaml.safe_load(config_path.read_text(encoding="utf-8"))
     output = REPO/cfg["output_root"]
+    if args.fresh and output.exists():
+        shutil.rmtree(output)
     roi = cfg["stable_roi"]
     width_um, height_um = float(roi["width_um"]), float(roi["height_um"])
     if width_um != height_um:
@@ -152,8 +151,6 @@ def main(argv: list[str] | None = None) -> int:
     planes = {(r["session_id"], int(r["measurement_id"])): r
               for r in read_csv(REPO/cfg["plane_csv"])}
     sessions = read_csv(REPO/cfg["session_manifest"])
-    sources = {(r["session_id"], int(r["measurement_id"])): r
-               for r in read_csv(REPO/cfg["height_source_manifest"])}
     if len(registrations) != 200 or len(planes) != 160:
         raise RuntimeError(f"input cardinality mismatch: registrations={len(registrations)}, planes={len(planes)}")
     if any(r["status"] != "PASS" for r in registrations):
@@ -166,9 +163,7 @@ def main(argv: list[str] | None = None) -> int:
         raise RuntimeError("fixed stable ROI is not inside every manual box")
 
     repair_cfg = ConicalDropoutConfig(**cfg["conical_dropout"])
-    config_sha = sha256_of(config_path)
     annotation_path = REPO/cfg["annotation_csv"]
-    annotation_sha = sha256_of(annotation_path)
     metrics: list[dict] = []
     components: list[dict] = []
     profiles: list[dict] = []
@@ -194,7 +189,6 @@ def main(argv: list[str] | None = None) -> int:
                     assert hm is not None
                     plane_row = planes[(sid, mid)]
                     plane = tuple(float(plane_row[k]) for k in ("a", "b", "c"))
-                    source = sources[(sid, mid)]
                     metadata = {
                         "object": "H_stable_raw",
                         "method": cfg["method"], "evidence_level": 3,
@@ -208,9 +202,7 @@ def main(argv: list[str] | None = None) -> int:
                         "manual_height_um": float(row["manual_height_um"]),
                         "manual_boundary_clearance_x_um": float(row["manual_width_um"])/2-width_um/2,
                         "manual_boundary_clearance_y_um": float(row["manual_height_um"])/2-height_um/2,
-                        "config_sha256": config_sha,
-                        "manual_annotation_sha256": annotation_sha,
-                        "source_csv_sha256": source["csv_sha256"],
+                        "source_cag": session["cag_path"],
                         "plane": {k: plane_row[k] for k in ("a", "b", "c", "rmse_um", "status")},
                     }
                     raw = resample_to_canonical(
@@ -289,7 +281,7 @@ def main(argv: list[str] | None = None) -> int:
     status_counts = {s: sum(r["status"] == s for r in metrics)
                      for s in sorted({r["status"] for r in metrics})}
     summary = {
-        "stage": "fast_manual_internal_roi_extraction",
+        "stage": "manual_internal_roi_extraction",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "decision": "PASS" if len(metrics) == 200 and not errors else "STOP",
         "method": cfg["method"], "evidence_level": 3,
@@ -300,23 +292,15 @@ def main(argv: list[str] | None = None) -> int:
         "minimum_manual_boundary_clearance_y_um": min_half_height-height_um/2,
         "accepted_conical_components": len(components),
         "total_repaired_pixels": sum(int(r["repair_repaired_pixels"]) for r in metrics),
-        "config": {"path": str(config_path.relative_to(REPO)), "sha256": config_sha},
-        "annotation": {"path": str(annotation_path.relative_to(REPO)), "sha256": annotation_sha},
+        "config": str(config_path.relative_to(REPO)),
+        "annotation": str(annotation_path.relative_to(REPO)),
         "notes": [
-            "Stable ROI is fixed before profile inspection and shared by all samples.",
             "Raw height is authoritative and is never overwritten.",
-            "Repaired height is a conservative Level-3 derived product with an explicit mask.",
-            "This fast route does not depend on the blocked 260 um H_reg export."],
+            "Repaired height is optional and always accompanied by repair_mask."],
     }
     output.mkdir(parents=True, exist_ok=True)
     (output/"run_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
-    approval = (
-        "# Stable ROI extraction\n\n"
-        f"Status: {'PENDING' if summary['decision']=='PASS' else 'BLOCKED'}\n\n"
-        f"Exported: {len(metrics)}/200\n\n"
-        "Automatic extraction completed. Review the montage and metrics before downstream modelling.\n")
-    (output/"STABLE_ROI_APPROVAL.md").write_text(approval, encoding="utf-8")
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0 if summary["decision"] == "PASS" else 2
 

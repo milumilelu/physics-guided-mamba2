@@ -1,94 +1,41 @@
-# ============================================================
 # Python
-# ============================================================
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
-build/
-dist/
-*.egg-info/
-.eggs/
 .pytest_cache/
-.ipynb_checkpoints/
-
-# 虚拟环境
 .venv/
 venv/
-env/
 
-# ============================================================
-# 原始测量数据 —— 不可变采集原始数据，体积达 GB 级，不入版本库
-# ============================================================
-# KEYENCE VK 系列容器与 VK4 原始高度场
-#   氧化锆/60Pass组.cag  2.3 GB
-#   氧化锆/20组.cag      756 MB
-#   氧化锆/120组直线.cag 147 MB
-#   氧化锆/72组单脉冲直线.cag 86 MB
-# 总计约 3.2 GB。数据由显微镜采集后不再变动，请保存在本地磁盘 / 网盘 / 移动硬盘，
-# 并在运行脚本时用 --cag 参数指定路径，或维护一份 数据位置说明.md 记录绝对路径。
+# Editors and local agents
+.vscode/
+.idea/
+.workbuddy/
+.workbuddy-ai/
+*.tmp
+*.bak
+*.log
+
+# Large immutable/raw measurement files
 *.cag
 *.vk4
 *.vk6
 *.vk7
+氧化锆/**/csv文件/
 
-# ============================================================
-# 生成产物 —— 图像类可重跑重建，只跟踪数值结果
-# ============================================================
-# outputs/ 下的诊断图、接触表、预览图等 PNG（共 54 张 / 约 6.7 MB）
-# 均由脚本确定性生成，不纳入版本控制以避免二进制 diff 膨胀。
-# 如需保留某张关键图，可用 git add -f <路径> 强制加入。
+# Regenerable figures (patent/source SVGs remain trackable)
 *.png
 *.jpg
 *.jpeg
 *.bmp
 *.tif
 *.tiff
+!专利/**/*.png
 
-# 论文/文档目录下的配图允许跟踪
-!docs/**/*.png
-!figures/**/*.png
-
-# ============================================================
-# 从 CAG 批量导出的高度矩阵 —— 派生数据，不入版本库
-# ============================================================
-# 由 export_height_csv.py 确定性重建：每组 2048×1536 的 CSV 约 28 MB，
-# 120 组合计约 3.2 GB。请保存在版本库之外（本地磁盘 / 网盘 / 移动硬盘）。
-氧化锆/**/csv文件/
-
-# ============================================================
-# 历史 BLOCKED 路线的派生中间体
-# ============================================================
-# 旧 260 µm manual_v1 Phase A 的 H_reg / H_200，合计约 2.6 GB。
-# 该路线状态为 BLOCKED，仅作方法演进审计证据，且可由 16–21 号脚本确定性重建。
-# 不入版本库；如需留档请用 git add -f 或转存外部存储。
-outputs/rectangle_registration/registered/H_reg/
-outputs/rectangle_registration/registered/H_200/
-outputs/rectangle_registration/manual_v1/registered/H_reg/
-outputs/rectangle_registration/manual_v1/registered/H_200/
-
-# ============================================================
-# 编辑器 / 系统 / 工具
-# ============================================================
-.workbuddy-ai/
-.workbuddy/
-.vscode/
-.idea/
-*.swp
-*.swo
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Office 临时锁文件
+# Office temporary files
 ~$*.docx
 ~$*.xlsx
 ~$*.pptx
 
-# ============================================================
-# 其他
-# ============================================================
-*.tmp
-*.bak
-*.log
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

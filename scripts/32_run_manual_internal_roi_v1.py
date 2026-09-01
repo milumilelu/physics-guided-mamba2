@@ -15,7 +15,8 @@ def main() -> int:
         [sys.executable, str(REPO/"scripts/verify_environment.py")],
         [sys.executable, "-m", "unittest", "discover", "-s",
          str(REPO/"tests"), "-v"],
-        [sys.executable, str(REPO/"scripts/22_extract_stable_roi_fast.py")],
+        [sys.executable, str(REPO/"scripts/22_extract_stable_roi_fast.py"),
+         "--fresh"],
         [sys.executable, str(REPO/"scripts/23_build_stable_roi_dataset.py")],
     ]
     for command in commands:

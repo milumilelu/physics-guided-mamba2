@@ -1,4 +1,0 @@
-﻿session_id,common_fov_um,status,registered_fov_um,grid_pixels,pixel_um,warning,external_reference_width_um,limiting_measurement_id,limiting_sample_id
-zro2_120_formal,432.84367482804134,PASS,300.0,871,0.34443168771526983,,50.0,25,25
-zro2_20_supplement,,EXCLUDED,,,,session excluded by the explicit exclusion policy,,,
-zro2_60_pass,267.46082073300977,PASS,267.46082073300977,777,0.3442224205058041,,33.730410366504884,7,14

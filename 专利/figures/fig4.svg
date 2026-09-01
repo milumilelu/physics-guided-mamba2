@@ -119,4 +119,6 @@
   <!-- ============ 唯一一根反馈线：参数更新 → 核心模型（底部90°折线，变细变淡） ============ -->
   <path d="M1140 660 L1140 770 L690 770 L690 368" fill="none" stroke="#6B96C8" stroke-width="1.6" stroke-dasharray="6 4"/>
   <polygon points="690,360 684,372 696,372" fill="#6B96C8"/>
-  <text x="930" y="763" font-size="22" fill="#5F5E5A" text-anchor="midd
+  <text x="930" y="763" font-size="22" fill="#5F5E5A" text-anchor="middle">反馈更新模型参数</text>
+
+</svg>

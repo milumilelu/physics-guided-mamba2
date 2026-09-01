@@ -4,187 +4,210 @@
 
   <text x="700" y="60" font-size="32" font-weight="bold" fill="#185FA5" text-anchor="middle">多脉冲扫描加工过程与宏观形貌形成</text>
 
-  <!-- ============ A 工艺输入 ============ -->
-  <rect x="40" y="130" width="240" height="156" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
-  <text x="160" y="166" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">激光加工及扫描参数</text>
-  <text x="160" y="210" font-size="26" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">P, f, &#964;<tspan dy="5" font-size="20">p</tspan><tspan font-size="18" fill="#185FA5" dx="4"> 3</tspan></text>
-  <text x="160" y="240" font-size="26" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">v, h, N<tspan dy="5" font-size="20">pass</tspan></text>
-  <text x="160" y="270" font-size="26" fill="#5F5E5A" text-anchor="middle">材料及扫描轨迹</text>
+  <!-- ============ A 工艺输入（与 B/C/D 等顶齐 y=80）============ -->
+  <rect x="40" y="80" width="240" height="180" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
+  <text x="160" y="118" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">激光加工及扫描参数</text>
+  <text x="160" y="160" font-size="26" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">P, f, &#964;<tspan dy="5" font-size="20">p</tspan><tspan font-size="18" fill="#185FA5" dx="4"> 3</tspan></text>
+  <text x="160" y="194" font-size="26" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">v, h, N<tspan dy="5" font-size="20">pass</tspan></text>
+  <text x="160" y="232" font-size="26" fill="#5F5E5A" text-anchor="middle">材料及扫描轨迹</text>
 
-  <line x1="160" y1="286" x2="160" y2="296" stroke="#5F5E5A" stroke-width="2"/>
-  <polygon points="160,304 154,292 166,292" fill="#5F5E5A"/>
+  <line x1="160" y1="260" x2="160" y2="288" stroke="#5F5E5A" stroke-width="2"/>
+  <polygon points="160,296 154,284 166,284" fill="#5F5E5A"/>
 
-  <rect x="40" y="308" width="240" height="156" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
-  <text x="160" y="344" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">脉冲级局部作用条件</text>
-  <text x="160" y="386" font-size="26" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">E<tspan dy="5" font-size="20">p</tspan> = P/f</text>
-  <text x="160" y="416" font-size="26" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#916;t = 1/f</text>
-  <text x="160" y="446" font-size="26" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#916;x = v/f</text>
+  <rect x="40" y="304" width="240" height="296" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
+  <text x="160" y="342" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">脉冲级局部作用条件</text>
+  <text x="160" y="394" font-size="26" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">E<tspan dy="5" font-size="20">p</tspan> = P/f</text>
+  <text x="160" y="438" font-size="26" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#916;t = 1/f</text>
+  <text x="160" y="482" font-size="26" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#916;x = v/f</text>
+  <text x="160" y="544" font-size="22" fill="#5F5E5A" text-anchor="middle">（局部作用/帧内固化）</text>
 
-  <!-- A→B -->
-  <line x1="280" y1="386" x2="292" y2="386" stroke="#5F5E5A" stroke-width="2.4"/>
-  <polygon points="300,386 288,380.5 288,391.5" fill="#5F5E5A"/>
+  <!-- A→B：A 框右侧视觉中心 y=420 引出到 B 框 -->
+  <line x1="280" y1="452" x2="292" y2="452" stroke="#5F5E5A" stroke-width="2.4"/>
+  <polygon points="300,452 288,446.5 288,457.5" fill="#5F5E5A"/>
 
-  <!-- ============ B 单扫描线脉冲作用（蓝，视觉中心，h 缩约 10%）============ -->
-  <rect x="300" y="80" width="400" height="370" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="2.8"/>
+  <!-- ============ B 单扫描线脉冲作用（蓝，视觉中心，纵向三段式重排）============ -->
+  <!-- 外框拉高到 h=520 给三段各自独立区段；底部 y=600 留出空间与 D 区底沿 510 错位对齐 -->
+  <rect x="300" y="80" width="400" height="520" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="2.8"/>
   <text x="500" y="114" font-size="26" font-weight="bold" fill="#0C447C" text-anchor="middle">单扫描线上的脉冲作用</text>
 
-  <!-- B-1 重叠光斑 -->
-  <text x="500" y="144" font-size="26" fill="#0C447C" text-anchor="middle">重叠光斑（高斯能量分布）</text>
-  <text x="512" y="160" font-size="22" fill="#5F5E5A" text-anchor="end">扫描方向</text>
-  <line x1="520" y1="156" x2="660" y2="156" stroke="#5F5E5A" stroke-width="1.6" stroke-dasharray="5 3"/>
-  <polygon points="668,156 656,151 656,161" fill="#5F5E5A"/>
+  <!-- B-1 重叠光斑带（y=140~280） -->
+  <text x="500" y="144" font-size="24" fill="#0C447C" text-anchor="middle">重叠光斑（高斯能量分布）</text>
+  <!-- 扫描方向：移到光斑带最右端，箭头起点再左 16px 避免与文字擦碰 -->
+  <text x="680" y="196" font-size="22" fill="#5F5E5A" text-anchor="end">扫描方向</text>
+  <line x1="688" y1="192" x2="642" y2="192" stroke="#5F5E5A" stroke-width="1.6" stroke-dasharray="5 3"/>
+  <polygon points="634,192 646,187 646,197" fill="#5F5E5A"/>
 
-  <circle cx="350" cy="192" r="22" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
-  <circle cx="400" cy="192" r="22" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
-  <circle cx="450" cy="192" r="22" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
-  <circle cx="500" cy="192" r="22" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
-  <circle cx="550" cy="192" r="22" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
-  <circle cx="600" cy="192" r="22" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
-  <circle cx="650" cy="192" r="22" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
-  <text x="350" y="236" font-size="22" fill="#5F5E5A" text-anchor="middle">1</text>
-  <text x="400" y="236" font-size="22" fill="#5F5E5A" text-anchor="middle">2</text>
-  <text x="450" y="236" font-size="22" fill="#5F5E5A" text-anchor="middle">3</text>
-  <text x="500" y="236" font-size="22" fill="#5F5E5A" text-anchor="middle">4</text>
-  <text x="550" y="236" font-size="22" fill="#5F5E5A" text-anchor="middle">5</text>
-  <text x="600" y="236" font-size="22" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">n<tspan dy="0" font-size="18">&#8722;</tspan>1</text>
-  <text x="650" y="236" font-size="22" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">n</text>
+  <circle cx="350" cy="222" r="20" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <circle cx="395" cy="222" r="20" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <circle cx="440" cy="222" r="20" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <circle cx="485" cy="222" r="20" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <circle cx="530" cy="222" r="20" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <circle cx="575" cy="222" r="20" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <circle cx="620" cy="222" r="20" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <text x="350" y="262" font-size="22" fill="#5F5E5A" text-anchor="middle">1</text>
+  <text x="395" y="262" font-size="22" fill="#5F5E5A" text-anchor="middle">2</text>
+  <text x="440" y="262" font-size="22" fill="#5F5E5A" text-anchor="middle">3</text>
+  <text x="485" y="262" font-size="22" fill="#5F5E5A" text-anchor="middle">4</text>
+  <text x="530" y="262" font-size="22" fill="#5F5E5A" text-anchor="middle">5</text>
+  <text x="575" y="262" font-size="22" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">n<tspan dy="0" font-size="18">&#8722;</tspan>1</text>
+  <text x="620" y="262" font-size="22" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">n</text>
 
-  <!-- Δx 标尺 -->
-  <line x1="400" y1="256" x2="450" y2="256" stroke="#5F5E5A" stroke-width="1.6"/>
-  <line x1="400" y1="251" x2="400" y2="261" stroke="#5F5E5A" stroke-width="1.6"/>
-  <line x1="450" y1="251" x2="450" y2="261" stroke="#5F5E5A" stroke-width="1.6"/>
-  <text x="425" y="276" font-size="22" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#916;x</text>
+  <!-- Δx 标尺：移到光斑带正下方，y=290，不再穿过光斑 -->
+  <line x1="395" y1="290" x2="440" y2="290" stroke="#5F5E5A" stroke-width="1.6"/>
+  <line x1="395" y1="285" x2="395" y2="295" stroke="#5F5E5A" stroke-width="1.6"/>
+  <line x1="440" y1="285" x2="440" y2="295" stroke="#5F5E5A" stroke-width="1.6"/>
+  <text x="417" y="310" font-size="22" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#916;x</text>
 
-  <!-- B-2 时间轴 -->
-  <text x="500" y="306" font-size="22" fill="#0C447C" text-anchor="middle">时间轴：脉冲逐个到达</text>
-  <line x1="330" y1="324" x2="660" y2="324" stroke="#5F5E5A" stroke-width="2"/>
-  <polygon points="668,324 656,318.5 656,329.5" fill="#5F5E5A"/>
-  <circle cx="360" cy="324" r="5" fill="#185FA5"/>
-  <circle cx="430" cy="324" r="5" fill="#185FA5"/>
-  <circle cx="500" cy="324" r="5" fill="#185FA5"/>
-  <circle cx="570" cy="324" r="5" fill="#185FA5"/>
-  <circle cx="640" cy="324" r="5" fill="#185FA5"/>
+  <!-- 分隔虚线：B-1 与 B-2 -->
+  <line x1="320" y1="334" x2="680" y2="334" stroke="#185FA5" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>
 
-  <!-- Δt 标尺 -->
-  <line x1="430" y1="342" x2="500" y2="342" stroke="#5F5E5A" stroke-width="1.6"/>
-  <line x1="430" y1="337" x2="430" y2="347" stroke="#5F5E5A" stroke-width="1.6"/>
-  <line x1="500" y1="337" x2="500" y2="347" stroke="#5F5E5A" stroke-width="1.6"/>
-  <text x="465" y="362" font-size="22" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#916;t</text>
+  <!-- B-2 时间轴（y=350~420） -->
+  <text x="500" y="364" font-size="22" fill="#0C447C" text-anchor="middle">时间轴：脉冲逐个到达</text>
+  <line x1="330" y1="384" x2="660" y2="384" stroke="#5F5E5A" stroke-width="2"/>
+  <polygon points="668,384 656,378.5 656,389.5" fill="#5F5E5A"/>
+  <circle cx="360" cy="384" r="5" fill="#185FA5"/>
+  <circle cx="430" cy="384" r="5" fill="#185FA5"/>
+  <circle cx="500" cy="384" r="5" fill="#185FA5"/>
+  <circle cx="570" cy="384" r="5" fill="#185FA5"/>
+  <circle cx="640" cy="384" r="5" fill="#185FA5"/>
 
-  <!-- B-3 三张等尺寸卡片（y=370, h=80）-->
-  <rect x="320" y="370" width="110" height="76" rx="6" fill="#FFFFFF" stroke="#185FA5" stroke-width="1.8"/>
-  <text x="375" y="392" font-size="22" fill="#0C447C" text-anchor="middle">初始表面</text>
-  <line x1="340" y1="416" x2="410" y2="416" stroke="#5F5E5A" stroke-width="2"/>
-  <text x="375" y="438" font-size="22" fill="#5F5E5A" text-anchor="middle">未加工</text>
+  <!-- Δt 标尺：独立 y=410~422 -->
+  <line x1="430" y1="410" x2="500" y2="410" stroke="#5F5E5A" stroke-width="1.6"/>
+  <line x1="430" y1="405" x2="430" y2="415" stroke="#5F5E5A" stroke-width="1.6"/>
+  <line x1="500" y1="405" x2="500" y2="415" stroke="#5F5E5A" stroke-width="1.6"/>
+  <text x="465" y="430" font-size="22" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#916;t</text>
 
-  <line x1="430" y1="408" x2="444" y2="408" stroke="#185FA5" stroke-width="2"/>
-  <polygon points="452,408 440,402.5 440,413.5" fill="#185FA5"/>
+  <!-- 分隔虚线：B-2 与 B-3 -->
+  <line x1="320" y1="450" x2="680" y2="450" stroke="#185FA5" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>
 
-  <rect x="450" y="370" width="110" height="76" rx="6" fill="#FFFFFF" stroke="#185FA5" stroke-width="1.8"/>
-  <text x="505" y="392" font-size="22" fill="#0C447C" text-anchor="middle">首个脉冲后</text>
-  <path d="M470 416 L492 416 L502 428 L512 416 L550 416" fill="none" stroke="#5F5E5A" stroke-width="2" stroke-linejoin="round"/>
-  <text x="505" y="438" font-size="22" fill="#5F5E5A" text-anchor="middle">浅坑</text>
+  <!-- B-3 三张等尺寸卡片（y=472, h=100；卡间留 16px 箭头带）-->
+  <rect x="318" y="472" width="116" height="100" rx="6" fill="#FFFFFF" stroke="#185FA5" stroke-width="1.8"/>
+  <text x="376" y="498" font-size="22" fill="#0C447C" text-anchor="middle">初始表面</text>
+  <line x1="338" y1="528" x2="414" y2="528" stroke="#5F5E5A" stroke-width="2"/>
+  <text x="376" y="552" font-size="22" fill="#5F5E5A" text-anchor="middle">未加工</text>
 
-  <line x1="560" y1="408" x2="574" y2="408" stroke="#185FA5" stroke-width="2"/>
-  <polygon points="582,408 570,402.5 570,413.5" fill="#185FA5"/>
+  <line x1="434" y1="522" x2="446" y2="522" stroke="#185FA5" stroke-width="2"/>
+  <polygon points="454,522 442,516.5 442,527.5" fill="#185FA5"/>
 
-  <rect x="580" y="370" width="110" height="76" rx="6" fill="#FFFFFF" stroke="#185FA5" stroke-width="1.8"/>
-  <text x="635" y="392" font-size="22" fill="#0C447C" text-anchor="middle">多脉冲累积</text>
-  <path d="M598 416 L618 416 L630 430 L645 416 L672 416" fill="none" stroke="#5F5E5A" stroke-width="2" stroke-linejoin="round"/>
-  <text x="635" y="438" font-size="22" fill="#5F5E5A" text-anchor="middle">连续沟槽</text>
+  <rect x="454" y="472" width="116" height="100" rx="6" fill="#FFFFFF" stroke="#185FA5" stroke-width="1.8"/>
+  <text x="512" y="498" font-size="22" fill="#0C447C" text-anchor="middle">首个脉冲后</text>
+  <path d="M474 528 L498 528 L508 540 L518 528 L554 528" fill="none" stroke="#5F5E5A" stroke-width="2" stroke-linejoin="round"/>
+  <text x="512" y="552" font-size="22" fill="#5F5E5A" text-anchor="middle">浅坑</text>
 
-  <!-- B→C -->
-  <line x1="700" y1="280" x2="714" y2="280" stroke="#185FA5" stroke-width="2.4"/>
-  <polygon points="722,280 710,274.5 710,285.5" fill="#185FA5"/>
+  <line x1="570" y1="522" x2="582" y2="522" stroke="#185FA5" stroke-width="2"/>
+  <polygon points="590,522 578,516.5 578,527.5" fill="#185FA5"/>
+
+  <rect x="590" y="472" width="100" height="100" rx="6" fill="#FFFFFF" stroke="#185FA5" stroke-width="1.8"/>
+  <text x="640" y="498" font-size="22" fill="#0C447C" text-anchor="middle">多脉冲累积</text>
+  <path d="M608 528 L628 528 L640 542 L656 528 L674 528" fill="none" stroke="#5F5E5A" stroke-width="2" stroke-linejoin="round"/>
+  <text x="640" y="552" font-size="22" fill="#5F5E5A" text-anchor="middle">连续沟槽</text>
+
+  <!-- B→C 水平连线：从 B 框右沿视觉中心 y=420 引出，不再穿越内容 -->
+  <line x1="700" y1="420" x2="714" y2="420" stroke="#185FA5" stroke-width="2.4"/>
+  <polygon points="722,420 710,414.5 710,425.5" fill="#185FA5"/>
 
   <!-- ============ C 多线/多遍累积（橙）============ -->
-  <rect x="720" y="130" width="300" height="300" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="2.4"/>
-  <text x="870" y="162" font-size="28" font-weight="bold" fill="#633806" text-anchor="middle">多线/多遍累积</text>
+  <rect x="720" y="80" width="300" height="520" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="2.4"/>
+  <text x="870" y="114" font-size="28" font-weight="bold" fill="#633806" text-anchor="middle">多线/多遍累积</text>
 
-  <text x="870" y="192" font-size="26" fill="#633806" text-anchor="middle">平行扫描线（线间距 h）</text>
+  <text x="870" y="148" font-size="24" fill="#633806" text-anchor="middle">平行扫描线（线间距 h）</text>
 
+  <line x1="760" y1="174" x2="980" y2="174" stroke="#185FA5" stroke-width="1.8"/>
+  <polygon points="988,174 976,168.5 976,179.5" fill="#185FA5"/>
+  <line x1="760" y1="194" x2="980" y2="194" stroke="#185FA5" stroke-width="1.8"/>
+  <polygon points="988,194 976,188.5 976,199.5" fill="#185FA5"/>
   <line x1="760" y1="214" x2="980" y2="214" stroke="#185FA5" stroke-width="1.8"/>
   <polygon points="988,214 976,208.5 976,219.5" fill="#185FA5"/>
   <line x1="760" y1="234" x2="980" y2="234" stroke="#185FA5" stroke-width="1.8"/>
   <polygon points="988,234 976,228.5 976,239.5" fill="#185FA5"/>
-  <line x1="760" y1="254" x2="980" y2="254" stroke="#185FA5" stroke-width="1.8"/>
-  <polygon points="988,254 976,248.5 976,259.5" fill="#185FA5"/>
-  <line x1="760" y1="274" x2="980" y2="274" stroke="#185FA5" stroke-width="1.8"/>
-  <polygon points="988,274 976,268.5 976,279.5" fill="#185FA5"/>
 
   <!-- h 标尺 -->
-  <line x1="732" y1="214" x2="732" y2="254" stroke="#BA7517" stroke-width="1.6"/>
+  <line x1="732" y1="174" x2="732" y2="214" stroke="#BA7517" stroke-width="1.6"/>
+  <line x1="727" y1="174" x2="737" y2="174" stroke="#BA7517" stroke-width="1.6"/>
   <line x1="727" y1="214" x2="737" y2="214" stroke="#BA7517" stroke-width="1.6"/>
-  <line x1="727" y1="254" x2="737" y2="254" stroke="#BA7517" stroke-width="1.6"/>
-  <text x="740" y="238" font-size="22" fill="#BA7517" text-anchor="start" font-family="Times New Roman, Times, serif" font-style="italic">h</text>
+  <text x="740" y="200" font-size="22" fill="#BA7517" text-anchor="start" font-family="Times New Roman, Times, serif" font-style="italic">h</text>
 
-  <!-- C 下部：多遍加工 -->
-  <line x1="740" y1="296" x2="1010" y2="296" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="4 3"/>
-  <text x="1010" y="306" font-size="22" fill="#5F5E5A" text-anchor="end">多遍加工</text>
+  <!-- C 中部分隔虚线 -->
+  <line x1="740" y1="270" x2="1010" y2="270" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <text x="1010" y="282" font-size="22" fill="#5F5E5A" text-anchor="end">多遍加工</text>
 
-  <rect x="748" y="318" width="192" height="32" rx="4" fill="#FFFFFF" stroke="#BA7517" stroke-width="1.5"/>
-  <line x1="763" y1="334" x2="925" y2="334" stroke="#185FA5" stroke-width="1.6"/>
-  <text x="950" y="340" font-size="22" fill="#633806" text-anchor="start">第1遍</text>
+  <!-- C 下部：多遍加工（三排卡片，间距均匀） -->
+  <rect x="748" y="300" width="192" height="36" rx="4" fill="#FFFFFF" stroke="#BA7517" stroke-width="1.5"/>
+  <line x1="763" y1="318" x2="925" y2="318" stroke="#185FA5" stroke-width="1.6"/>
+  <polygon points="932,318 922,313 922,323" fill="#185FA5"/>
+  <text x="950" y="324" font-size="22" fill="#633806" text-anchor="start">第1遍</text>
 
-  <rect x="748" y="358" width="192" height="32" rx="4" fill="#FFFFFF" stroke="#BA7517" stroke-width="1.5"/>
-  <line x1="763" y1="374" x2="925" y2="374" stroke="#185FA5" stroke-width="1.6"/>
-  <text x="950" y="380" font-size="22" fill="#633806" text-anchor="start">第2遍</text>
+  <rect x="748" y="346" width="192" height="36" rx="4" fill="#FFFFFF" stroke="#BA7517" stroke-width="1.5"/>
+  <line x1="763" y1="364" x2="925" y2="364" stroke="#185FA5" stroke-width="1.6"/>
+  <polygon points="932,364 922,359 922,369" fill="#185FA5"/>
+  <text x="950" y="370" font-size="22" fill="#633806" text-anchor="start">第2遍</text>
 
-  <rect x="748" y="398" width="192" height="32" rx="4" fill="#FFFFFF" stroke="#BA7517" stroke-width="1.5"/>
-  <line x1="763" y1="414" x2="925" y2="414" stroke="#185FA5" stroke-width="1.6"/>
-  <text x="950" y="420" font-size="22" fill="#633806" text-anchor="start">第3遍</text>
+  <rect x="748" y="392" width="192" height="36" rx="4" fill="#FFFFFF" stroke="#BA7517" stroke-width="1.5"/>
+  <line x1="763" y1="410" x2="925" y2="410" stroke="#185FA5" stroke-width="1.6"/>
+  <polygon points="932,410 922,405 922,415" fill="#185FA5"/>
+  <text x="950" y="416" font-size="22" fill="#633806" text-anchor="start">第3遍</text>
 
-  <!-- C→D -->
-  <line x1="1020" y1="300" x2="1034" y2="300" stroke="#185FA5" stroke-width="2.4"/>
-  <polygon points="1042,300 1030,294.5 1030,305.5" fill="#185FA5"/>
+  <!-- 累积收尾说明：B-3 输出汇聚到第3遍结果 -->
+  <line x1="844" y1="438" x2="844" y2="500" stroke="#BA7517" stroke-width="1.6" stroke-dasharray="4 3"/>
+  <polygon points="844,508 838,496 850,496" fill="#BA7517"/>
+  <text x="870" y="478" font-size="22" fill="#633806" text-anchor="middle">累积成槽</text>
+  <text x="870" y="546" font-size="24" fill="#633806" text-anchor="middle" font-weight="bold">最终二维轮廓</text>
 
-  <!-- ============ D 最终工程观测（灰，h 加大 380）============ -->
-  <rect x="1040" y="130" width="320" height="380" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2.4"/>
-  <text x="1200" y="162" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">最终工程观测</text>
+  <!-- C→D 水平连线：C 框右沿视觉中心 y=420 -->
+  <line x1="1020" y1="420" x2="1034" y2="420" stroke="#185FA5" stroke-width="2.4"/>
+  <polygon points="1042,420 1030,414.5 1030,425.5" fill="#185FA5"/>
 
-  <!-- D-上：单线加工（h=170）-->
-  <rect x="1056" y="182" width="288" height="170" rx="6" fill="#FFFFFF" stroke="#5F5E5A" stroke-width="1.8"/>
-  <text x="1200" y="212" font-size="26" font-weight="bold" fill="#444441" text-anchor="middle">单线加工</text>
-  <line x1="1090" y1="276" x2="1140" y2="276" stroke="#5F5E5A" stroke-width="1.8"/>
-  <path d="M1140 276 L1160 296 L1180 276" fill="none" stroke="#5F5E5A" stroke-width="1.8" stroke-linejoin="round"/>
-  <line x1="1180" y1="276" x2="1252" y2="276" stroke="#5F5E5A" stroke-width="1.8"/>
-  <path d="M1160 296 L1262 296" fill="none" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <!-- ============ D 最终工程观测（灰，与 B/C 等高）============ -->
+  <rect x="1040" y="80" width="320" height="520" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2.4"/>
+  <text x="1200" y="114" font-size="28" font-weight="bold" fill="#444441" text-anchor="middle">最终工程观测</text>
 
-  <line x1="1268" y1="276" x2="1268" y2="296" stroke="#5F5E5A" stroke-width="1.4"/>
-  <line x1="1263" y1="276" x2="1273" y2="276" stroke="#5F5E5A" stroke-width="1.2"/>
-  <line x1="1263" y1="296" x2="1273" y2="296" stroke="#5F5E5A" stroke-width="1.2"/>
-  <text x="1278" y="294" font-size="22" fill="#5F5E5A" text-anchor="start" font-family="Times New Roman, Times, serif" font-style="italic">d<tspan dy="4" font-size="18">line</tspan></text>
+  <!-- D-上：单线加工（y=140~360） -->
+  <rect x="1056" y="140" width="288" height="220" rx="6" fill="#FFFFFF" stroke="#5F5E5A" stroke-width="1.8"/>
+  <text x="1200" y="174" font-size="26" font-weight="bold" fill="#444441" text-anchor="middle">单线加工</text>
 
-  <line x1="1140" y1="322" x2="1140" y2="334" stroke="#5F5E5A" stroke-width="1.2"/>
-  <line x1="1180" y1="322" x2="1180" y2="334" stroke="#5F5E5A" stroke-width="1.2"/>
-  <line x1="1140" y1="328" x2="1180" y2="328" stroke="#5F5E5A" stroke-width="1.4"/>
-  <text x="1190" y="338" font-size="22" fill="#5F5E5A" text-anchor="start" font-family="Times New Roman, Times, serif" font-style="italic">w<tspan dy="4" font-size="18">line</tspan></text>
+  <line x1="1090" y1="244" x2="1140" y2="244" stroke="#5F5E5A" stroke-width="1.8"/>
+  <path d="M1140 244 L1160 264 L1180 244" fill="none" stroke="#5F5E5A" stroke-width="1.8" stroke-linejoin="round"/>
+  <line x1="1180" y1="244" x2="1252" y2="244" stroke="#5F5E5A" stroke-width="1.8"/>
+  <path d="M1160 264 L1262 264" fill="none" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="4 3"/>
 
-  <!-- D-下：矩形槽加工（y=360, h=140）-->
-  <rect x="1056" y="362" width="288" height="140" rx="6" fill="#FFFFFF" stroke="#5F5E5A" stroke-width="1.8"/>
-  <text x="1200" y="392" font-size="26" font-weight="bold" fill="#444441" text-anchor="middle">矩形槽加工</text>
+  <line x1="1268" y1="244" x2="1268" y2="264" stroke="#5F5E5A" stroke-width="1.4"/>
+  <line x1="1263" y1="244" x2="1273" y2="244" stroke="#5F5E5A" stroke-width="1.2"/>
+  <line x1="1263" y1="264" x2="1273" y2="264" stroke="#5F5E5A" stroke-width="1.2"/>
+  <text x="1278" y="262" font-size="22" fill="#5F5E5A" text-anchor="start" font-family="Times New Roman, Times, serif" font-style="italic">d<tspan dy="4" font-size="18">line</tspan></text>
 
-  <line x1="1080" y1="426" x2="1080" y2="444" stroke="#5F5E5A" stroke-width="1.8"/>
-  <line x1="1080" y1="444" x2="1255" y2="444" stroke="#5F5E5A" stroke-width="1.8"/>
-  <line x1="1255" y1="426" x2="1255" y2="444" stroke="#5F5E5A" stroke-width="1.8"/>
-  <path d="M1092 426 L1243 426" fill="none" stroke="#5F5E5A" stroke-width="1.4" stroke-dasharray="4 3"/>
-  <path d="M1080 444 L1090 426 L1100 444 L1120 444 L1130 426 L1150 426 L1160 444 L1180 444 L1190 426 L1210 426 L1220 444 L1240 444 L1250 426 L1255 426" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linejoin="round"/>
+  <line x1="1140" y1="294" x2="1140" y2="306" stroke="#5F5E5A" stroke-width="1.2"/>
+  <line x1="1180" y1="294" x2="1180" y2="306" stroke="#5F5E5A" stroke-width="1.2"/>
+  <line x1="1140" y1="300" x2="1180" y2="300" stroke="#5F5E5A" stroke-width="1.4"/>
+  <text x="1190" y="316" font-size="22" fill="#5F5E5A" text-anchor="start" font-family="Times New Roman, Times, serif" font-style="italic">w<tspan dy="4" font-size="18">line</tspan></text>
 
-  <line x1="1270" y1="426" x2="1270" y2="444" stroke="#5F5E5A" stroke-width="1.4"/>
-  <line x1="1265" y1="426" x2="1275" y2="426" stroke="#5F5E5A" stroke-width="1.2"/>
-  <line x1="1265" y1="444" x2="1275" y2="444" stroke="#5F5E5A" stroke-width="1.2"/>
-  <text x="1280" y="442" font-size="22" fill="#5F5E5A" text-anchor="start" font-family="Times New Roman, Times, serif" font-style="italic">d<tspan dy="4" font-size="18">groove</tspan></text>
+  <text x="1200" y="346" font-size="22" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#8593;Y<tspan dy="4" font-size="18">line</tspan> = [ w<tspan dy="4" font-size="18">line</tspan>, d<tspan dy="4" font-size="18">line</tspan> ]</text>
 
-  <text x="1200" y="482" font-size="22" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">S<tspan dy="4" font-size="18">a</tspan>, S<tspan dy="4" font-size="18">q</tspan>, S<tspan dy="4" font-size="18">z</tspan></text>
+  <!-- D-下：矩形槽加工（y=380~580） -->
+  <rect x="1056" y="380" width="288" height="200" rx="6" fill="#FFFFFF" stroke="#5F5E5A" stroke-width="1.8"/>
+  <text x="1200" y="414" font-size="26" font-weight="bold" fill="#444441" text-anchor="middle">矩形槽加工</text>
+
+  <line x1="1080" y1="448" x2="1080" y2="466" stroke="#5F5E5A" stroke-width="1.8"/>
+  <line x1="1080" y1="466" x2="1255" y2="466" stroke="#5F5E5A" stroke-width="1.8"/>
+  <line x1="1255" y1="448" x2="1255" y2="466" stroke="#5F5E5A" stroke-width="1.8"/>
+  <path d="M1092 448 L1243 448" fill="none" stroke="#5F5E5A" stroke-width="1.4" stroke-dasharray="4 3"/>
+  <path d="M1080 466 L1090 448 L1100 466 L1120 466 L1130 448 L1150 448 L1160 466 L1180 466 L1190 448 L1210 448 L1220 466 L1240 466 L1250 448 L1255 448" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <line x1="1270" y1="448" x2="1270" y2="466" stroke="#5F5E5A" stroke-width="1.4"/>
+  <line x1="1265" y1="448" x2="1275" y2="448" stroke="#5F5E5A" stroke-width="1.2"/>
+  <line x1="1265" y1="466" x2="1275" y2="466" stroke="#5F5E5A" stroke-width="1.2"/>
+  <text x="1280" y="464" font-size="22" fill="#5F5E5A" text-anchor="start" font-family="Times New Roman, Times, serif" font-style="italic">d<tspan dy="4" font-size="18">groove</tspan></text>
+
+  <text x="1200" y="510" font-size="22" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">S<tspan dy="4" font-size="18">a</tspan>, S<tspan dy="4" font-size="18">q</tspan>, S<tspan dy="4" font-size="18">z</tspan></text>
+  <text x="1200" y="556" font-size="22" fill="#5F5E5A" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#8593;Y<tspan dy="4" font-size="18">groove</tspan> = [ d<tspan dy="4" font-size="18">groove</tspan>, S<tspan dy="4" font-size="18">a</tspan>, S<tspan dy="4" font-size="18">q</tspan>, S<tspan dy="4" font-size="18">z</tspan> ]</text>
 
   <!-- ============ 图标记 (A/B/C/D 各区右上角) ============ -->
   <!-- 3 标记 u_n, 标在 A 区第一框右上角外 -->
-  <text x="288" y="146" font-size="22" font-weight="bold" fill="#185FA5" text-anchor="start">3</text>
+  <text x="288" y="100" font-size="22" font-weight="bold" fill="#185FA5" text-anchor="start">3</text>
   <!-- 1 标记 H_n, 标在 B 区右上角内 -->
-  <text x="690" y="106" font-size="22" font-weight="bold" fill="#185FA5" text-anchor="end">1</text>
+  <text x="690" y="100" font-size="22" font-weight="bold" fill="#185FA5" text-anchor="end">1</text>
   <!-- 4 标记 Y_line, 标在 D-上区右上角内 -->
-  <text x="1342" y="200" font-size="22" font-weight="bold" fill="#5F5E5A" text-anchor="end">4</text>
+  <text x="1342" y="170" font-size="22" font-weight="bold" fill="#5F5E5A" text-anchor="end">4</text>
   <!-- 5 标记 Y_groove, 标在 D-下区右上角内 -->
-  <text x="1342" y="380" font-size="22" font-weight="bold" fill="#5F5E5A" text-anchor="end">5</text>
+  <text x="1342" y="410" font-size="22" font-weight="bold" fill="#5F5E5A" text-anchor="end">5</text>
 
 </svg>

@@ -16,14 +16,8 @@ EXPECTED_PACKAGES = {
     "scipy": "1.18.1",
     "yaml": "6.0.3",
 }
-OPTIONAL_PACKAGES = {
-    "catboost": "1.2.10",
-    "xgboost": "3.4.1",
-}
-
-
 def main() -> int:
-    """Check exact interpreter/package versions and report optional CUDA state."""
+    """Check the exact interpreter and packages used by preprocessing."""
     failures: list[str] = []
     actual_python = sys.version_info[:3]
     if actual_python != EXPECTED_PYTHON:
@@ -39,29 +33,6 @@ def main() -> int:
             failures.append(
                 f"{module_name} mismatch: expected {expected}, got {actual}"
             )
-
-    for module_name, expected in OPTIONAL_PACKAGES.items():
-        try:
-            module = importlib.import_module(module_name)
-        except ModuleNotFoundError:
-            print(f"{module_name}=not installed (optional model extension)")
-            continue
-        actual = str(module.__version__)
-        print(f"{module_name}={actual}")
-        if actual != expected:
-            failures.append(
-                f"{module_name} mismatch: expected {expected}, got {actual}"
-            )
-
-    try:
-        torch = importlib.import_module("torch")
-    except ModuleNotFoundError:
-        print("torch=not installed (optional CUDA extension)")
-    else:
-        print(f"torch={torch.__version__}")
-        print(f"cuda_available={torch.cuda.is_available()}")
-        if torch.cuda.is_available():
-            print(f"cuda_device={torch.cuda.get_device_name(0)}")
 
     if failures:
         for failure in failures:

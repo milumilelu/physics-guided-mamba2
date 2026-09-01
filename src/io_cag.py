@@ -1,6 +1,6 @@
 """KEYENCE ``.cag`` reader that never repairs the data.
 
-Compared with the original ``export_height_csv.py`` this module:
+The reader:
 
 * never fills invalid sentinel pixels -- they become ``NaN`` + ``False``;
 * keeps the raw sentinel value out of min/max, leveling and registration;
