@@ -26,6 +26,7 @@ conditional:
   window_size: 50
   window_step: 10
   window_nonoverlap_step: 50
+  shuffle_null_perms: 200
   baseline_draws: 100
   baseline_inner_b: 100
 

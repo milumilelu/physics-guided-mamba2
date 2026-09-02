@@ -29,6 +29,14 @@ EXPECTED = ["morphology_descriptors.csv", "pass_step_stats.csv",
 PIXEL_UM = 0.5
 
 
+def _nan_pct(values, qs=(25, 50, 75, 90, 95)):
+    v = np.asarray(values, dtype=float)
+    v = v[~np.isnan(v)]
+    if v.size == 0:
+        return [np.nan] * len(qs)
+    return np.percentile(v, list(qs))
+
+
 def compute_descriptors(R: np.ndarray, dct_fields: dict) -> pd.DataFrame:
     n = R.shape[0]
     sq = np.sqrt(np.mean(R ** 2, axis=(1, 2)))
@@ -66,11 +74,18 @@ def compute_descriptors(R: np.ndarray, dct_fields: dict) -> pd.DataFrame:
         pit_depth[i] = float(-np.min(Ri))
     out = pd.DataFrame({
         "dataset_index": np.arange(n),
-        "Sq_um": sq, "Sa_um": sa, "Ssk": ssk, "Sku": sku,
+        "Sq_um": sq, "Sa_um": sa, "Ssk_skewness": ssk,
+        "kurtosis_excess_fisher": sku,
         "grad_rms_um_per_um": grad_rms,
         "aniso_gradx_over_y": grad_x_rms / np.maximum(grad_y_rms, 1e-300),
-        "lap_rms_um": lap_rms, "corr_len_um": corr_len,
-        "pit_count_per_roi": pit_count, "pit_depth_um": pit_depth,
+        # scipy.ndimage.laplace: per-pixel second difference -> um/px^2
+        "lap_rms_um_per_px2": lap_rms,
+        # 1/e folding lag of the zero-delay-cut ACF profile, mean of x/y cuts
+        "acf_e_fold_lag_um": corr_len,
+        # negative-outlier pixels (< median - 3.5 * 1.4826*MAD), per megapixel
+        "pit_density_per_Mpx": pit_count
+        * (1e6 / float(R.shape[1] * R.shape[2])),
+        "pit_depth_um": pit_depth,
     })
     var_R = np.maximum(np.mean(R ** 2, axis=(1, 2)), 1e-300)
     for name, fields in dct_fields.items():
@@ -156,8 +171,9 @@ def main() -> int:
                     across[s].append(float(np.clip(a @ b / (na * nb), -1, 1)))
         for s in (1, 2, 3):
             q = np.percentile(rms_q[s], [25, 50, 75, 90, 95])
-            rows.append((scale, s, *q,
-                         float(np.nanmedian(cos12)), float(np.nanmedian(cos23)),
+            c12q = _nan_pct(cos12)
+            c23q = _nan_pct(cos23)
+            rows.append((scale, s, *q, *c12q, *c23q,
                          float(np.nanmedian(across[s])) if across[s] else np.nan,
                          float(np.median(dds[s]))))
         _lib.log(f"  [{scale}] step RMS Q50 (N1->2, 2->3, 3->4): "
@@ -171,7 +187,10 @@ def main() -> int:
     pd.DataFrame(rows, columns=[
         "scale", "step", "step_rms_q25_um", "step_rms_q50_um",
         "step_rms_q75_um", "step_rms_q90_um", "step_rms_q95_um",
-        "cos_step1_vs_2_q50", "cos_step2_vs_3_q50",
+        "cos_step1_vs_2_q25", "cos_step1_vs_2_q50", "cos_step1_vs_2_q75",
+        "cos_step1_vs_2_q90", "cos_step1_vs_2_q95",
+        "cos_step2_vs_3_q25", "cos_step2_vs_3_q50", "cos_step2_vs_3_q75",
+        "cos_step2_vs_3_q90", "cos_step2_vs_3_q95",
         "across_traj_same_step_cos_q50", "depth_step_median_um"
         ]).to_csv(out / "pass_step_stats.csv", index=False)
     _lib.log("  wrote pass_step_stats.csv")
@@ -183,9 +202,9 @@ def main() -> int:
     steps = (1, 2, 3)
     for scale in fields:
         sub = [r for r in rows if r[0] == scale]
-        med = np.array([r[2] for r in sub])
-        q25 = np.array([r[1] for r in sub])
-        q75 = np.array([r[3] for r in sub])
+        med = np.array([r[3] for r in sub])   # step_rms_q50
+        q25 = np.array([r[2] for r in sub])   # step_rms_q25
+        q75 = np.array([r[4] for r in sub])   # step_rms_q75
         axes[0].plot(steps, med, "o-", color=colors[scale], lw=1.4, ms=4,
                      label=scale)
         axes[0].fill_between(steps, q25, q75, color=colors[scale], alpha=0.15)
@@ -198,8 +217,8 @@ def main() -> int:
     pos = np.arange(len(fields))
     for i, scale in enumerate(fields):
         sub = [r for r in rows if r[0] == scale]
-        axes[1].plot([i - 0.18], [sub[0][6]], "s", color=colors[scale], ms=6)
-        axes[1].plot([i + 0.18], [sub[0][7]], "D", color=colors[scale], ms=5,
+        axes[1].plot([i - 0.18], [sub[0][7]], "s", color=colors[scale], ms=6)
+        axes[1].plot([i + 0.18], [sub[0][12]], "D", color=colors[scale], ms=5,
                      mfc="none")
     axes[1].set_xticks(pos, list(fields), fontsize=8, rotation=20)
     axes[1].axhline(0.0, color="0.4", lw=0.8)
@@ -248,15 +267,18 @@ def main() -> int:
           for k in dct_fields],
         ("Sq_um", desc["Sq_um"].to_numpy(), "um"),
         ("Sa_um", desc["Sa_um"].to_numpy(), "um"),
-        ("Ssk", desc["Ssk"].to_numpy(), "-"),
-        ("Sku", desc["Sku"].to_numpy(), "-"),
+        ("Ssk_skewness", desc["Ssk_skewness"].to_numpy(), "-"),
+        ("kurtosis_excess_fisher", desc["kurtosis_excess_fisher"].to_numpy(),
+         "-"),
         ("grad_rms", desc["grad_rms_um_per_um"].to_numpy(), "um/um"),
         ("aniso_x_over_y", desc["aniso_gradx_over_y"].to_numpy(), "-"),
-        ("lap_rms_um", desc["lap_rms_um"].to_numpy(), "um"),
-        ("corr_len_um", desc["corr_len_um"].to_numpy(), "um"),
+        ("lap_rms_um_per_px2", desc["lap_rms_um_per_px2"].to_numpy(),
+         "um/px^2"),
+        ("acf_e_fold_lag_um", desc["acf_e_fold_lag_um"].to_numpy(), "um"),
         *[(f"E_{k}_frac", desc[f"E_{k}_frac"].to_numpy(), "-")
           for k in dct_fields],
-        ("pit_count", desc["pit_count_per_roi"].to_numpy().astype(float), "px"),
+        ("pit_density_per_Mpx",
+         desc["pit_density_per_Mpx"].to_numpy(), "1/Mpx"),
         ("pit_depth_um", desc["pit_depth_um"].to_numpy(), "um"),
     ]
     map_rows = []
@@ -273,21 +295,20 @@ def main() -> int:
     mdf.to_csv(out / "variability_repeatability_summary.csv", index=False)
     _lib.log("  wrote variability_repeatability_summary.csv")
 
-    fig, ax = plt.subplots(figsize=(13.5, 8.2), dpi=dpi)
+    fig, ax = plt.subplots(figsize=(12.5, 8.2), dpi=dpi)
     ax.axis("off")
-    hdr = (f"{'observable':<16}{'unit':>7}{'SD':>10}{'IQR':>10}"
-           f"{'49/50 delta':>13}{'49/50 pct':>11}   repeatability")
+    hdr = (f"{'observable':<24}{'unit':>9}{'SD':>10}{'IQR':>10}"
+           f"{'49/50 delta':>13}{'49/50 pct':>11}")
     lines = [hdr, "-" * len(hdr)]
     for r in map_rows:
-        r_cls = "high" if r[5] <= 5 else ("medium" if r[5] <= 20 else "low")
-        lines.append(f"{r[0]:<16}{r[1]:>7}{r[2]:>10.3f}{r[3]:>10.3f}"
-                     f"{r[4]:>13.3f}{r[5]:>11.1f}   {r_cls}")
+        lines.append(f"{r[0]:<24}{r[1]:>9}{r[2]:>10.3f}{r[3]:>10.3f}"
+                     f"{r[4]:>13.3f}{r[5]:>11.1f}")
     ax.text(0.0, 1.0, "\n".join(lines), family="monospace", fontsize=9,
             va="top", transform=ax.transAxes)
     ax.set_title("Variability / repeatability summary (across-sample SD & "
-                 "IQR; 49/50 single-pair sentinel percentile vs ordinary "
-                 "pairs; high<=5%, medium<=20%)", fontsize=10,
-                 family="monospace")
+                 "IQR; 49/50 single-pair sentinel value and its percentile "
+                 "vs ordinary pairs — descriptive only, no class assigned)",
+                 fontsize=10, family="monospace")
     fig.tight_layout()
     fig.savefig(out / "variability_repeatability_summary.png", dpi=dpi,
                 bbox_inches="tight")

@@ -1,5 +1,31 @@
 # Phase 1.5 执行细则（残差不稳定性来源分解）
 
+> ## 1.5R.1 修订（当前生效版本）
+>
+> 1. **pass 图索引修复**：`pass_scale_evolution.png` panel A 曾误用 Q25 当
+>    Q50 线、step 列当 Q25；panel B 曾把 q95 当 cos12 且漏画 cos23——已修正，
+>    cos 两段折线分开显示。
+> 2. **描述符命名/单位**：`kurtosis_excess_fisher`（无单位，Fisher 定义）、
+>    `lap_rms_um_per_px2`（scipy laplace 为逐像素二阶差分）、
+>    `acf_e_fold_lag_um`（零延迟截线 ACF 的 1/e 折点，x/y 均值）、
+>    `pit_density_per_Mpx`（每百万像素负离群点数，阈值 med−3.5×1.4826·MAD）、
+>    `Ssk_skewness`。
+> 3. **49/50 分类撤销**：variability/repeatability 汇总只报数值与分位，
+>    不再给 high/medium/low 标签。
+> 4. **conditional 判据**：新增 `stable_call` 列——`prank1>=0.95 且
+>    theta1_Q50<rand_Q25` 之外，还须 `theta1_Q90<rand_Q75 且
+>    loco_max<45deg` 才记 `robust_stable`，否则 `fragile_stable`；
+>    基线分布同时报 Q25/Q50/Q75/Q90。
+> 5. **LOCO 明细**：`loco_top5_influencers.csv`（每 subset x scale 的 top-5
+>    cluster_id、角度、成员 sample/加工条件/深度）与
+>    `loco_top5_montage.png`（total 残差 PC1，每子集 5 格）。
+> 6. **shuffled-depth null**：10→200 次（`conditional.shuffle_null_perms`），
+>    逐次结果存 `depth_window_null.csv`。
+> 7. **turning cosine CI**：`pass_step_stats.csv` 增 cos(step1,2) 与
+>    cos(step2,3) 的 trajectory-bootstrap Q25/50/75/90/95。
+> 8. **depth-Q 基线**：跨 session 子集改 `session_composition_matched`
+>    （按子集内各 session 的 ROI 数与 within-session occupancy 分别抽取）。
+
 > ## 1.5R 修订（当前生效版本）
 >
 > 1. **尺度命名**：废除 `<2 / 2–8 / >8 µm` 三带标签；改用滤波器命名 `G2/G4/G8/G16`

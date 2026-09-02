@@ -21,8 +21,9 @@ import pandas as pd
 import _lib
 
 EXPECTED = ["conditional_pca_table.csv", "baseline_matched.csv",
+            "loco_top5_influencers.csv", "loco_top5_montage.png",
             "conditional_stability_heatmap.png", "depth_window_table.csv",
-            "depth_window_mode_rotation.png"]
+            "depth_window_null.csv", "depth_window_mode_rotation.png"]
 
 ANOMALY_SUBSETS = ("formal N=1", "formal N=2", "depth Q1")
 
@@ -84,16 +85,37 @@ def main() -> int:
     pools = _lib.session_cluster_pools(man)
     global_pool = _lib.cluster_lists(man, cfg["bootstrap"]["cluster_key"])
 
-    rows, base_rows = [], []
+    rows, base_rows, loco_rows = [], [], []
+    total_top5 = []
     cache: dict = {}
     for si, (name, rows_idx) in enumerate(subsets):
         man_sub = man.iloc[rows_idx]
         clusters_sub = subset_positions(man_sub)
+        cluster_ids = man_sub.iloc[[p[0] for p in clusters_sub]][
+            "shared_height_source_id"].to_numpy()
         bank = _lib.build_resample_bank(clusters_sub, B, seed + 17 * si)
-        sessions = man_sub["session_id"].unique()
-        pool = pools[sessions[0]] if len(sessions) == 1 else global_pool
-        pool_label = str(sessions[0]) if len(sessions) == 1 else "global"
+        sessions = list(man_sub["session_id"].unique())
+        # baseline draws: same session when the subset is single-session,
+        # otherwise the same per-session composition (count + occupancy)
+        if len(sessions) == 1:
+            pool = pools[sessions[0]]
+            pool_label = str(sessions[0])
+
+            def draw_one(rng_):
+                return _lib.draw_matched_subset(pool, sig_holder[0], rng_)
+        else:
+            pool_label = "session_composition_matched"
+            sess_parts = [(s, man_sub[man_sub["session_id"] == s])
+                          for s in sessions]
+
+            def draw_one(rng_):
+                parts = [_lib.draw_matched_subset(pools[s],
+                                                  _lib.occupancy_signature(ms),
+                                                  rng_)
+                         for s, ms in sess_parts]
+                return np.sort(np.concatenate(parts))
         sig = _lib.occupancy_signature(man_sub)
+        sig_holder = [sig]
 
         for fi, fname in enumerate(field_names):
             X = fields[fname]
@@ -111,7 +133,7 @@ def main() -> int:
                 rng_c = np.random.default_rng(seed + 424242 + 977 * fi)
                 r1 = []
                 for _ in range(n_draws):
-                    idx = _lib.draw_matched_subset(pool, sig, rng_c)
+                    idx = draw_one(rng_c)
                     Y = X[idx]
                     ref_r, _ = _lib.gram_pca(Y, 3)
                     man_r = man.iloc[idx]
@@ -124,23 +146,47 @@ def main() -> int:
                 cache[key] = np.asarray(r1)
             rb = cache[key]
             prank1 = float(np.mean(rb > q1["q50"]))
+            rand_q = {p: float(np.percentile(rb, p)) for p in (25, 50, 75, 90)}
 
             # LOCO influence (all fields for non-global subsets; global only
             # on the total field to keep the Gram refits affordable)
             if not (name == "global" and fname != "total"):
                 loco = _lib.loco_angles(Xs, clusters_sub, k=1)
                 loco_med, loco_max = float(np.median(loco)), float(np.max(loco))
+                order_loco = np.argsort(loco)[::-1]
+                for rank, ci in enumerate(order_loco[:5]):
+                    cid = str(cluster_ids[ci])
+                    members = man_sub.iloc[clusters_sub[ci]]
+                    m_desc = "|".join(
+                        f"{r.session_id}:s{int(r.sample_id)}"
+                        f"(po{int(r.processing_order)},N{int(r.pass_count)},"
+                        f"d{r.median_depth_um:.1f})"
+                        for r in members.itertuples())
+                    loco_rows.append((name, fname, rank + 1, cid,
+                                      float(loco[ci]), m_desc))
+                    if fname == "total":
+                        total_top5.append((name, rank, cid, float(loco[ci]),
+                                           members))
             else:
                 loco_med = loco_max = np.nan
+
+            # stability call: Q50 alone is not enough; require the upper
+            # quantiles and LOCO influence to agree
+            if prank1 >= 0.95 and q1["q50"] < rand_q[25]:
+                if q1["q90"] < rand_q[75] and loco_max < 45:
+                    call = "robust_stable"
+                else:
+                    call = "fragile_stable"
+            else:
+                call = "not_called"
 
             rows.append((name, fname, len(rows_idx), float(evr[0]),
                          float(evr[:3].sum()), eigengap,
                          float(q1["q25"]), float(q1["q50"]), float(q1["q75"]),
                          float(q1["q90"]), float(q1["q95"]), th3,
                          loco_med, loco_max,
-                         pool_label, float(np.median(rb)),
-                         float(np.percentile(rb, 25)),
-                         float(np.percentile(rb, 75)), prank1))
+                         pool_label, rand_q[50], rand_q[25], rand_q[75],
+                         rand_q[90], prank1, call))
         base_rows.append((name, pool_label, sig, n_draws, inner_b))
         _lib.log(f"  [{name}] done ({_lib.elapsed(t0)})")
 
@@ -150,25 +196,27 @@ def main() -> int:
         "theta1_q90_deg", "theta1_q95_deg", "theta3_q50_deg",
         "loco_median_deg", "loco_max_deg", "baseline_pool",
         "rand_theta1_q50_deg", "rand_theta1_q25_deg", "rand_theta1_q75_deg",
-        "prank1"])
+        "rand_theta1_q90_deg", "prank1", "stable_call"])
     df.to_csv(out / "conditional_pca_table.csv", index=False)
+    pd.DataFrame(loco_rows, columns=[
+        "subset", "scale", "rank", "cluster_id", "loco_angle_deg",
+        "members"]).to_csv(out / "loco_top5_influencers.csv", index=False)
     pd.DataFrame(base_rows, columns=["subset", "baseline_pool",
                                      "occupancy_signature", "n_draws",
                                      "inner_b"]).to_csv(
         out / "baseline_matched.csv", index=False)
-    _lib.log("  wrote conditional_pca_table.csv / baseline_matched.csv")
+    _lib.log("  wrote conditional_pca_table.csv / loco_top5_influencers.csv / "
+             "baseline_matched.csv")
 
-    strong = df[(df.prank1 >= 0.95)
-                & (df.theta1_q50_deg < df.rand_theta1_q25_deg)]
-    if len(strong):
-        _lib.log("  subsets clearly more stable than matched baseline:")
-        for _, r in strong.iterrows():
+    for call in ("robust_stable", "fragile_stable"):
+        sel = df[df.stable_call == call]
+        _lib.log(f"  [{call}]: {len(sel)} (subset, scale) cells")
+        for _, r in sel.head(24).iterrows():
             _lib.log(f"    {r['subset']} [{r['scale']}]: theta1 Q50="
-                     f"{r['theta1_q50_deg']:.1f} deg vs random Q50 "
-                     f"{r['rand_theta1_q50_deg']:.1f} deg (p-rank "
-                     f"{r['prank1']:.2f})")
-    else:
-        _lib.log("  no subset beats its matched baseline decisively")
+                     f"{r['theta1_q50_deg']:.1f} Q90={r['theta1_q90_deg']:.1f} "
+                     f"vs rand Q50={r['rand_theta1_q50_deg']:.1f} "
+                     f"Q75={r['rand_theta1_q75_deg']:.1f} "
+                     f"(p={r['prank1']:.2f}, locoMax={r['loco_max_deg']:.1f})")
 
     _lib.log("  anomaly check (N1/N2, depth Q1): eigengap / theta1 Q50 [Q25, "
              "Q75] / LOCO max / baseline Q50 (p-rank), per scale")
@@ -241,8 +289,13 @@ def main() -> int:
         return ctrs[:-1], evrs[:-1], c1, c13
 
     wrows = []
+    null_rows = []
     real_curves = {}
     null_stats = {}
+    n_null = int(cfg["conditional"]["shuffle_null_perms"])
+    if quick:
+        n_null = min(n_null, 10)
+    _lib.log(f"  shuffled-depth null: {n_null} permutations")
     for fname in win_fields:
         X = fields[fname]
         ctrs, evrs, c1, c13 = window_cosines(
@@ -255,11 +308,13 @@ def main() -> int:
         for j, ctr in enumerate(ctrs_n):
             wrows.append(("nonoverlap", fname, ctr, np.nan, c1_n[j], c13_n[j]))
         null_med = []
-        for p in range(10):
+        for p in range(n_null):
             perm = rng_w.permutation(200)
             _, _, c1_p, _ = window_cosines(
                 perm, list(range(0, 200 - w + 1, step)), X)
-            null_med.append(float(np.median(c1_p)))
+            med_p = float(np.median(c1_p))
+            null_med.append(med_p)
+            null_rows.append((fname, p + 1, med_p))
         null_stats[fname] = (float(np.median(null_med)),
                              float(np.percentile(null_med, 90)))
         _lib.log(f"  sliding-window [{fname}]: real |cos| PC1 median="
@@ -273,7 +328,10 @@ def main() -> int:
                                        "cos_pc1_next",
                                        "cos_pc13_next_worst"])
     dfw.to_csv(out / "depth_window_table.csv", index=False)
-    _lib.log("  wrote depth_window_table.csv")
+    pd.DataFrame(null_rows, columns=["scale", "permutation",
+                                     "null_median_cos_pc1_next"]
+                 ).to_csv(out / "depth_window_null.csv", index=False)
+    _lib.log("  wrote depth_window_table.csv / depth_window_null.csv")
 
     fig, axes = plt.subplots(1, 3, figsize=(18.5, 5.0), dpi=dpi)
     colors = {"total": "black", "G16": "tab:green", "DCT_8_16": "tab:red",
@@ -322,6 +380,42 @@ def main() -> int:
                 bbox_inches="tight")
     plt.close(fig)
     _lib.log("  wrote depth_window_mode_rotation.png")
+
+    # ---- LOCO top-5 montage (total-residual PC1 influence) -----------------
+    H, V = frozen["H"], frozen["V"]
+    n_sub = len(subsets)
+    fig, axes = plt.subplots(n_sub, 5, figsize=(11.5, 0.62 * n_sub + 1.2),
+                             dpi=120)
+    cmap_m = plt.get_cmap("viridis").copy()
+    cmap_m.set_bad("0.82")
+    for r, (name, rows_idx) in enumerate(subsets):
+        cells = [t for t in total_top5 if t[0] == name]
+        for c in range(5):
+            ax = axes[r, c]
+            if c < len(cells):
+                _, rank, cid, ang, members = cells[c]
+                dsi = int(members["dataset_index"].iloc[0])
+                img = np.ma.masked_where(~V[dsi], H[dsi])
+                ax.imshow(img, cmap=cmap_m)
+                ax.set_title(f"#{rank} {ang:.0f}deg  {cid.split(':')[-1]}\n"
+                             f"{members['session_id'].iloc[0].replace('zro2_', '')} "
+                             f"s{int(members['sample_id'].iloc[0])} "
+                             f"d={members['median_depth_um'].iloc[0]:.0f}um",
+                             fontsize=4.6)
+            else:
+                ax.axis("off")
+            ax.set_xticks([])
+            ax.set_yticks([])
+            if c == 0:
+                axes[r, 0].set_ylabel(name, fontsize=5.5, rotation=0,
+                                      ha="right", va="center")
+    fig.suptitle("LOCO top-5 influential clusters per subset "
+                 "(total-residual PC1; one member ROI shown)", fontsize=10)
+    fig.subplots_adjust(wspace=0.02, hspace=0.28, top=0.955, bottom=0.005,
+                        left=0.085, right=0.995)
+    fig.savefig(out / "loco_top5_montage.png", dpi=120, bbox_inches="tight")
+    plt.close(fig)
+    _lib.log("  wrote loco_top5_montage.png")
 
     missing = [f for f in EXPECTED if not (out / f).exists()]
     _lib.require(not missing, f"missing outputs: {missing}")
