@@ -1,7 +1,16 @@
-"""Shared frozen-input loaders and fast cluster-bootstrap PCA for Phase 1.5.
+"""Shared frozen-input loaders and fast cluster-bootstrap PCA for Phase 1.5R.
 
 Low-model-assumption diagnostics only. Residual definition matches Phase 1
 exactly: R = H - per-sample valid-median, computed from height_raw.
+
+1.5R revisions:
+- scales are named by their filter (Gsigma2/4/8/16 px) and by physical
+  wavelength DCT bands; Gaussian -3dB wavelengths are reported explicitly;
+- bootstrap uses a pre-generated cluster resample bank (shared across fields)
+  and reports Q25/Q50/Q75/Q90/Q95 (the angle distribution is asymmetric);
+- conditional baselines draw from the same session with matched ROI count and
+  matched within-subset cluster-size pattern;
+- leave-one-cluster-out influence and eigengap diagnostics are provided.
 """
 
 from __future__ import annotations
@@ -13,6 +22,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import yaml
+from scipy.fft import dctn, idctn
 from scipy.ndimage import gaussian_filter
 
 REPO = Path(__file__).resolve().parents[2]
@@ -84,7 +94,7 @@ def load_frozen(cfg: dict) -> dict:
 
 
 # --------------------------------------------------------------------------- #
-# scale decomposition
+# scale fields: Gaussian low-pass (Gsigma) and physical-wavelength DCT bands
 # --------------------------------------------------------------------------- #
 
 def gaussian_smooth(R3: np.ndarray, sigma_px: float) -> np.ndarray:
@@ -94,30 +104,94 @@ def gaussian_smooth(R3: np.ndarray, sigma_px: float) -> np.ndarray:
     return out
 
 
-def make_bands(R3: np.ndarray, sigma_low_px: float,
-               sigma_high_px: float) -> dict[str, np.ndarray]:
-    """Disjoint band split (spec formulas, sigma_low > sigma_high):
+def lambda_3db_px(sigma_px: float) -> float:
+    """-3 dB wavelength of the continuous Gaussian transfer function.
 
-    R_low  = G_{sigma_low} * R           (coarser than ~sigma_low px)
-    R_high = R - G_{sigma_high} * R      (finer than ~sigma_high px)
-    R_mid  = R - R_low - R_high          (band between the two cutoffs)
+    |H(f)| = exp(-2 pi^2 sigma^2 f^2) = 1/sqrt(2) at
+    f = sqrt(ln 2) / (2 pi sigma)  ->  lambda_3dB = 2 pi sigma / sqrt(ln 2).
     """
-    require(sigma_low_px > sigma_high_px, "need sigma_low > sigma_high")
-    n_nan = int(np.count_nonzero(~np.isfinite(R3)))
-    if n_nan:
-        log(f"  WARNING: {n_nan} NaN pixels in R; filling with per-sample "
-            "median before filtering")
-        fill = np.nanmedian(R3, axis=(1, 2))
-        R3 = np.where(np.isfinite(R3), R3, fill[:, None, None])
-    R_low = gaussian_smooth(R3, sigma_low_px)
-    R_high = R3 - gaussian_smooth(R3, sigma_high_px)
-    R_mid = R3 - R_low - R_high
-    return {"low": R_low, "mid": R_mid, "high": R_high}
+    return 2.0 * np.pi * float(sigma_px) / np.sqrt(np.log(2.0))
+
+
+def numeric_lambda_3db_px(sigma_px: float, n: int = 8192) -> float:
+    """Empirical -3 dB wavelength from the DFT of the discrete kernel."""
+    radius = max(int(8.0 * float(sigma_px)), 4)
+    x = np.arange(-radius, radius + 1, dtype=float)
+    kernel = np.exp(-x ** 2 / (2.0 * float(sigma_px) ** 2))
+    kernel /= kernel.sum()
+    Hf = np.abs(np.fft.rfft(kernel, n=n))
+    target = 1.0 / np.sqrt(2.0)
+    below = np.flatnonzero(Hf < target)
+    j = int(below[0])
+    f_cross = (j - 1 + (Hf[j - 1] - target) / (Hf[j - 1] - Hf[j])) / n
+    return float(1.0 / f_cross)
+
+
+def dct_lambda_grid(shape: tuple[int, int], pixel_um: float) -> np.ndarray:
+    """Wavelength [um] of each DCT-II coefficient (isotropic |f|).
+
+    DCT-II mode k over N samples of spacing d has spatial frequency
+    k / (2 N d) cycles/um; lam = 1/|f| with f = hypot(fx, fy); DC -> inf.
+    """
+    nx, ny = shape
+    fx = np.arange(nx) / (2.0 * nx * pixel_um)
+    fy = np.arange(ny) / (2.0 * ny * pixel_um)
+    FX, FY = np.meshgrid(fx, fy, indexing="ij")
+    f = np.hypot(FX, FY)
+    lam = np.full(shape, np.inf)
+    np.divide(1.0, f, out=lam, where=f > 0)
+    return lam
+
+
+def dct_band_fields(R3: np.ndarray, pixel_um: float,
+                    bands_um: list) -> tuple[dict[str, np.ndarray], float]:
+    """Physical-wavelength band-pass fields via DCT coefficient masking.
+
+    Returns (dict band-name -> field, coverage fraction of the pixel grid by
+    the union of the bands). Band names: DCT_<lo>_<hi> (um).
+    """
+    lam = dct_lambda_grid(R3.shape[1:], pixel_um)
+    out: dict[str, np.ndarray] = {}
+    covered = np.zeros(R3.shape[1:], dtype=bool)
+    for lo_raw, hi_raw in bands_um:
+        lo, hi = float(lo_raw), float(hi_raw)
+        if np.isfinite(hi) and hi < 1e8:
+            mask = (lam >= lo) & (lam < hi)
+            name = f"DCT_{lo:g}_{hi:g}"
+        else:
+            mask = lam >= lo
+            name = f"DCT_{lo:g}_inf"
+        fields = np.empty_like(R3)
+        for i in range(R3.shape[0]):
+            C = dctn(R3[i], norm="ortho")
+            fields[i] = idctn(C * mask, norm="ortho")
+        out[name] = fields
+        covered |= mask
+    return out, float(covered.mean())
+
+
+def multiscale_fields(R3: np.ndarray, cfg: dict) -> dict[str, np.ndarray]:
+    """total + Gaussian low-pass fields + DCT band fields, 2-D flattened."""
+    pixel_um = float(cfg["scales"]["pixel_um"])
+    fields = {"total": to_2d(R3)}
+    for sigma in cfg["scales"]["sigmas_px"]:
+        fields[f"G{int(sigma)}"] = to_2d(gaussian_smooth(R3, float(sigma)))
+    dct_fields, coverage = dct_band_fields(R3, pixel_um,
+                                           cfg["scales"]["dct_bands_um"])
+    fields.update({k: to_2d(v) for k, v in dct_fields.items()})
+    return fields
 
 
 # --------------------------------------------------------------------------- #
-# PCA + cluster bootstrap
+# PCA + cluster bootstrap (bank based)
 # --------------------------------------------------------------------------- #
+
+def gram_eigenvalues(X: np.ndarray, k: int = 2) -> np.ndarray:
+    """Top-k raw eigenvalues of the centred Gram matrix (descending)."""
+    Xc = X - X.mean(axis=0, keepdims=True)
+    w = np.linalg.eigvalsh(Xc @ Xc.T)
+    return w[::-1][:k]
+
 
 def gram_pca(X: np.ndarray, k: int) -> tuple[np.ndarray, np.ndarray]:
     """Exact PCA via n x n Gram matrix. Returns (components (k, F), evr (k,))."""
@@ -157,20 +231,26 @@ def boot_draw(clusters: list, rng: np.random.Generator) -> np.ndarray:
     return np.concatenate([clusters[p] for p in pick])
 
 
-def boot_angles(G: np.ndarray, X: np.ndarray, clusters: list,
-                ref_comps: np.ndarray, k_max: int, B: int,
-                seed: int) -> tuple[np.ndarray, np.ndarray]:
-    """Max principal angle of bootstrap top-k subspace vs reference, per rep.
+def build_resample_bank(clusters: list, B: int,
+                        seed: int) -> list[np.ndarray]:
+    """Pre-generate B cluster resamples; reuse the same bank across fields."""
+    rng = np.random.default_rng(seed)
+    return [boot_draw(clusters, rng) for _ in range(B)]
 
-    Uses the precomputed Gram G = X X^T: the bootstrap Gram of centred rows is
+
+def boot_angles_bank(G: np.ndarray, X: np.ndarray, bank: list,
+                     ref_comps: np.ndarray,
+                     k_max: int) -> tuple[np.ndarray, np.ndarray]:
+    """Max principal angle of each bank resample's top-k subspace vs reference.
+
+    Uses the precomputed Gram G = X X^T: the resample Gram of centred rows is
     G_b - (G_b 1 1^T + 1 1^T G_b)/m + (1^T G_b 1 / m^2) 1 1^T, all m x m ops.
     Returns (angles (B, k_max), evr (B, 3)).
     """
-    rng = np.random.default_rng(seed)
+    B = len(bank)
     angles = np.zeros((B, k_max))
     evr = np.zeros((B, min(3, k_max)))
-    for b in range(B):
-        idx = boot_draw(clusters, rng)
+    for b, idx in enumerate(bank):
         m = len(idx)
         Gb = G[np.ix_(idx, idx)]
         one = np.ones(m)
@@ -191,36 +271,74 @@ def boot_angles(G: np.ndarray, X: np.ndarray, clusters: list,
     return angles, evr
 
 
-def _self_test() -> None:
-    """Verify fast bootstrap Gram/components against direct computation."""
-    rng = np.random.default_rng(0)
-    n, f = 30, 400
-    X = rng.normal(size=(n, f)) @ rng.normal(size=(f, 12))
-    clusters = [np.array([i]) for i in range(n)]
-    ref, _ = gram_pca(X, 4)
-    require(np.allclose(ref @ ref.T, np.eye(4), atol=1e-8),
-            "self-test: reference components not orthonormal")
-    G = X @ X.T
-    angles_fast, evr_fast = boot_angles(G, X, clusters, ref, 3, B=5, seed=7)
-    require(np.all((angles_fast >= 0) & (angles_fast <= 90)),
-            "self-test: angles outside [0, 90]")
-    rng2 = np.random.default_rng(7)
-    for b in range(5):
-        pick = rng2.integers(0, n, size=n)
-        idx = np.concatenate([clusters[p] for p in pick])
-        comps_dir, evr_dir = gram_pca(X[idx], 3)
-        require(np.allclose(comps_dir @ comps_dir.T, np.eye(3), atol=1e-8),
-                f"self-test: direct components not orthonormal (rep {b})")
-        for k in range(1, 4):
-            ang_dir = principal_angles(ref[:k].T, comps_dir[:k].T)[-1]
-            require(abs(ang_dir - angles_fast[b, k - 1]) < 1e-7,
-                    f"self-test angle mismatch at rep {b} k {k}")
-        require(np.allclose(evr_dir[:3], evr_fast[b], atol=1e-10),
-                f"self-test EVR mismatch at rep {b}")
+def boot_angles(G: np.ndarray, X: np.ndarray, clusters: list,
+                ref_comps: np.ndarray, k_max: int, B: int,
+                seed: int) -> tuple[np.ndarray, np.ndarray]:
+    bank = build_resample_bank(clusters, B, seed)
+    return boot_angles_bank(G, X, bank, ref_comps, k_max)
+
+
+def angle_quantiles(angles: np.ndarray) -> dict[str, np.ndarray]:
+    """Q25/Q50/Q75/Q90/Q95 per column (the distribution is asymmetric)."""
+    qs = np.percentile(angles, [25, 50, 75, 90, 95], axis=0)
+    return {"q25": qs[0], "q50": qs[1], "q75": qs[2], "q90": qs[3],
+            "q95": qs[4]}
+
+
+def loco_angles(X: np.ndarray, clusters: list, k: int = 1) -> np.ndarray:
+    """Leave-one-cluster-out influence: angle between the full-subset top-k
+    subspace and the subspace without each cluster."""
+    ref, _ = gram_pca(X, k)
+    all_rows = np.arange(len(X))
+    out = np.zeros(len(clusters))
+    for i, c in enumerate(clusters):
+        keep = np.setdiff1d(all_rows, c)
+        ref_k, _ = gram_pca(X[keep], k)
+        out[i] = principal_angles(ref[:k].T, ref_k[:k].T)[-1]
+    return out
+
+
+def occupancy_signature(man_sub: pd.DataFrame,
+                        key: str = "shared_height_source_id") -> tuple:
+    """Sorted within-subset cluster sizes, e.g. (1,1,...,1) or (2,2,1,...)."""
+    sizes = man_sub.groupby(key).size().to_numpy()
+    return tuple(sorted((int(s) for s in sizes), reverse=True))
+
+
+def draw_matched_subset(pool: list, sig_sizes: tuple,
+                        rng: np.random.Generator) -> np.ndarray:
+    """Draw a random ROI subset with the same cluster count, ROI count and
+    within-subset cluster-size pattern as a conditional subset.
+
+    pool: list of global cluster member-index arrays. For each required
+    within-subset size s (largest first) one cluster is drawn without
+    replacement and min(s, len(cluster)) members are taken (random slots).
+    """
+    remaining = list(range(len(pool)))
+    picked = []
+    for s in sorted(sig_sizes, reverse=True):
+        ok = [j for j in remaining if len(pool[j]) >= s]
+        if not ok:
+            ok = remaining
+        j = ok[int(rng.integers(0, len(ok)))]
+        remaining.remove(j)
+        members = pool[j]
+        take = rng.permutation(members)[:s]
+        picked.append(np.sort(take))
+    return np.sort(np.concatenate(picked))
+
+
+def session_cluster_pools(man: pd.DataFrame,
+                          key: str = "shared_height_source_id") -> dict:
+    """session_id -> list of cluster member-index arrays (global dataset)."""
+    out = {}
+    for s, grp in man.groupby("session_id"):
+        out[s] = [g.to_numpy() for _, g in grp.groupby(key)["dataset_index"]]
+    return out
 
 
 # --------------------------------------------------------------------------- #
-# small shared helpers
+# pairwise helpers
 # --------------------------------------------------------------------------- #
 
 def pairwise_rmse_from_gram(G: np.ndarray, n_features: int) -> np.ndarray:
@@ -249,3 +367,40 @@ def ordinary_pair_mask(man: pd.DataFrame, i_a: int, i_b: int) -> tuple:
 
 def elapsed(t0: float) -> str:
     return f"{time.time() - t0:.1f}s"
+
+
+def _self_test() -> None:
+    """Verify fast bootstrap Gram/components against direct computation."""
+    rng = np.random.default_rng(0)
+    n, f = 30, 400
+    X = rng.normal(size=(n, f)) @ rng.normal(size=(f, 12))
+    clusters = [np.array([i]) for i in range(n)]
+    ref, _ = gram_pca(X, 4)
+    require(np.allclose(ref @ ref.T, np.eye(4), atol=1e-8),
+            "self-test: reference components not orthonormal")
+    G = X @ X.T
+    bank = build_resample_bank(clusters, 5, 7)
+    angles_fast, evr_fast = boot_angles_bank(G, X, bank, ref, 3)
+    require(np.all((angles_fast >= 0) & (angles_fast <= 90)),
+            "self-test: angles outside [0, 90]")
+    rng2 = np.random.default_rng(7)
+    for b in range(5):
+        pick = rng2.integers(0, n, size=n)
+        idx = np.concatenate([clusters[p] for p in pick])
+        require(np.array_equal(idx, bank[b]), "self-test: bank mismatch")
+        comps_dir, evr_dir = gram_pca(X[idx], 3)
+        require(np.allclose(comps_dir @ comps_dir.T, np.eye(3), atol=1e-8),
+                f"self-test: direct components not orthonormal (rep {b})")
+        for k in range(1, 4):
+            ang_dir = principal_angles(ref[:k].T, comps_dir[:k].T)[-1]
+            require(abs(ang_dir - angles_fast[b, k - 1]) < 1e-7,
+                    f"self-test angle mismatch at rep {b} k {k}")
+        require(np.allclose(evr_dir[:3], evr_fast[b], atol=1e-10),
+                f"self-test EVR mismatch at rep {b}")
+    # -3 dB wavelength: analytic vs numeric DFT crossing
+    for sigma in (2.0, 7.3):
+        ana = lambda_3db_px(sigma)
+        num = numeric_lambda_3db_px(sigma)
+        require(abs(ana - num) / ana < 0.02,
+                f"self-test: lambda_3dB analytic {ana:.3f} vs numeric "
+                f"{num:.3f}")

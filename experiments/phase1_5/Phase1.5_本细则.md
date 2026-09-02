@@ -1,5 +1,32 @@
 # Phase 1.5 执行细则（残差不稳定性来源分解）
 
+> ## 1.5R 修订（当前生效版本）
+>
+> 1. **尺度命名**：废除 `<2 / 2–8 / >8 µm` 三带标签；改用滤波器命名 `G2/G4/G8/G16`
+>   （σ 单位 px），并输出 Gaussian 传递函数的 **-3dB 波长**
+>    （解析式 λ=2πσ/√ln2 ≈ 7.546σ px，附离散核 DFT 数值核对，写入
+>    `scale_energy_table.csv`）。另加一组按**物理波长**定义的 DCT 带敏感性
+>    （λ∈[8,16)/[16,32)/[32,64)/[64,∞) µm，DCT-II 掩码，报告覆盖率）。
+> 2. **bootstrap**：B=1000（quick 50）；预生成**同一份 cluster resample bank**
+>    跨所有尺度场复用；CSV 保存 **Q25/Q50/Q75/Q90/Q95**（分布不对称，不再用
+>    median±IQR/2 画带，改画 Q25–Q75 分位带）。
+> 3. **conditional**：基线改为**同 session（跨 session 子集用全局池）+ 同 ROI 数
+>    + 同 within-subset cluster-size pattern**；新增 **leave-one-cluster-out
+>    influence** 与 **eigengap（λ1/λ2）**；对 N1/N2、depth Q1 这类
+>    "Q50≈1°、分布极宽"的子集做专门报告。
+> 4. **depth-window**：PC1–3 相邻窗夹角取**最大主角**（sv3[-1]，修掉原来的
+>    sv3[0]）；新增 **non-overlap 窗**（step=窗宽）与 **shuffled-depth
+>    overlap-null**（打乱深度序、保持同窗结构，量化重叠样本造成的 cos 虚高）。
+> 5. **deterministic–stochastic map 撤销**：S(q) 分数删除；保留跨样本 SD/IQR
+>    与 49/50 delta+分位，改名 **variability/repeatability summary**。
+> 6. **pass 表**：两段相邻步 turning cosine（step1vs2 / step2vs3）分开报告；
+>    对 15 个 base conditions 做 **trajectory-level bootstrap**（B=1000）；
+>    全部图表标注 **pseudo-trajectory / cross-sectional**。
+> 7. **测试**：新增 `tests/test_phase1_5_lib.py`（16 项合成数据单测）与
+>    `.github/workflows/tests.yml`（push/PR 即跑 unittest，给出 CI status）。
+>
+> 本轮只修以上各项，不重新设计项目；下文为 1.5 初版方法记录，与 1.5R 冲突处以本节为准。
+
 对应说明：`任务说明/Phase1.5说明`（用户提供的 Phase 1.5 说明）。
 Phase 1.5 只回答一个问题：**为什么去掉深度后的形貌结构在全局 PCA 中不稳定？**
 仍然不做预测、不做神经网络/autoencoder/Mamba/SINDy，全部是低模型假设的诊断。

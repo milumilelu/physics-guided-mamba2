@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-"""Phase 1.5 experiment 03: conditional residual PCA + size-matched baseline
-+ depth sliding-window mode rotation.
+"""Phase 1.5R experiment 03: conditional residual PCA with matched baselines,
+LOCO influence, eigengaps, and depth-window (pseudo-trajectory-free) mode
+rotation checks.
 
 H1 (regime mixing): does PCA become stable inside process/depth subsets?
-H3 (nonlinear manifold): do modes rotate smoothly with depth?
-Sample-size matched random baselines control the small-n artifact.
+Baselines draw from the SAME session (global pool for cross-session subsets)
+with matched ROI count and matched within-subset cluster-size pattern.
+H3 diagnostics: adjacent-window subspace angles for overlapping windows,
+non-overlapping windows, and a shuffled-depth overlap null.
 """
 
 from __future__ import annotations
@@ -17,13 +20,15 @@ import pandas as pd
 
 import _lib
 
-EXPECTED = ["conditional_pca_table.csv", "size_matched_baseline.csv",
+EXPECTED = ["conditional_pca_table.csv", "baseline_matched.csv",
             "conditional_stability_heatmap.png", "depth_window_table.csv",
             "depth_window_mode_rotation.png"]
 
+ANOMALY_SUBSETS = ("formal N=1", "formal N=2", "depth Q1")
 
-def subset_positions(man_sub: pd.DataFrame, key: str) -> list[np.ndarray]:
-    """Cluster membership as positions within the subset (rows are sorted)."""
+
+def subset_positions(man_sub: pd.DataFrame,
+                     key: str = "shared_height_source_id") -> list[np.ndarray]:
     out = []
     for _, g in man_sub.groupby(key):
         out.append(np.searchsorted(man_sub["dataset_index"].to_numpy(),
@@ -37,21 +42,23 @@ def main() -> int:
     out = _lib.output_dir(cfg)
     B = _lib.n_boot(cfg, quick)
     seed = int(cfg["random_seed"])
-    _lib.log(f"== Phase 1.5 / 03: conditional PCA (B={B}) ==")
+    n_draws = int(cfg["conditional"]["baseline_draws"])
+    inner_b = int(cfg["conditional"]["baseline_inner_b"])
+    if quick:
+        n_draws, inner_b = 10, 10
+    _lib.log(f"== Phase 1.5R / 03: conditional PCA (B={B}, baseline "
+             f"{n_draws} draws x inner B={inner_b}, same-session + occupancy "
+             "matched) ==")
     frozen = _lib.load_frozen(cfg)
     man = frozen["man"]
-
-    bands3 = _lib.make_bands(frozen["R"], float(cfg["scales"]["sigma_low_px"]),
-                             float(cfg["scales"]["sigma_high_px"]))
-    fields = {"total": _lib.to_2d(frozen["R"]),
-              "low": _lib.to_2d(bands3["low"]),
-              "mid": _lib.to_2d(bands3["mid"]),
-              "high": _lib.to_2d(bands3["high"])}
-    band_names = ["total", "low", "mid", "high"]
+    fields = _lib.multiscale_fields(frozen["R"], cfg)
+    field_names = list(fields)
+    _lib.log(f"  scales: {field_names}")
 
     formal = man[man["session_role"] == "formal"]
     pass60 = man[man["session_role"] == "pass_main"]
-    subsets: list[tuple[str, np.ndarray]] = [("global", man["dataset_index"].to_numpy())]
+    subsets: list[tuple[str, np.ndarray]] = [
+        ("global", man["dataset_index"].to_numpy())]
     for f in sorted(formal["frequency_kHz"].unique()):
         subsets.append((f"formal f={int(f)}kHz",
                         formal[formal["frequency_kHz"] == f]["dataset_index"].to_numpy()))
@@ -62,126 +69,144 @@ def main() -> int:
         subsets.append((f"formal N={int(n_)}",
                         formal[formal["pass_count"] == n_]["dataset_index"].to_numpy()))
     depth = man["median_depth_um"].to_numpy()
-    q = np.quantile(depth, np.linspace(0, 1, int(cfg["conditional"]["depth_quantiles"]) + 1))
+    q = np.quantile(depth, np.linspace(0, 1,
+                                       int(cfg["conditional"]["depth_quantiles"]) + 1))
     for qi in range(int(cfg["conditional"]["depth_quantiles"])):
         sel = (depth >= q[qi]) & (depth <= q[qi + 1]) if qi == len(q) - 2 else \
               (depth >= q[qi]) & (depth < q[qi + 1])
-        subsets.append((f"depth Q{qi + 1}", man[sel]["dataset_index"].to_numpy()))
+        subsets.append((f"depth Q{qi + 1}",
+                        man[sel]["dataset_index"].to_numpy()))
     for n_ in sorted(pass60["pass_count"].unique()):
         subsets.append((f"60pass N={int(n_)}",
                         pass60[pass60["pass_count"] == n_]["dataset_index"].to_numpy()))
-    _lib.log(f"  {len(subsets)} subsets: " + ", ".join(
-        f"{name}(n={len(idx)})" for name, idx in subsets))
+    _lib.log(f"  {len(subsets)} subsets")
 
-    pool_clusters = _lib.cluster_lists(man, cfg["bootstrap"]["cluster_key"])
-    n_draws = int(cfg["bootstrap"]["n_replicates_quick"] if quick else
-                  cfg["bootstrap"]["n_replicates_matched"])
-    inner_B = 5 if quick else 20
-    _lib.log(f"  matched baseline: {n_draws} draws x inner B={inner_B}, "
-             "cluster-count matched, cached per (band, n_clusters)")
+    pools = _lib.session_cluster_pools(man)
+    global_pool = _lib.cluster_lists(man, cfg["bootstrap"]["cluster_key"])
 
     rows, base_rows = [], []
-    cache: dict[tuple[str, int], tuple[np.ndarray, np.ndarray]] = {}
+    cache: dict = {}
     for si, (name, rows_idx) in enumerate(subsets):
         man_sub = man.iloc[rows_idx]
-        clusters_sub = subset_positions(man_sub, "shared_height_source_id")
-        n_clusters = len(clusters_sub)
-        for bi, band in enumerate(band_names):
-            X = fields[band]
+        clusters_sub = subset_positions(man_sub)
+        bank = _lib.build_resample_bank(clusters_sub, B, seed + 17 * si)
+        sessions = man_sub["session_id"].unique()
+        pool = pools[sessions[0]] if len(sessions) == 1 else global_pool
+        pool_label = str(sessions[0]) if len(sessions) == 1 else "global"
+        sig = _lib.occupancy_signature(man_sub)
+
+        for fi, fname in enumerate(field_names):
+            X = fields[fname]
             Xs = X[rows_idx]
             ref, evr = _lib.gram_pca(Xs, 3)
             Gs = Xs @ Xs.T
-            ang, _ = _lib.boot_angles(Gs, Xs, clusters_sub, ref, 3, B,
-                                      seed + 1000 * si + bi)
-            th1m, th1q = float(np.median(ang[:, 0])), float(np.percentile(ang[:, 0], 75)
-                                                           - np.percentile(ang[:, 0], 25))
-            th3m = float(np.median(ang[:, 2]))
-            th3q = float(np.percentile(ang[:, 2], 75) - np.percentile(ang[:, 2], 25))
+            eig = _lib.gram_eigenvalues(Xs, 2)
+            eigengap = float(eig[0] / max(eig[1], 1e-300))
+            ang, _ = _lib.boot_angles_bank(Gs, Xs, bank, ref, 3)
+            q1 = _lib.angle_quantiles(ang[:, 0])
+            th3 = float(np.median(ang[:, 2]))
 
-            # size-matched random baseline: distinct clusters drawn from the
-            # global pool, own reference basis, identical bootstrap protocol
-            key = (band, n_clusters)
+            key = (fname, pool_label, len(sig), sig)
             if key not in cache:
-                rng_c = np.random.default_rng(seed + 555 + 101 * bi)
-                r1, r3 = [], []
-                for d in range(n_draws):
-                    rng_d = np.random.default_rng(seed + 9000 + 131 * bi + d)
-                    pick = rng_c.choice(len(pool_clusters), size=n_clusters,
-                                        replace=False)
-                    idx = np.sort(np.concatenate([pool_clusters[p] for p in pick]))
+                rng_c = np.random.default_rng(seed + 424242 + 977 * fi)
+                r1 = []
+                for _ in range(n_draws):
+                    idx = _lib.draw_matched_subset(pool, sig, rng_c)
                     Y = X[idx]
                     ref_r, _ = _lib.gram_pca(Y, 3)
                     man_r = man.iloc[idx]
-                    cl_r = subset_positions(man_r, "shared_height_source_id")
+                    cl_r = subset_positions(man_r)
                     Gy = Y @ Y.T
-                    ang_r, _ = _lib.boot_angles(Gy, Y, cl_r, ref_r, 3, inner_B,
-                                                int(rng_d.integers(0, 10 ** 6)))
-                    r1.append(np.median(ang_r[:, 0]))
-                    r3.append(np.median(ang_r[:, 2]))
-                cache[key] = (np.asarray(r1), np.asarray(r3))
-            r1, r3 = cache[key]
-            prank1 = float(np.mean(r1 > th1m))
-            prank3 = float(np.mean(r3 > th3m))
-            rows.append((name, band, len(rows_idx), float(evr[0]), float(evr[:3].sum()),
-                         th1m, th1q, th3m, th3q,
-                         float(np.median(r1)), float(np.percentile(r1, 25)),
-                         float(np.percentile(r1, 75)), prank1,
-                         float(np.median(r3)), prank3))
+                    inner = _lib.build_resample_bank(cl_r, inner_b,
+                                                     int(rng_c.integers(0, 10 ** 6)))
+                    ang_r, _ = _lib.boot_angles_bank(Gy, Y, inner, ref_r, 3)
+                    r1.append(float(np.median(ang_r[:, 0])))
+                cache[key] = np.asarray(r1)
+            rb = cache[key]
+            prank1 = float(np.mean(rb > q1["q50"]))
+
+            # LOCO influence (all fields for non-global subsets; global only
+            # on the total field to keep the Gram refits affordable)
+            if not (name == "global" and fname != "total"):
+                loco = _lib.loco_angles(Xs, clusters_sub, k=1)
+                loco_med, loco_max = float(np.median(loco)), float(np.max(loco))
+            else:
+                loco_med = loco_max = np.nan
+
+            rows.append((name, fname, len(rows_idx), float(evr[0]),
+                         float(evr[:3].sum()), eigengap,
+                         float(q1["q25"]), float(q1["q50"]), float(q1["q75"]),
+                         float(q1["q90"]), float(q1["q95"]), th3,
+                         loco_med, loco_max,
+                         pool_label, float(np.median(rb)),
+                         float(np.percentile(rb, 25)),
+                         float(np.percentile(rb, 75)), prank1))
+        base_rows.append((name, pool_label, sig, n_draws, inner_b))
         _lib.log(f"  [{name}] done ({_lib.elapsed(t0)})")
 
-    for (band, n_clusters), (r1, r3) in sorted(cache.items()):
-        base_rows.append((band, n_clusters, len(r1),
-                          float(np.median(r1)), float(np.percentile(r1, 25)),
-                          float(np.percentile(r1, 75)),
-                          float(np.median(r3)), float(np.percentile(r3, 25)),
-                          float(np.percentile(r3, 75))))
-    pd.DataFrame(base_rows, columns=[
-        "band", "n_clusters", "n_draws", "rand_theta1_median_deg",
-        "rand_theta1_p25_deg", "rand_theta1_p75_deg", "rand_theta3_median_deg",
-        "rand_theta3_p25_deg", "rand_theta3_p75_deg"]).to_csv(
-        out / "size_matched_baseline.csv", index=False)
     df = pd.DataFrame(rows, columns=[
-        "subset", "band", "n", "evr_pc1", "evr_cum3",
-        "theta1_median_deg", "theta1_iqr_deg", "theta3_median_deg",
-        "theta3_iqr_deg", "rand_theta1_median_deg", "rand_theta1_p25_deg",
-        "rand_theta1_p75_deg", "prank1", "rand_theta3_median_deg", "prank3"])
+        "subset", "scale", "n", "evr_pc1", "evr_cum3", "eigengap_l1_over_l2",
+        "theta1_q25_deg", "theta1_q50_deg", "theta1_q75_deg",
+        "theta1_q90_deg", "theta1_q95_deg", "theta3_q50_deg",
+        "loco_median_deg", "loco_max_deg", "baseline_pool",
+        "rand_theta1_q50_deg", "rand_theta1_q25_deg", "rand_theta1_q75_deg",
+        "prank1"])
     df.to_csv(out / "conditional_pca_table.csv", index=False)
-    _lib.log("  wrote conditional_pca_table.csv / size_matched_baseline.csv")
+    pd.DataFrame(base_rows, columns=["subset", "baseline_pool",
+                                     "occupancy_signature", "n_draws",
+                                     "inner_b"]).to_csv(
+        out / "baseline_matched.csv", index=False)
+    _lib.log("  wrote conditional_pca_table.csv / baseline_matched.csv")
 
-    strong = df[(df.prank1 >= 0.95) & (df.theta1_median_deg < df.rand_theta1_p25_deg)]
+    strong = df[(df.prank1 >= 0.95)
+                & (df.theta1_q50_deg < df.rand_theta1_q25_deg)]
     if len(strong):
-        _lib.log("  subsets clearly more stable than size-matched baseline:")
+        _lib.log("  subsets clearly more stable than matched baseline:")
         for _, r in strong.iterrows():
-            _lib.log(f"    {r['subset']} [{r['band']}]: theta1="
-                     f"{r['theta1_median_deg']:.1f} deg vs random median "
-                     f"{r['rand_theta1_median_deg']:.1f} deg (p-rank {r['prank1']:.2f})")
+            _lib.log(f"    {r['subset']} [{r['scale']}]: theta1 Q50="
+                     f"{r['theta1_q50_deg']:.1f} deg vs random Q50 "
+                     f"{r['rand_theta1_q50_deg']:.1f} deg (p-rank "
+                     f"{r['prank1']:.2f})")
     else:
-        _lib.log("  no subset beats its size-matched baseline decisively "
-                 "(p-rank >= 0.95 and below baseline P25)")
+        _lib.log("  no subset beats its matched baseline decisively")
+
+    _lib.log("  anomaly check (N1/N2, depth Q1): eigengap / theta1 Q50 [Q25, "
+             "Q75] / LOCO max / baseline Q50 (p-rank), per scale")
+    for sub in ANOMALY_SUBSETS:
+        sub_df = df[df.subset == sub]
+        _lib.log(f"    -- {sub} --")
+        for _, r in sub_df.iterrows():
+            _lib.log(f"    {r['scale']:<12} gap={r['eigengap_l1_over_l2']:8.2f} "
+                     f"th1={r['theta1_q50_deg']:6.2f} "
+                     f"[{r['theta1_q25_deg']:6.2f},{r['theta1_q75_deg']:6.2f}] "
+                     f"locoMax={r['loco_max_deg']:6.2f} "
+                     f"rand={r['rand_theta1_q50_deg']:6.2f} "
+                     f"(p={r['prank1']:.2f})")
 
     # ---- heatmap -----------------------------------------------------------
     dpi = int(cfg["plot"]["dpi"])
-    piv1 = df.pivot(index="subset", columns="band", values="theta1_median_deg")
-    piv3 = df.pivot(index="subset", columns="band", values="theta3_median_deg")
-    order = [name for name, _ in subsets]
-    piv1, piv3 = piv1.loc[order], piv3.loc[order]
-    piv1 = piv1.reindex(columns=band_names)
-    piv3 = piv3.reindex(columns=band_names)
-    fig, axes = plt.subplots(1, 2, figsize=(13.5, 0.42 * len(order) + 2.6), dpi=dpi)
-    for ax, piv, title in ((axes[0], piv1, "bootstrap theta (k=1) median [deg]"),
-                           (axes[1], piv3, "bootstrap theta (k=1..3) median [deg]")):
+    piv1 = df.pivot(index="subset", columns="scale",
+                    values="theta1_q50_deg").reindex(
+        index=[n for n, _ in subsets], columns=field_names)
+    piv3 = df.pivot(index="subset", columns="scale",
+                    values="theta3_q50_deg").reindex(
+        index=[n for n, _ in subsets], columns=field_names)
+    fig, axes = plt.subplots(1, 2, figsize=(17.5, 0.42 * len(subsets) + 2.6),
+                             dpi=dpi)
+    for ax, piv, title in ((axes[0], piv1, "bootstrap theta (k=1) Q50 [deg]"),
+                           (axes[1], piv3, "bootstrap theta (k=1..3) Q50 [deg]")):
         im = ax.imshow(piv.to_numpy(), cmap="RdYlGn_r", vmin=0, vmax=90,
                        aspect="auto")
-        ax.set_xticks(range(len(band_names)), band_names, fontsize=8)
-        ax.set_yticks(range(len(order)), order, fontsize=7)
+        ax.set_xticks(range(len(field_names)), field_names, fontsize=7,
+                      rotation=30, ha="right")
+        ax.set_yticks(range(len(subsets)), [n for n, _ in subsets], fontsize=7)
         ax.set_title(title, fontsize=10)
         for i in range(piv.shape[0]):
             for j in range(piv.shape[1]):
                 ax.text(j, i, f"{piv.to_numpy()[i, j]:.0f}", ha="center",
-                        va="center", fontsize=7,
-                        color="black")
+                        va="center", fontsize=6, color="black")
         fig.colorbar(im, ax=ax, fraction=0.03, pad=0.02)
-    fig.suptitle("Conditional PCA bootstrap stability by condition x band "
+    fig.suptitle("Conditional PCA bootstrap stability: condition x scale "
                  "(green = stable, red = unstable)", fontsize=11)
     fig.tight_layout(rect=(0, 0, 1, 0.94))
     fig.savefig(out / "conditional_stability_heatmap.png", dpi=dpi,
@@ -189,65 +214,114 @@ def main() -> int:
     plt.close(fig)
     _lib.log("  wrote conditional_stability_heatmap.png")
 
-    # ---- depth sliding window (H3) ----------------------------------------
+    # ---- depth windows: overlap / non-overlap / shuffled-depth null --------
     w = int(cfg["conditional"]["window_size"])
     step = int(cfg["conditional"]["window_step"])
+    step_non = int(cfg["conditional"]["window_nonoverlap_step"])
     depth = man["median_depth_um"].to_numpy()
     order = np.argsort(depth)
-    wrows = []
-    cos_pc1 = {b: [] for b in band_names}
-    cos_pc13 = {b: [] for b in band_names}
-    centers = []
-    for band in band_names:
-        X = fields[band]
-        comps_seq, evr_seq, ctr_seq = [], [], []
-        for s in range(0, 200 - w + 1, step):
-            idx = order[s:s + w]
+    win_fields = ["total", "G16", "DCT_8_16", "DCT_16_32", "DCT_32_64"]
+    rng_w = np.random.default_rng(seed + 31337)
+
+    def window_cosines(seq_order: np.ndarray, starts: list[int],
+                       X: np.ndarray) -> tuple[list, list, list, list]:
+        refs, evrs, ctrs = [], [], []
+        for s in starts:
+            idx = seq_order[s:s + w]
             ref_w, evr_w = _lib.gram_pca(X[idx], 3)
-            comps_seq.append(ref_w)
-            evr_seq.append(float(evr_w[0]))
-            ctr_seq.append(float(np.mean(depth[idx])))
-        centers = ctr_seq
-        for a, b in zip(comps_seq[:-1], comps_seq[1:]):
-            sv = _lib.principal_angles(a[:1].T, b[:1].T)
-            cos_pc1[band].append(float(np.cos(np.radians(sv[-1]))))
-            sv3 = _lib.principal_angles(a[:3].T, b[:3].T)
-            cos_pc13[band].append(float(np.cos(np.radians(sv3[0]))))
-        for j, ctr in enumerate(ctr_seq[:-1]):
-            wrows.append((band, ctr, evr_seq[j], cos_pc1[band][j],
-                          cos_pc13[band][j]))
-    pd.DataFrame(wrows, columns=["band", "window_center_depth_um",
-                                 "evr_pc1", "cos_pc1_next", "cos_pc13_next"]
-                 ).to_csv(out / "depth_window_table.csv", index=False)
+            refs.append(ref_w)
+            evrs.append(float(evr_w[0]))
+            ctrs.append(float(np.mean(depth[idx])))
+        c1, c13 = [], []
+        for a, b in zip(refs[:-1], refs[1:]):
+            ang1 = _lib.principal_angles(a[:1].T, b[:1].T)[-1]
+            c1.append(float(np.cos(np.radians(ang1))))
+            ang3 = _lib.principal_angles(a[:3].T, b[:3].T)[-1]
+            c13.append(float(np.cos(np.radians(ang3))))
+        return ctrs[:-1], evrs[:-1], c1, c13
+
+    wrows = []
+    real_curves = {}
+    null_stats = {}
+    for fname in win_fields:
+        X = fields[fname]
+        ctrs, evrs, c1, c13 = window_cosines(
+            order, list(range(0, 200 - w + 1, step)), X)
+        real_curves[fname] = (ctrs, c1, c13)
+        for j, ctr in enumerate(ctrs):
+            wrows.append(("overlap", fname, ctr, evrs[j], c1[j], c13[j]))
+        ctrs_n, _, c1_n, c13_n = window_cosines(
+            order, list(range(0, 200 - w + 1, step_non)), X)
+        for j, ctr in enumerate(ctrs_n):
+            wrows.append(("nonoverlap", fname, ctr, np.nan, c1_n[j], c13_n[j]))
+        null_med = []
+        for p in range(10):
+            perm = rng_w.permutation(200)
+            _, _, c1_p, _ = window_cosines(
+                perm, list(range(0, 200 - w + 1, step)), X)
+            null_med.append(float(np.median(c1_p)))
+        null_stats[fname] = (float(np.median(null_med)),
+                             float(np.percentile(null_med, 90)))
+        _lib.log(f"  sliding-window [{fname}]: real |cos| PC1 median="
+                 f"{np.median(np.abs(c1)):.3f} | shuffled-depth null median="
+                 f"{null_stats[fname][0]:.3f} (Q90 {null_stats[fname][1]:.3f})"
+                 f" | nonoverlap median |cos|={np.median(np.abs(c1_n)):.3f}"
+                 f" | worst-case PC1-3 cos (overlap) median="
+                 f"{np.median(c13):.3f}")
+    dfw = pd.DataFrame(wrows, columns=["kind", "scale",
+                                       "window_center_depth_um", "evr_pc1",
+                                       "cos_pc1_next",
+                                       "cos_pc13_next_worst"])
+    dfw.to_csv(out / "depth_window_table.csv", index=False)
     _lib.log("  wrote depth_window_table.csv")
 
-    fig, axes = plt.subplots(1, 2, figsize=(13.0, 4.8), dpi=dpi)
-    colors = {"total": "black", "low": "tab:blue", "mid": "tab:green",
-              "high": "tab:red"}
-    for band in band_names:
-        axes[0].plot(centers[:-1], cos_pc1[band], "o-", color=colors[band],
-                     ms=3, lw=1.2, label=band)
-        axes[1].plot(centers[:-1], cos_pc13[band], "o-", color=colors[band],
-                     ms=3, lw=1.2, label=band)
-    for ax, title in ((axes[0], "|cos| adjacent-window PC1"),
-                      (axes[1], "cos adjacent-window PC1-3 subspace")):
-        ax.axhline(0.8, color="tab:blue", ls=":", lw=1)
-        ax.axhline(0.5, color="tab:red", ls=":", lw=1)
-        ax.set_xlabel("window centre depth [um]")
-        ax.set_ylabel(title)
-        ax.set_ylim(-0.05, 1.05)
-        ax.grid(alpha=0.25)
-        ax.legend(fontsize=8)
-    fig.suptitle(f"Depth sliding-window PCA (w={w}, step={step}): "
-                 "mode rotation with depth", fontsize=11)
+    fig, axes = plt.subplots(1, 3, figsize=(18.5, 5.0), dpi=dpi)
+    colors = {"total": "black", "G16": "tab:green", "DCT_8_16": "tab:red",
+              "DCT_16_32": "tab:purple", "DCT_32_64": "tab:brown"}
+    ax = axes[0]
+    for fname in win_fields:
+        ctrs, c1, _ = real_curves[fname]
+        ax.plot(ctrs, np.abs(c1), "o-", color=colors[fname], ms=3.5, lw=1.1,
+                label=fname)
+        ax.axhline(null_stats[fname][0], color=colors[fname], ls=":", lw=0.9,
+                   alpha=0.6)
+    ax.set_xlabel("window centre depth [um]")
+    ax.set_ylabel("|cos| adjacent-window PC1 (overlap w=50, step=10)")
+    ax.set_title("Overlap windows vs shuffled-depth null (dotted)")
+    ax.set_ylim(-0.05, 1.05)
+    ax.grid(alpha=0.25)
+    ax.legend(fontsize=7)
+    ax = axes[1]
+    for fname in win_fields:
+        X = fields[fname]
+        ctrs_n, _, c1_n, _ = window_cosines(
+            order, list(range(0, 200 - w + 1, step_non)), X)
+        ax.plot(ctrs_n, np.abs(c1_n), "s-", color=colors[fname], ms=5, lw=1.2,
+                label=fname)
+    ax.set_xlabel("window centre depth [um]")
+    ax.set_ylabel("|cos| adjacent-window PC1 (non-overlap)")
+    ax.set_title(f"Non-overlapping windows (w={w}, step={step_non})")
+    ax.set_ylim(-0.05, 1.05)
+    ax.grid(alpha=0.25)
+    ax.legend(fontsize=7)
+    ax = axes[2]
+    for fname in win_fields:
+        ctrs, _, c13 = real_curves[fname]
+        ax.plot(ctrs, c13, "o-", color=colors[fname], ms=3.5, lw=1.1,
+                label=fname)
+    ax.set_xlabel("window centre depth [um]")
+    ax.set_ylabel("worst-case cos PC1-3 subspaces (overlap)")
+    ax.set_title("Adjacent-window 3D subspace alignment (max-angle cos)")
+    ax.set_ylim(-0.05, 1.05)
+    ax.grid(alpha=0.25)
+    ax.legend(fontsize=7)
+    fig.suptitle("Depth-window mode rotation (descriptive; pseudo-"
+                 "depth ordering, no dynamics claimed)", fontsize=11)
     fig.tight_layout(rect=(0, 0, 1, 0.93))
     fig.savefig(out / "depth_window_mode_rotation.png", dpi=dpi,
                 bbox_inches="tight")
     plt.close(fig)
     _lib.log("  wrote depth_window_mode_rotation.png")
-    for band in band_names:
-        m1 = float(np.median(cos_pc1[band]))
-        _lib.log(f"  sliding-window [{band}]: median |cos| PC1 = {m1:.3f}")
 
     missing = [f for f in EXPECTED if not (out / f).exists()]
     _lib.require(not missing, f"missing outputs: {missing}")

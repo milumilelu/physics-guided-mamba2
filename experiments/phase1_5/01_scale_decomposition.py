@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""Phase 1.5 experiment 01: spatial-scale decomposition of the residual.
+"""Phase 1.5R experiment 01: spatial-scale decomposition of the residual.
 
-Disjoint Gaussian band split R = R_low + R_mid + R_high, variance partition,
-and a sigma sweep of low-pass energy. Descriptive only.
+Scales are named by their filters, not by guessed µm band labels:
+- Gaussian low-pass fields G2/G4/G8/G16 (sigma in pixels) with the analytic
+  and numeric -3 dB wavelength of the Gaussian transfer function;
+- DCT band fields defined by physical wavelength shells (um).
+
+Descriptive only.
 """
 
 from __future__ import annotations
@@ -22,67 +26,42 @@ def main() -> int:
     t0 = time.time()
     cfg, quick = _lib.load_config(__doc__)
     out = _lib.output_dir(cfg)
-    _lib.log("== Phase 1.5 / 01: scale decomposition ==")
+    _lib.log("== Phase 1.5R / 01: scale decomposition ==")
+    _lib._self_test()
+    _lib.log("  self-test passed")
     frozen = _lib.load_frozen(cfg)
-    man, R = frozen["man"], frozen["R"]
+    R = frozen["R"]
     pixel_um = float(cfg["scales"]["pixel_um"])
 
-    sig_lo = float(cfg["scales"]["sigma_low_px"])
-    sig_hi = float(cfg["scales"]["sigma_high_px"])
-    _lib.log(f"  bands: sigma_low={sig_lo:.0f}px ({sig_lo * pixel_um}um low-pass "
-             f"for R_low), sigma_high={sig_hi:.0f}px ({sig_hi * pixel_um}um "
-             f"high-pass for R_high)")
-    bands = _lib.make_bands(R, sig_lo, sig_hi)
-    recon_err = float(np.max(np.abs(R - (bands["low"] + bands["mid"]
-                                         + bands["high"]))))
-    _lib.require(recon_err < 1e-8, f"band reconstruction error {recon_err}")
-    _lib.log(f"  band reconstruction max |R - (low+mid+high)| = {recon_err:.2e}")
-
-    # per-sample variance fractions
-    def var_frac(part: np.ndarray) -> np.ndarray:
-        num = np.nanvar(part, axis=(1, 2))
-        den = np.nanvar(R, axis=(1, 2))
-        return num / np.maximum(den, 1e-300)
-
     rows = []
-    band_fracs = {}
-    for name, part in (("R_low", bands["low"]), ("R_mid", bands["mid"]),
-                       ("R_high", bands["high"])):
-        f = var_frac(part)
-        band_fracs[name] = f.mean()
-        rows.append((f"{name} (sigma {sig_lo:.0f}/{sig_hi:.0f}px)", f.mean(),
-                     np.median(f), *np.percentile(f, [25, 75])))
-        _lib.log(f"  variance fraction {name}: mean={f.mean():.4f}, "
-                 f"median={np.median(f):.4f}")
-    frac_sum = sum(band_fracs.values())
-    _lib.log(f"  variance fraction sum (low+mid+high) = {frac_sum:.3f} "
-             "(Gaussian bands are pointwise exact but not orthogonal, so the "
-             "variance fractions do not add to 1; cross terms below)")
-    _lib.require(0.3 <= frac_sum <= 1.8,
-                 f"band variance fractions sum to {frac_sum}, bands mis-set")
-    mean_var = float(np.mean(np.nanvar(R, axis=(1, 2))))
-    for n1, n2 in (("R_low", "R_mid"), ("R_mid", "R_high"),
-                   ("R_low", "R_high")):
-        cross = np.mean([
-            np.nanmean(bands[n1.split("_")[1].lower()][i]
-                       * bands[n2.split("_")[1].lower()][i])
-            for i in range(R.shape[0])]) / mean_var
-        rows.append((f"cross({n1},{n2})/Var(R)", cross, np.nan, np.nan, np.nan))
-        _lib.log(f"  cross-covariance {n1}-{n2}: {cross:+.4f} of Var(R)")
-    for sigma in cfg["scales"]["sigma_sweep_px"]:
-        smooth = _lib.gaussian_smooth(R, float(sigma))
-        f = var_frac(smooth)
-        rows.append((f"lowpass G_{sigma}px ({float(sigma) * pixel_um}um)",
-                     f.mean(), np.median(f), *np.percentile(f, [25, 75])))
-        _lib.log(f"  lowpass sigma={sigma}px: variance fraction mean="
-                 f"{f.mean():.4f}")
-    df = pd.DataFrame(rows, columns=["component", "frac_mean", "frac_median",
-                                     "frac_q25", "frac_q75"])
+    for sigma in cfg["scales"]["sigmas_px"]:
+        G = _lib.gaussian_smooth(R, float(sigma))
+        frac = float(np.mean(np.nanvar(G, axis=(1, 2))
+                             / np.nanvar(R, axis=(1, 2))))
+        lam_ana = _lib.lambda_3db_px(float(sigma)) * pixel_um
+        lam_num = _lib.numeric_lambda_3db_px(float(sigma)) * pixel_um
+        rows.append((f"G{int(sigma)}", f"low-pass sigma={int(sigma)}px",
+                     frac, lam_ana, lam_num))
+        _lib.log(f"  G{int(sigma)}: var fraction mean={frac:.4f}, "
+                 f"lambda_3dB analytic={lam_ana:.2f} um "
+                 f"(numeric {lam_num:.2f} um)")
+    dct_fields, coverage = _lib.dct_band_fields(
+        R, pixel_um, cfg["scales"]["dct_bands_um"])
+    for name, fields in dct_fields.items():
+        frac = float(np.mean(np.nanvar(fields, axis=(1, 2))
+                             / np.nanvar(R, axis=(1, 2))))
+        rows.append((name, "DCT wavelength band", frac, np.nan, np.nan))
+        _lib.log(f"  {name}: var fraction mean={frac:.4f}")
+    _lib.log(f"  DCT band coverage of pixel grid: {coverage:.4f} "
+             "(wavelengths below the first band edge are excluded)")
+    df = pd.DataFrame(rows, columns=["scale", "kind", "var_frac_mean",
+                                     "lambda_3db_um_analytic",
+                                     "lambda_3db_um_numeric"])
     df.to_csv(out / "scale_energy_table.csv", index=False)
     _lib.log("  wrote scale_energy_table.csv")
 
     # representative examples: shallowest / median-depth / deepest
-    depths = man["median_depth_um"].to_numpy()
+    depths = frozen["man"]["median_depth_um"].to_numpy()
     picks = [int(np.argmin(depths)), int(np.argsort(depths)[100]),
              int(np.argmax(depths))]
     cmap_div = plt.get_cmap(cfg["plot"]["diverging_cmap"]).copy()
@@ -91,11 +70,12 @@ def main() -> int:
     fig, axes = plt.subplots(3, 5, figsize=(15.5, 9.6), dpi=dpi)
     cols = [("H (height_raw)", frozen["H"], frozen["V"], "viridis"),
             ("R (residual)", R, None, cfg["plot"]["diverging_cmap"]),
-            (f"R_low (>{sig_lo * pixel_um}um scale)", bands["low"], None,
+            ("G16 (low-pass, sigma=16px)",
+             _lib.gaussian_smooth(R, 16.0), None,
              cfg["plot"]["diverging_cmap"]),
-            (f"R_mid ({sig_hi * pixel_um}-{sig_lo * pixel_um}um)",
-             bands["mid"], None, cfg["plot"]["diverging_cmap"]),
-            (f"R_high (<{sig_hi * pixel_um}um)", bands["high"], None,
+            ("DCT_16_32 (16-32 um)", dct_fields["DCT_16_32"], None,
+             cfg["plot"]["diverging_cmap"]),
+            ("DCT_8_16 (8-16 um)", dct_fields["DCT_8_16"], None,
              cfg["plot"]["diverging_cmap"])]
     for r, idx in enumerate(picks):
         for c, (label, data, valid, cmap_name) in enumerate(cols):
