@@ -95,26 +95,32 @@ def main() -> int:
             "shared_height_source_id"].to_numpy()
         bank = _lib.build_resample_bank(clusters_sub, B, seed + 17 * si)
         sessions = list(man_sub["session_id"].unique())
+        sig = _lib.occupancy_signature(man_sub)
         # baseline draws: same session when the subset is single-session,
         # otherwise the same per-session composition (count + occupancy)
         if len(sessions) == 1:
             pool = pools[sessions[0]]
             pool_label = str(sessions[0])
+            comp_key: tuple = (sig,)
 
             def draw_one(rng_):
                 return _lib.draw_matched_subset(pool, sig_holder[0], rng_)
         else:
             pool_label = "session_composition_matched"
-            sess_parts = [(s, man_sub[man_sub["session_id"] == s])
-                          for s in sessions]
+            sess_parts = [(s, _lib.occupancy_signature(
+                man_sub[man_sub["session_id"] == s])) for s in sessions]
+            # per-session occupancy composition goes into the cache key so
+            # that subsets with identical overall size patterns but different
+            # session mixes never share a baseline
+            comp_key = tuple(sess_parts)
 
             def draw_one(rng_):
-                parts = [_lib.draw_matched_subset(pools[s],
-                                                  _lib.occupancy_signature(ms),
-                                                  rng_)
-                         for s, ms in sess_parts]
+                parts = [_lib.draw_matched_subset(pools[s], sg, rng_)
+                         for s, sg in sess_parts]
                 return np.sort(np.concatenate(parts))
-        sig = _lib.occupancy_signature(man_sub)
+        comp_str = ("single:" + "|".join(map(str, sig))) if len(sessions) == 1 \
+            else " | ".join(f"{s}:{'|'.join(map(str, sg))}"
+                            for s, sg in comp_key)
         sig_holder = [sig]
 
         for fi, fname in enumerate(field_names):
@@ -128,7 +134,7 @@ def main() -> int:
             q1 = _lib.angle_quantiles(ang[:, 0])
             th3 = float(np.median(ang[:, 2]))
 
-            key = (fname, pool_label, len(sig), sig)
+            key = (fname, pool_label, len(sig), comp_key)
             if key not in cache:
                 rng_c = np.random.default_rng(seed + 424242 + 977 * fi)
                 r1 = []
@@ -170,10 +176,10 @@ def main() -> int:
             else:
                 loco_med = loco_max = np.nan
 
-            # stability call: Q50 alone is not enough; require the upper
-            # quantiles and LOCO influence to agree
+            # stability call: Q50 against Q50 AND Q90 against Q90 (baseline
+            # stores both stats), plus LOCO influence agreement
             if prank1 >= 0.95 and q1["q50"] < rand_q[25]:
-                if q1["q90"] < rand_q[75] and loco_max < 45:
+                if q1["q90"] < rand_q[90] and loco_max < 45:
                     call = "robust_stable"
                 else:
                     call = "fragile_stable"
@@ -187,7 +193,7 @@ def main() -> int:
                          loco_med, loco_max,
                          pool_label, rand_q[50], rand_q[25], rand_q[75],
                          rand_q[90], prank1, call))
-        base_rows.append((name, pool_label, sig, n_draws, inner_b))
+        base_rows.append((name, pool_label, comp_str, n_draws, inner_b))
         _lib.log(f"  [{name}] done ({_lib.elapsed(t0)})")
 
     df = pd.DataFrame(rows, columns=[

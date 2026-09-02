@@ -1,5 +1,17 @@
 # Phase 1.5 执行细则（残差不稳定性来源分解）
 
+> ## 1.5R.2 修订（当前生效版本，Phase 1.5 收尾）
+>
+> 1. **turning cosine CI**：`pass_step_stats.csv` 中 cos(step1,2)/cos(step2,3)
+>    的五分位数改为 **bootstrap-median 分布**的分位数（与 step RMS 同一协议），
+>    列名 `cos_*_bootmed_q*`；`pass_scale_evolution.png` panel B 改画 Q50。
+> 2. **mixed-session 基线 cache key**：加入 per-session occupancy
+>    composition（`comp_key`），总 occupancy 相同但 session 构成不同的子集
+>    不再共享基线；`baseline_matched.csv` 记录逐 session 签名。
+> 3. **stable_call 规则**：robust_stable 要求 Q50 对 Q50 **且 Q90 对 Q90**
+>    （基线同时保存 stat_Q50 与 stat_Q90）且 LOCO max<45°；其余同前
+>    （fragile_stable / not_called）。
+
 > ## 1.5R.1 修订（当前生效版本）
 >
 > 1. **pass 图索引修复**：`pass_scale_evolution.png` panel A 曾误用 Q25 当

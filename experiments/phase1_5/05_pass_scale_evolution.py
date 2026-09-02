@@ -171,8 +171,10 @@ def main() -> int:
                     across[s].append(float(np.clip(a @ b / (na * nb), -1, 1)))
         for s in (1, 2, 3):
             q = np.percentile(rms_q[s], [25, 50, 75, 90, 95])
-            c12q = _nan_pct(cos12)
-            c23q = _nan_pct(cos23)
+            # CI of the bootstrap-median distribution (not of the raw
+            # per-trajectory cosines)
+            c12q = _nan_pct(c12_q)
+            c23q = _nan_pct(c23_q)
             rows.append((scale, s, *q, *c12q, *c23q,
                          float(np.nanmedian(across[s])) if across[s] else np.nan,
                          float(np.median(dds[s]))))
@@ -187,10 +189,12 @@ def main() -> int:
     pd.DataFrame(rows, columns=[
         "scale", "step", "step_rms_q25_um", "step_rms_q50_um",
         "step_rms_q75_um", "step_rms_q90_um", "step_rms_q95_um",
-        "cos_step1_vs_2_q25", "cos_step1_vs_2_q50", "cos_step1_vs_2_q75",
-        "cos_step1_vs_2_q90", "cos_step1_vs_2_q95",
-        "cos_step2_vs_3_q25", "cos_step2_vs_3_q50", "cos_step2_vs_3_q75",
-        "cos_step2_vs_3_q90", "cos_step2_vs_3_q95",
+        "cos_step1_vs_2_bootmed_q25", "cos_step1_vs_2_bootmed_q50",
+        "cos_step1_vs_2_bootmed_q75", "cos_step1_vs_2_bootmed_q90",
+        "cos_step1_vs_2_bootmed_q95",
+        "cos_step2_vs_3_bootmed_q25", "cos_step2_vs_3_bootmed_q50",
+        "cos_step2_vs_3_bootmed_q75", "cos_step2_vs_3_bootmed_q90",
+        "cos_step2_vs_3_bootmed_q95",
         "across_traj_same_step_cos_q50", "depth_step_median_um"
         ]).to_csv(out / "pass_step_stats.csv", index=False)
     _lib.log("  wrote pass_step_stats.csv")
@@ -217,8 +221,9 @@ def main() -> int:
     pos = np.arange(len(fields))
     for i, scale in enumerate(fields):
         sub = [r for r in rows if r[0] == scale]
-        axes[1].plot([i - 0.18], [sub[0][7]], "s", color=colors[scale], ms=6)
-        axes[1].plot([i + 0.18], [sub[0][12]], "D", color=colors[scale], ms=5,
+        # bootstrap-median Q50 for the two consecutive step pairs
+        axes[1].plot([i - 0.18], [sub[0][9]], "s", color=colors[scale], ms=6)
+        axes[1].plot([i + 0.18], [sub[0][14]], "D", color=colors[scale], ms=5,
                      mfc="none")
     axes[1].set_xticks(pos, list(fields), fontsize=8, rotation=20)
     axes[1].axhline(0.0, color="0.4", lw=0.8)
