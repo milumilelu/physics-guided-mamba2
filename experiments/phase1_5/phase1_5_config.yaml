@@ -1,0 +1,42 @@
+# Phase 1.5 shared configuration (frozen inputs; low-model-assumption diagnostics only).
+
+random_seed: 20260902
+
+paths:
+  dataset_npz: outputs/rectangle_registration/manual_internal_roi_v1/dataset/stable_roi_80um_dataset.npz
+  exploration_manifest: outputs/phase1_minimal/exploration_manifest.csv
+  output_root: outputs/phase1_5
+
+scales:
+  pixel_um: 0.5
+  sigma_sweep_px: [2, 4, 8, 16]
+  sigma_low_px: 16    # low-pass cutoff for R_low  (8 um: bowl / waviness)
+  sigma_high_px: 4    # high-pass cutoff for R_high (2 um: fine roughness)
+
+pca:
+  n_pcs: 10
+  angle_k_max: 6
+
+bootstrap:
+  cluster_key: shared_height_source_id
+  n_replicates: 200
+  n_replicates_quick: 10
+  n_replicates_matched: 200
+
+conditional:
+  depth_quantiles: 4
+  window_size: 50
+  window_step: 10
+
+distance:
+  process_params: [pulse_duration_fs, frequency_kHz, hatch_spacing_um, velocity_mm_s, pass_count]
+  near_quantile: 0.10
+  n_bins: 20
+
+sentinel:
+  session: zro2_120_formal
+  processing_orders: [49, 50]
+
+plot:
+  dpi: 150
+  diverging_cmap: RdBu_r
