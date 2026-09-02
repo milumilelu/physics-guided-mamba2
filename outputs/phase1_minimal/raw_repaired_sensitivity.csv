@@ -1,0 +1,33 @@
+metric_family,detail,raw_value,repaired_value
+evr_absolute_pc1,,0.9877288172084153,0.9876638003179058
+evr_absolute_pc2,,0.003421138318734388,0.0034523434713793423
+evr_absolute_pc3,,0.001944885455630094,0.001981643361467425
+evr_absolute_pc4,,0.0009265148707531351,0.0009402223366898588
+evr_absolute_pc5,,0.0007972378047679058,0.0007998933088425454
+evr_absolute_pc6,,0.0006684057452120988,0.0006661864543126133
+evr_absolute_pc7,,0.0005809195608550592,0.0005845384410902066
+evr_absolute_pc8,,0.0004015667974409625,0.0004037442680245307
+evr_absolute_pc9,,0.0003081131953557596,0.0003081096052725551
+evr_absolute_pc10,,0.0002891563014588173,0.00028817313078767916
+evr_residual_pc1,,0.2511931876681848,0.25121217369351606
+evr_residual_pc2,,0.20130225643534916,0.20321411566775338
+evr_residual_pc3,,0.08769874177773239,0.08870404880438765
+evr_residual_pc4,,0.06586925576878243,0.06666518279297705
+evr_residual_pc5,,0.05102170956500086,0.050623455123187444
+evr_residual_pc6,,0.044148472458659896,0.04440646785296824
+evr_residual_pc7,,0.032974444797913435,0.032877842479388734
+evr_residual_pc8,,0.023233111299663524,0.022961665794963587
+evr_residual_pc9,,0.021401765697013537,0.021203446986620952
+evr_residual_pc10,,0.018895614997664487,0.01876554921065621
+subspace_angle_k1,max principal angle raw vs repaired residual subspace,2.426439371745844,
+subspace_angle_k2,max principal angle raw vs repaired residual subspace,4.5147790063719215,
+subspace_angle_k3,max principal angle raw vs repaired residual subspace,4.758091129149192,
+subspace_angle_k4,max principal angle raw vs repaired residual subspace,5.438948154971067,
+subspace_angle_k5,max principal angle raw vs repaired residual subspace,5.952970079918274,
+subspace_angle_k6,max principal angle raw vs repaired residual subspace,6.869719264948462,
+traj_score_corr,PC1 over 60 pass ROIs,0.9999477200596978,
+traj_score_corr,PC2 over 60 pass ROIs,0.9987714177766048,
+traj_score_corr,PC3 over 60 pass ROIs,0.9999418476361456,
+traj_displacement_cos,"min over 15 trajectories (N4-N1 vector, raw-space vs repaired-space)",0.9981580144653429,
+traj_displacement_cos,"median over 15 trajectories (N4-N1 vector, raw-space vs repaired-space)",0.9996295005484483,
+traj_displacement_cos,"max over 15 trajectories (N4-N1 vector, raw-space vs repaired-space)",0.9999901850084469,

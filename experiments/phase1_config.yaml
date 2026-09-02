@@ -1,0 +1,61 @@
+# Phase 1 minimal exploration configuration.
+# Frozen inputs only; every path is read-only for this experiment.
+
+random_seed: 20260901
+
+paths:
+  dataset_npz: outputs/rectangle_registration/manual_internal_roi_v1/dataset/stable_roi_80um_dataset.npz
+  dataset_index_csv: outputs/rectangle_registration/manual_internal_roi_v1/dataset/stable_roi_80um_index.csv
+  session_manifest: config/session_manifest.csv
+  sample_view_manifest: annotations/sample_view_manifest.csv
+  output_dir: outputs/phase1_minimal
+
+design_tables:
+  encoding: gb18030
+  zro2_120_formal: 氧化锆/pass实验数据/120正式_design记录表_0516.csv
+  zro2_60_pass: 氧化锆/pass实验数据/60pass_design.csv
+  zro2_20_supplement: 氧化锆/pass实验数据/20补充_pass5_6实验.csv
+
+# compressor steps -> pulse duration calibration (现有数据基础说明_v2.md §8).
+# Stored fs->steps; the script inverts it. Raw compressor_steps stay in the manifest.
+pulse_duration_calibration:
+  id: compressor_steps_to_fs_v1
+  version: 现有数据基础说明_v2.md-§8
+  table_fs_to_steps:
+    223: 29400
+    500: 36140
+    1000: 43800
+    2000: 58400
+    3000: 72900
+    4000: 87300
+    5000: 101800
+    6000: 116200
+    7000: 130900
+    8000: 145300
+    9000: 159800
+    10000: 173500
+
+analysis:
+  n_pcs: 10
+  n_modes: 6
+  common_mask_min_coverage: 0.95
+
+bootstrap:
+  n_replicates: 200
+  n_replicates_quick: 10
+  cluster_key: shared_height_source_id
+  subspace_k_max: 6
+
+sentinel:
+  session: zro2_120_formal
+  processing_orders: [49, 50]
+  expected_combo:
+    compressor_steps: 58400
+    frequency_kHz: 2
+    hatch_spacing_um: 6
+    pass_count: 2
+    velocity_mm_s: 9
+
+plot:
+  dpi: 150
+  diverging_cmap: RdBu_r
