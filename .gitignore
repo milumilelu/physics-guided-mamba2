@@ -40,3 +40,4 @@ venv/
 Thumbs.db
 desktop.ini
 *.err
+outputs/phase2/multiscale_targets/band_fields.npz

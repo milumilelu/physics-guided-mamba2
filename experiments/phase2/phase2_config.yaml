@@ -1,0 +1,62 @@
+# Phase 2 shared configuration (frozen inputs; audit + explainability, low-model-assumption).
+# See Phase2_执行细则.md for the binding specification. Quick mode: smoke only.
+
+random_seed: 20260903
+
+paths:
+  dataset_npz: outputs/rectangle_registration/manual_internal_roi_v1/dataset/stable_roi_80um_dataset.npz
+  exploration_manifest: outputs/phase1_minimal/exploration_manifest.csv
+  output_root: outputs/phase2
+
+power:                               # v2 §11; proxy until measurement record registered
+  measured_power_W: 5.3333
+  nominal_software_power_W: 10.0
+  source: "experiment_background_v2_s11_no_independent_record"
+  constant_power_assumption: true
+
+scales:                              # identical to Phase 1.5; do not change
+  pixel_um: 0.5
+  sigmas_px: [2, 4, 8, 16]
+  dct_bands_um: [[8, 16], [16, 32], [32, 64], [64, 1.0e9]]
+
+instability:
+  top_n: 20
+  top_cap: 30
+  knn_k: [5, 10]
+  descriptor_cols: [Sq_um, Sa_um, Ssk_skewness, kurtosis_excess_fisher,
+                    grad_rms_um_per_um, lap_rms_um_per_px2, acf_e_fold_lag_um,
+                    aniso_gradx_over_y, pit_density_per_Mpx, pit_depth_um,
+                    rms_DCT_8_16_um, rms_DCT_16_32_um, rms_DCT_32_64_um,
+                    rms_DCT_64_inf_um]
+
+neighborhood:
+  k: 5
+  proc_near_quantile: 0.10
+  morph_far_quantile: 0.90
+  type2_permutations: 1000
+  type2_permutations_quick: 100
+
+bootstrap:
+  cluster_key: shared_height_source_id
+  n_replicates: 200                  # 05 family-D within-fold stability
+  n_replicates_quick: 20
+
+cv:
+  n_splits: 5
+  gss_repeats: 5
+
+targets:
+  primary_subset: [median_depth_um, Sq_um, E_DCT_8_16_frac, rms_DCT_8_16_um,
+                   rms_DCT_16_32_um, rms_DCT_32_64_um, rms_DCT_64_inf_um]
+  # E_DCT_8_16_frac added 2026-09-03: strongest morphology target in 05
+  # (R2 0.42-0.63); the 2B gate requires its sensitivity coverage (细则 §11).
+
+models:
+  ridge_alpha_grid: [0.01, 0.1, 1, 10, 100]
+  extratrees: {n_estimators: 500, min_samples_leaf: 2}
+
+sentinel:                            # identical to Phase 1.5; do not change
+  session: zro2_120_formal
+  processing_orders: [49, 50]
+
+plot: {dpi: 150, diverging_cmap: RdBu_r}
