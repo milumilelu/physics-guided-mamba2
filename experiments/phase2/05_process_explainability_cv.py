@@ -10,7 +10,7 @@ Split contracts are type-specific: gkf test groups pairwise disjoint + union =
 all; gss only per-split train/test disjointness, with per-group test counts
 reported (细则 §0.7).
 
-Input sets: A raw 5 controls; R physics-motivated reparameterized (proxy)
+Input sets: A raw 5 controls; R physics-motivated reduced derived (proxy)
 coordinates; C hybrid. Models: Dummy, Ridge (fold-internal alpha selection via
 GroupKFold(3) on the training rows), ExtraTrees.
 

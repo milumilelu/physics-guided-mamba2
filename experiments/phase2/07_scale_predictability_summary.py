@@ -3,7 +3,7 @@
 
 Aggregates `cv_fold_results.csv` (05) into the scale-predictability curve
 R2_CV(lambda) at the main deterministic variant (src_gkf), plus the by-input
-(dR2 reparameterized vs raw) and by-model (dR2 ExtraTrees vs Ridge) band
+(dR2 reduced-derived vs raw) and by-model (dR2 ExtraTrees vs Ridge) band
 views. Depth is drawn as a reference line only — it never enters any
 scale-dependence trigger (细则 §0.10/§17).
 
@@ -134,7 +134,7 @@ def main() -> int:
 
     reparam = pd.read_csv(out / "raw_vs_reparam_coordinates.csv")
     _band_view("scale_predictability_by_input.png",
-               "dR2 = reparameterized (R) - raw (A)", reparam, "model",
+               "dR2 = reduced derived (R) - raw (A)", reparam, "model",
                [m for m in ("ridge", "extratrees")
                 if m in set(reparam["model"])])
     nonlin = pd.read_csv(out / "ridge_vs_tree.csv")

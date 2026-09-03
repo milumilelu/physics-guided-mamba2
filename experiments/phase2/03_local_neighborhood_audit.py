@@ -3,7 +3,7 @@
 
 For every ordinary pair (shared-height-source pairs and the 49/50 sentinel
 pair excluded) this script compares process distance in two spaces (raw five
-controls; physics-motivated reparameterized coordinates) against morphology
+controls; physics-motivated reduced derived (proxy) features) against morphology
 distance in six metrics (total residual + four DCT bands via the Gram RMSE
 definition of Phase 1.5-04, and the robust-z descriptor space).
 
@@ -321,8 +321,16 @@ def main() -> int:
         "- **人工结论:【待填写】**",
         "",
     ]
-    (out / "phase2A_gate_answers.md").write_text("\n".join(lines),
-                                                 encoding="utf-8")
+    gate_path = out / "phase2A_gate_answers.md"
+    if gate_path.exists():
+        # The canonical gate record is human/reviewer-maintained once closed;
+        # never clobber it with the blank template on a rerun.
+        p2.log("  phase2A_gate_answers.md already present (canonical gate "
+               "record) — NOT overwritten; auto evidence lives in "
+               "neighborhood_summary.csv / threshold_perturbation.csv")
+    else:
+        (out / "phase2A_gate_answers.md").write_text("\n".join(lines),
+                                                     encoding="utf-8")
     missing = [f for f in EXPECTED if not (out / f).exists()]
     p2.require(not missing, f"missing outputs: {missing}")
     p2.log(f"03 done in {time.time() - t0:.1f}s; all {len(EXPECTED)} outputs present")

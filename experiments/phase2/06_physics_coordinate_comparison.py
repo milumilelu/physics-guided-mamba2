@@ -8,7 +8,7 @@ Reported per cell: fold median, Q25/Q75, sign-consistent folds / total folds.
 Exploratory direction-consistency only — no p-value wrapping (细则 §8).
 
 Interpretation guard (细则 §0.2): a positive dR2_reparam means the
-reparameterized coordinates fit the model's inductive bias better, NOT that
+reduced derived features fit the model's inductive bias better, NOT that
 more physical information was added.
 
 Seed offsets: none (reads 05 outputs only).
@@ -31,7 +31,7 @@ EXPECTED = ["raw_vs_reparam_coordinates.csv", "ridge_vs_tree.csv",
 
 README = """# coordinate / model increment comparison (Phase 2B-4)
 
-- `raw_vs_reparam_coordinates.csv`: dR2 = R2(input R) - R2(input A), fold
+- `raw_vs_reparam_coordinates.csv`: dR2 = R2(reduced derived R) - R2(raw A), fold
   paired, per (target, model, cv_variant) at the main deterministic variant.
 - `ridge_vs_tree.csv`: dR2 = R2(ExtraTrees) - R2(Ridge), fold paired, per
   (target, input_set, cv_variant).
@@ -121,7 +121,7 @@ def main() -> int:
         if len(m_reparam) else m_reparam
     fig, ax = plt.subplots(figsize=(12.5, 4.4))
     _bar_plot(ax, agg_reparam_plot, m_reparam_plot, "model",
-              "dR2 = reparameterized (R) - raw (A), per target", vkey)
+              "dR2 = reduced derived (R) - raw (A), per target", vkey)
     fig.tight_layout()
     fig.savefig(out / "raw_vs_reparam_coordinates.png", dpi=cfg["plot"]["dpi"])
     plt.close(fig)

@@ -12,7 +12,7 @@
 规划说明留有实现自由度之处，本细则做如下具体化。**改动任何一条都必须回写本节**：
 
 1. **功率与能量坐标（proxy 化）**：三张设计表均无功率列（已核对）。按 v2 §11 登记实测物镜后功率 `measured_power_W = 5.3333`（软件标称 10 W 仅备注）。**在功率独立测量记录补登记之前**，能量/剂量列一律命名 `pulse_energy_proxy_uJ`、`areal_dose_proxy_J_per_mm2`，标注 provisional；补齐后才允许去 `_proxy` 后缀（§19.1）。
-2. **"physics coordinates" 更名**：Input Set B 全部派生量是 raw 五参数的确定性函数，不增加信息内容（I(u_raw; Y) 不变）。全套文档与代码将 Set B 称为 **physics-motivated reparameterized coordinates**；其检验问题是"某种重参数化是否更契合简单模型的 inductive bias"，而不是"加入了更多物理信息"。
+2. **"R 集合"定义（2026-09-03 rev3 更名）**：Input Set R 全部派生量是 raw 五参数的函数，但**不是 lossless reparameterization**——E_p↔f 双射，而 (N,h) 被压成 N/(vh) 单个自由度，故 I(g(u);Y) ≤ I(u;Y)，是一次**有损压缩**。正式名称：**physics-motivated reduced derived feature set**（代码内输入集字母仍为 R）。其检验问题是"这组精简派生特征是否契合简单模型的 inductive bias"；由于有损，R 与 A 不可比作等价坐标系，**信息性对比是 A vs C**（C=A∪R 才不丢 (N,h) 区分）。全文禁止解读"f 或 E_p 的独立效应"（§18）；E_p↔f 完全耦合的警告不变。
 3. **f 与 E_p 完全耦合**（v2 §11）：Set B 中 E_p 与 frequency 严格单调等价；Set B 的重参数化价值在 Δx、n_A、D_E 的组合方式。全文禁止解读"f 或 E_p 的独立效应"（§18）。
 4. **CV-B 分组新增 `cv_process_group`**：formal 按**五元组** (τ, f, h, N, v) 分组（49/50 强制同组，杜绝 exact-repeat 跨 train/test）；pass_main/supplement 按 base (τ, f, h, v) 分组并绑定 N=1..6（134 组）。CV-A = 泛化到 unseen physical source/surface；CV-B = 泛化到 unseen process condition（§2.2、§7.3）。`base_condition_group` 保留原义（轨迹结构），仅用于 08 与描述。
 5. **base_condition_group 合并 T/S**：已核实 S01–S10 与 pass_main 的 T 组四元组 (τ, f, h, v) 10/10 重合，合并后 10 组覆盖 N=1..6、5 组覆盖 N=1..4。
@@ -145,7 +145,7 @@ phase2_manifest（本脚本构建）、NPZ（经 `l15.load_frozen(cfg)`）、`ou
 ### 7.1 输入空间（§0.2 更名）
 
 - **A**（raw）：(τ, f, h, N, v)。
-- **R**（physics-motivated reparameterized）：(τ, pulse_energy_proxy_uJ, scan_spacing_um, areal_pulse_density_per_mm2, areal_dose_proxy_J_per_mm2)。不放 f（与 E_p 严格耦合）。
+- **R**（physics-motivated **reduced derived** feature set，有损，见 §0.2）：(τ, pulse_energy_proxy_uJ, scan_spacing_um, areal_pulse_density_per_mm2, areal_dose_proxy_J_per_mm2)。不放 f（与 E_p 严格耦合）。
 - **C**（hybrid）：A ∪ R（10 维；共线警告同 v1）。
 
 ### 7.2 模型（第一批）
