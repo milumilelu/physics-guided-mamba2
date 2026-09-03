@@ -1,0 +1,178 @@
+{
+  "median_depth_um": {
+    "family": "A",
+    "definition": "valid-mask median depth of the raw height field",
+    "unit": "um",
+    "source": "exploration_manifest",
+    "nan_policy": "abort",
+    "notes": "central 80x80 um ROI, not full slot cross-section (v2 §12)"
+  },
+  "Sq_um": {
+    "family": "B",
+    "definition": "Phase 1.5 morphology descriptor",
+    "unit": "see descriptors",
+    "source": "outputs/phase1_5/morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "Sa_um": {
+    "family": "B",
+    "definition": "Phase 1.5 morphology descriptor",
+    "unit": "see descriptors",
+    "source": "outputs/phase1_5/morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "Ssk_skewness": {
+    "family": "B",
+    "definition": "Phase 1.5 morphology descriptor",
+    "unit": "see descriptors",
+    "source": "outputs/phase1_5/morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "kurtosis_excess_fisher": {
+    "family": "B",
+    "definition": "Phase 1.5 morphology descriptor",
+    "unit": "see descriptors",
+    "source": "outputs/phase1_5/morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "grad_rms_um_per_um": {
+    "family": "B",
+    "definition": "Phase 1.5 morphology descriptor",
+    "unit": "see descriptors",
+    "source": "outputs/phase1_5/morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "lap_rms_um_per_px2": {
+    "family": "B",
+    "definition": "Phase 1.5 morphology descriptor",
+    "unit": "see descriptors",
+    "source": "outputs/phase1_5/morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "acf_e_fold_lag_um": {
+    "family": "B",
+    "definition": "Phase 1.5 morphology descriptor",
+    "unit": "see descriptors",
+    "source": "outputs/phase1_5/morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "aniso_gradx_over_y": {
+    "family": "B",
+    "definition": "Phase 1.5 morphology descriptor",
+    "unit": "see descriptors",
+    "source": "outputs/phase1_5/morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "pit_density_per_Mpx": {
+    "family": "B",
+    "definition": "Phase 1.5 morphology descriptor",
+    "unit": "see descriptors",
+    "source": "outputs/phase1_5/morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "pit_depth_um": {
+    "family": "B",
+    "definition": "Phase 1.5 morphology descriptor",
+    "unit": "see descriptors",
+    "source": "outputs/phase1_5/morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "peak_to_valley_p98p2_um": {
+    "family": "B",
+    "definition": "P98-P2 of valid residual pixels",
+    "unit": "um",
+    "source": "phase2/instability/instability_inventory.csv",
+    "nan_policy": "abort",
+    "notes": "robust range; R_max_minus_min_um kept as remark only"
+  },
+  "deepest_negative_residual_um": {
+    "family": "B",
+    "definition": "-min(residual)",
+    "unit": "um",
+    "source": "phase2/instability/instability_inventory.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "rms_DCT_8_16_um": {
+    "family": "C",
+    "definition": "DCT band 8_16 um RMS",
+    "unit": "um",
+    "source": "morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": "band definition frozen in 1.5"
+  },
+  "rms_DCT_16_32_um": {
+    "family": "C",
+    "definition": "DCT band 16_32 um RMS",
+    "unit": "um",
+    "source": "morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": "band definition frozen in 1.5"
+  },
+  "rms_DCT_32_64_um": {
+    "family": "C",
+    "definition": "DCT band 32_64 um RMS",
+    "unit": "um",
+    "source": "morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": "band definition frozen in 1.5"
+  },
+  "rms_DCT_64_inf_um": {
+    "family": "C",
+    "definition": "DCT band 64_inf um RMS",
+    "unit": "um",
+    "source": "morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": "band definition frozen in 1.5"
+  },
+  "E_DCT_8_16_frac": {
+    "family": "C",
+    "definition": "DCT band 8_16 um energy fraction of residual variance",
+    "unit": "1",
+    "source": "morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "E_DCT_16_32_frac": {
+    "family": "C",
+    "definition": "DCT band 16_32 um energy fraction of residual variance",
+    "unit": "1",
+    "source": "morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "E_DCT_32_64_frac": {
+    "family": "C",
+    "definition": "DCT band 32_64 um energy fraction of residual variance",
+    "unit": "1",
+    "source": "morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "E_DCT_64_inf_frac": {
+    "family": "C",
+    "definition": "DCT band 64_inf um energy fraction of residual variance",
+    "unit": "1",
+    "source": "morphology_descriptors.csv",
+    "nan_policy": "abort",
+    "notes": ""
+  },
+  "_band_fields_cache": {
+    "family": "D",
+    "definition": "R_total + 4 DCT band fields for fold-internal PCA targets",
+    "unit": "um",
+    "source": "height_raw via l15.dct_band_fields",
+    "nan_policy": "n/a",
+    "notes": "band coverage 0.0131; gitignored local cache"
+  }
+}
