@@ -7,6 +7,8 @@ variability/repeatability summary.
 keeps across-sample SD/IQR and the 49/50 delta + percentile (repeatability).
 Pass-step turning cosines for the two consecutive step pairs are reported
 separately, with a trajectory-level bootstrap over the 15 base conditions.
+Their interpretation uses a pass-wise permutation null that retains the shared
+middle surface in adjacent differences; zero is not used as the null value.
 """
 
 from __future__ import annotations
@@ -35,6 +37,16 @@ def _nan_pct(values, qs=(25, 50, 75, 90, 95)):
     if v.size == 0:
         return [np.nan] * len(qs)
     return np.percentile(v, list(qs))
+
+
+def _median_adjacent_cos_from_gram(G, a, b, c):
+    # d1 = x_b - x_a and d2 = x_c - x_b share the middle surface x_b, so the
+    # cosine is a pure Gram functional: the shared-middle permutation null
+    # never needs the raw fields.
+    num = G[b, c] - G[b, b] - G[a, c] + G[a, b]
+    n1 = G[b, b] + G[a, a] - 2.0 * G[a, b]
+    n2 = G[c, c] + G[b, b] - 2.0 * G[b, c]
+    return float(np.median(num / np.sqrt(np.maximum(n1 * n2, 1e-300))))
 
 
 def compute_descriptors(R: np.ndarray, dct_fields: dict) -> pd.DataFrame:
@@ -100,8 +112,12 @@ def main() -> int:
     out = _lib.output_dir(cfg)
     B = _lib.n_boot(cfg, quick)
     seed = int(cfg["random_seed"])
+    bcfg = cfg["bootstrap"]
+    n_turn_null = int(bcfg["pass_turning_null_permutations_quick"]
+                      if quick else bcfg["pass_turning_null_permutations"])
     _lib.log(f"== Phase 1.5R / 05: descriptors + pass pseudo-trajectory "
-             f"evolution + variability/repeatability summary (B={B}) ==")
+             f"evolution + variability/repeatability summary (B={B}, "
+             f"turning null={n_turn_null}) ==")
     frozen = _lib.load_frozen(cfg)
     man = frozen["man"]
     R = frozen["R"]
@@ -123,7 +139,12 @@ def main() -> int:
     groups = sorted(traj["design_group"].unique())
     _lib.require(len(groups) == 15, "trajectory count != 15")
     depth = man["median_depth_um"].to_numpy()
-    rng = np.random.default_rng(seed + 99)
+    pass_ids = np.array([
+        traj[traj["design_group"] == g].sort_values("pass_count")[
+            "dataset_index"].to_numpy()
+        for g in groups
+    ])
+    _lib.require(pass_ids.shape == (15, 4), "pass design is not 15 x N=1..4")
 
     def traj_step_stats(scale: str) -> dict:
         X = fields[scale]
@@ -162,6 +183,32 @@ def main() -> int:
                 rms_q[s].append(float(np.median(np.sqrt(np.mean(Vb ** 2, axis=1)))))
             c12_q.append(float(np.nanmedian(cos12[idx_draw])))
             c23_q.append(float(np.nanmedian(cos23[idx_draw])))
+
+        # Adjacent differences share their middle surface.  Independently
+        # permuting condition labels within each pass preserves that algebraic
+        # coupling and the pass-wise marginal distributions while removing the
+        # matched-condition trajectory.  This is the relevant exploratory null
+        # for asking whether the observed cosine is unusually negative.
+        G = X @ X.T
+        rng_null = np.random.default_rng(seed + 900 + si)
+        null12 = np.empty(n_turn_null)
+        null23 = np.empty(n_turn_null)
+        for pi in range(n_turn_null):
+            draw = np.column_stack([
+                rng_null.permutation(pass_ids[:, j]) for j in range(4)
+            ])
+            null12[pi] = _median_adjacent_cos_from_gram(
+                G, draw[:, 0], draw[:, 1], draw[:, 2])
+            null23[pi] = _median_adjacent_cos_from_gram(
+                G, draw[:, 1], draw[:, 2], draw[:, 3])
+        null12_q = np.percentile(null12, [2.5, 50, 97.5])
+        null23_q = np.percentile(null23, [2.5, 50, 97.5])
+        obs12 = float(np.nanmedian(cos12))
+        obs23 = float(np.nanmedian(cos23))
+        p12_lower = float((np.count_nonzero(null12 <= obs12) + 1)
+                          / (n_turn_null + 1))
+        p23_lower = float((np.count_nonzero(null23 <= obs23) + 1)
+                          / (n_turn_null + 1))
         across = {s: [] for s in (1, 2, 3)}
         for s in (1, 2, 3):
             for i, j in itertools.combinations(range(15), 2):
@@ -176,6 +223,7 @@ def main() -> int:
             c12q = _nan_pct(c12_q)
             c23q = _nan_pct(c23_q)
             rows.append((scale, s, *q, *c12q, *c23q,
+                         *null12_q, p12_lower, *null23_q, p23_lower,
                          float(np.nanmedian(across[s])) if across[s] else np.nan,
                          float(np.median(dds[s]))))
         _lib.log(f"  [{scale}] step RMS Q50 (N1->2, 2->3, 3->4): "
@@ -183,10 +231,12 @@ def main() -> int:
                             for s in (1, 2, 3))
                  + " um | cos12/cos23 medians: "
                  + f"{np.nanmedian(cos12):.2f}/{np.nanmedian(cos23):.2f}"
-                 + " | across-traj step cos: "
-                 + " ".join(f"{'nan' if not across[s] else f'{np.median(across[s]):.2f}'}"
-                            for s in (1, 2, 3)))
-    pd.DataFrame(rows, columns=[
+                  + " | across-traj step cos: "
+                  + " ".join(f"{'nan' if not across[s] else f'{np.median(across[s]):.2f}'}"
+                             for s in (1, 2, 3))
+                  + f" | shared-middle null lower-tail p: "
+                    f"{p12_lower:.3f}/{p23_lower:.3f}")
+    stats_df = pd.DataFrame(rows, columns=[
         "scale", "step", "step_rms_q25_um", "step_rms_q50_um",
         "step_rms_q75_um", "step_rms_q90_um", "step_rms_q95_um",
         "cos_step1_vs_2_bootmed_q25", "cos_step1_vs_2_bootmed_q50",
@@ -195,8 +245,13 @@ def main() -> int:
         "cos_step2_vs_3_bootmed_q25", "cos_step2_vs_3_bootmed_q50",
         "cos_step2_vs_3_bootmed_q75", "cos_step2_vs_3_bootmed_q90",
         "cos_step2_vs_3_bootmed_q95",
+        "cos_step1_vs_2_sharednull_q025", "cos_step1_vs_2_sharednull_q50",
+        "cos_step1_vs_2_sharednull_q975", "cos_step1_vs_2_sharednull_p_lower",
+        "cos_step2_vs_3_sharednull_q025", "cos_step2_vs_3_sharednull_q50",
+        "cos_step2_vs_3_sharednull_q975", "cos_step2_vs_3_sharednull_p_lower",
         "across_traj_same_step_cos_q50", "depth_step_median_um"
-        ]).to_csv(out / "pass_step_stats.csv", index=False)
+        ])
+    stats_df.to_csv(out / "pass_step_stats.csv", index=False)
     _lib.log("  wrote pass_step_stats.csv")
 
     dpi = int(cfg["plot"]["dpi"])
@@ -205,10 +260,10 @@ def main() -> int:
               "DCT_32_64": "tab:brown", "DCT_64_inf": "tab:olive"}
     steps = (1, 2, 3)
     for scale in fields:
-        sub = [r for r in rows if r[0] == scale]
-        med = np.array([r[3] for r in sub])   # step_rms_q50
-        q25 = np.array([r[2] for r in sub])   # step_rms_q25
-        q75 = np.array([r[4] for r in sub])   # step_rms_q75
+        sub = stats_df[stats_df["scale"] == scale].sort_values("step")
+        med = sub["step_rms_q50_um"].to_numpy()
+        q25 = sub["step_rms_q25_um"].to_numpy()
+        q75 = sub["step_rms_q75_um"].to_numpy()
         axes[0].plot(steps, med, "o-", color=colors[scale], lw=1.4, ms=4,
                      label=scale)
         axes[0].fill_between(steps, q25, q75, color=colors[scale], alpha=0.15)
@@ -220,10 +275,19 @@ def main() -> int:
     axes[0].legend(fontsize=8)
     pos = np.arange(len(fields))
     for i, scale in enumerate(fields):
-        sub = [r for r in rows if r[0] == scale]
-        # bootstrap-median Q50 for the two consecutive step pairs
-        axes[1].plot([i - 0.18], [sub[0][9]], "s", color=colors[scale], ms=6)
-        axes[1].plot([i + 0.18], [sub[0][14]], "D", color=colors[scale], ms=5,
+        row = stats_df[stats_df["scale"] == scale].iloc[0]
+        for x, prefix in ((i - 0.18, "cos_step1_vs_2"),
+                          (i + 0.18, "cos_step2_vs_3")):
+            nq50 = row[f"{prefix}_sharednull_q50"]
+            axes[1].errorbar(
+                [x], [nq50],
+                yerr=[[nq50 - row[f"{prefix}_sharednull_q025"]],
+                      [row[f"{prefix}_sharednull_q975"] - nq50]],
+                fmt="x", color="0.55", capsize=2, ms=4, lw=0.9)
+        axes[1].plot([i - 0.18], [row["cos_step1_vs_2_bootmed_q50"]],
+                     "s", color=colors[scale], ms=6)
+        axes[1].plot([i + 0.18], [row["cos_step2_vs_3_bootmed_q50"]],
+                     "D", color=colors[scale], ms=5,
                      mfc="none")
     axes[1].set_xticks(pos, list(fields), fontsize=8, rotation=20)
     axes[1].axhline(0.0, color="0.4", lw=0.8)
@@ -232,9 +296,12 @@ def main() -> int:
     axes[1].legend(handles=[
         Line2D([], [], marker="s", ls="", color="0.3", label="cos step1 vs 2"),
         Line2D([], [], marker="D", ls="", mfc="none", color="0.3",
-               label="cos step2 vs 3")], fontsize=8, loc="lower right")
-    axes[1].set_ylabel("median consecutive-step direction cos")
-    axes[1].set_title("Step-direction persistence (split by step pair)\n"
+               label="cos step2 vs 3"),
+        Line2D([], [], marker="x", ls="", color="0.55",
+               label="shared-middle null median + 95% interval")],
+        fontsize=7.5, loc="lower right")
+    axes[1].set_ylabel("median consecutive-step direction cosine")
+    axes[1].set_title("Observed turning vs shared-middle permutation null\n"
                       "pseudo-trajectory, cross-sectional")
     axes[1].grid(alpha=0.25, axis="y")
     dd_med, dd_q25, dd_q75 = [], [], []

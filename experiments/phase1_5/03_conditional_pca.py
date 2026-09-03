@@ -137,7 +137,7 @@ def main() -> int:
             key = (fname, pool_label, len(sig), comp_key)
             if key not in cache:
                 rng_c = np.random.default_rng(seed + 424242 + 977 * fi)
-                r1 = []
+                r50, r90 = [], []
                 for _ in range(n_draws):
                     idx = draw_one(rng_c)
                     Y = X[idx]
@@ -148,11 +148,16 @@ def main() -> int:
                     inner = _lib.build_resample_bank(cl_r, inner_b,
                                                      int(rng_c.integers(0, 10 ** 6)))
                     ang_r, _ = _lib.boot_angles_bank(Gy, Y, inner, ref_r, 3)
-                    r1.append(float(np.median(ang_r[:, 0])))
-                cache[key] = np.asarray(r1)
-            rb = cache[key]
-            prank1 = float(np.mean(rb > q1["q50"]))
-            rand_q = {p: float(np.percentile(rb, p)) for p in (25, 50, 75, 90)}
+                    r50.append(float(np.percentile(ang_r[:, 0], 50)))
+                    r90.append(float(np.percentile(ang_r[:, 0], 90)))
+                cache[key] = (np.asarray(r50), np.asarray(r90))
+            rb50, rb90 = cache[key]
+            prank50 = float(np.mean(rb50 > q1["q50"]))
+            prank90 = float(np.mean(rb90 > q1["q90"]))
+            rand50_q = {p: float(np.percentile(rb50, p))
+                        for p in (25, 50, 75, 90)}
+            rand90_q = {p: float(np.percentile(rb90, p))
+                        for p in (25, 50, 75, 90)}
 
             # LOCO influence (all fields for non-global subsets; global only
             # on the total field to keep the Gram refits affordable)
@@ -176,10 +181,10 @@ def main() -> int:
             else:
                 loco_med = loco_max = np.nan
 
-            # stability call: Q50 against Q50 AND Q90 against Q90 (baseline
-            # stores both stats), plus LOCO influence agreement
-            if prank1 >= 0.95 and q1["q50"] < rand_q[25]:
-                if q1["q90"] < rand_q[90] and loco_max < 45:
+            # Exploratory screen: compare like-for-like bootstrap summaries
+            # against their matched-subset nulls, then require LOCO agreement.
+            if prank50 >= 0.95:
+                if prank90 >= 0.95 and loco_max < 45:
                     call = "robust_stable"
                 else:
                     call = "fragile_stable"
@@ -191,8 +196,10 @@ def main() -> int:
                          float(q1["q25"]), float(q1["q50"]), float(q1["q75"]),
                          float(q1["q90"]), float(q1["q95"]), th3,
                          loco_med, loco_max,
-                         pool_label, rand_q[50], rand_q[25], rand_q[75],
-                         rand_q[90], prank1, call))
+                         pool_label,
+                         rand50_q[25], rand50_q[50], rand50_q[75], rand50_q[90],
+                         rand90_q[25], rand90_q[50], rand90_q[75], rand90_q[90],
+                         prank50, prank90, call))
         base_rows.append((name, pool_label, comp_str, n_draws, inner_b))
         _lib.log(f"  [{name}] done ({_lib.elapsed(t0)})")
 
@@ -201,8 +208,11 @@ def main() -> int:
         "theta1_q25_deg", "theta1_q50_deg", "theta1_q75_deg",
         "theta1_q90_deg", "theta1_q95_deg", "theta3_q50_deg",
         "loco_median_deg", "loco_max_deg", "baseline_pool",
-        "rand_theta1_q50_deg", "rand_theta1_q25_deg", "rand_theta1_q75_deg",
-        "rand_theta1_q90_deg", "prank1", "stable_call"])
+        "rand_stat50_q25_deg", "rand_stat50_q50_deg",
+        "rand_stat50_q75_deg", "rand_stat50_q90_deg",
+        "rand_stat90_q25_deg", "rand_stat90_q50_deg",
+        "rand_stat90_q75_deg", "rand_stat90_q90_deg",
+        "prank_q50", "prank_q90", "stable_call"])
     df.to_csv(out / "conditional_pca_table.csv", index=False)
     pd.DataFrame(loco_rows, columns=[
         "subset", "scale", "rank", "cluster_id", "loco_angle_deg",
@@ -219,10 +229,12 @@ def main() -> int:
         _lib.log(f"  [{call}]: {len(sel)} (subset, scale) cells")
         for _, r in sel.head(24).iterrows():
             _lib.log(f"    {r['subset']} [{r['scale']}]: theta1 Q50="
-                     f"{r['theta1_q50_deg']:.1f} Q90={r['theta1_q90_deg']:.1f} "
-                     f"vs rand Q50={r['rand_theta1_q50_deg']:.1f} "
-                     f"Q75={r['rand_theta1_q75_deg']:.1f} "
-                     f"(p={r['prank1']:.2f}, locoMax={r['loco_max_deg']:.1f})")
+                      f"{r['theta1_q50_deg']:.1f} Q90={r['theta1_q90_deg']:.1f} "
+                     f"vs null-stat medians "
+                     f"Q50={r['rand_stat50_q50_deg']:.1f} "
+                     f"Q90={r['rand_stat90_q50_deg']:.1f} "
+                     f"(ranks={r['prank_q50']:.2f}/{r['prank_q90']:.2f}, "
+                     f"locoMax={r['loco_max_deg']:.1f})")
 
     _lib.log("  anomaly check (N1/N2, depth Q1): eigengap / theta1 Q50 [Q25, "
              "Q75] / LOCO max / baseline Q50 (p-rank), per scale")
@@ -232,10 +244,10 @@ def main() -> int:
         for _, r in sub_df.iterrows():
             _lib.log(f"    {r['scale']:<12} gap={r['eigengap_l1_over_l2']:8.2f} "
                      f"th1={r['theta1_q50_deg']:6.2f} "
-                     f"[{r['theta1_q25_deg']:6.2f},{r['theta1_q75_deg']:6.2f}] "
-                     f"locoMax={r['loco_max_deg']:6.2f} "
-                     f"rand={r['rand_theta1_q50_deg']:6.2f} "
-                     f"(p={r['prank1']:.2f})")
+                      f"[{r['theta1_q25_deg']:6.2f},{r['theta1_q75_deg']:6.2f}] "
+                      f"locoMax={r['loco_max_deg']:6.2f} "
+                     f"null50={r['rand_stat50_q50_deg']:6.2f} "
+                     f"(ranks={r['prank_q50']:.2f}/{r['prank_q90']:.2f})")
 
     # ---- heatmap -----------------------------------------------------------
     dpi = int(cfg["plot"]["dpi"])

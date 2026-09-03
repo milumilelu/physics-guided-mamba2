@@ -179,6 +179,44 @@ class PairwiseRmseTests(unittest.TestCase):
                 self.assertAlmostEqual(D[i, j], direct, places=10)
 
 
+class TurningCosGramTests(unittest.TestCase):
+    @staticmethod
+    def _exp05():
+        import importlib.util
+        path = REPO / "experiments" / "phase1_5" / "05_pass_scale_evolution.py"
+        spec = importlib.util.spec_from_file_location(
+            "exp05_pass_scale_evolution", path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+
+    def test_gram_formula_matches_direct(self):
+        exp05 = self._exp05()
+        rng = np.random.default_rng(8)
+        X = rng.normal(size=(15, 300))
+        G = X @ X.T
+        a, b, c = np.split(rng.permutation(15), [5, 10])
+        val = exp05._median_adjacent_cos_from_gram(G, a, b, c)
+        d1 = X[b] - X[a]
+        d2 = X[c] - X[b]
+        cos = (np.sum(d1 * d2, axis=1)
+               / (np.linalg.norm(d1, axis=1) * np.linalg.norm(d2, axis=1)))
+        self.assertAlmostEqual(val, float(np.median(cos)), places=8)
+
+    def test_return_to_start_gives_minus_one(self):
+        # A path whose third surface returns to the first has cos = -1 by
+        # pure geometry: negative turning needs no physical reversal cause,
+        # which is why 0 is not a valid null value for this statistic.
+        exp05 = self._exp05()
+        rng = np.random.default_rng(9)
+        X = rng.normal(size=(3, 50))
+        X[2] = X[0]
+        G = X @ X.T
+        self.assertAlmostEqual(
+            exp05._median_adjacent_cos_from_gram(G, [0], [1], [2]), -1.0,
+            places=10)
+
+
 class OrdinaryPairMaskTests(unittest.TestCase):
     def test_excludes_shared_source_and_sentinel(self):
         import pandas as pd

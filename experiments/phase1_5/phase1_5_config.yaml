@@ -20,6 +20,8 @@ bootstrap:
   cluster_key: shared_height_source_id
   n_replicates: 1000
   n_replicates_quick: 50
+  pass_turning_null_permutations: 10000
+  pass_turning_null_permutations_quick: 500
 
 conditional:
   depth_quantiles: 4

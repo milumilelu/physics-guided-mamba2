@@ -2,14 +2,17 @@
 
 > ## 1.5R.2 修订（当前生效版本，Phase 1.5 收尾）
 >
-> 1. **turning cosine CI**：`pass_step_stats.csv` 中 cos(step1,2)/cos(step2,3)
->    的五分位数改为 **bootstrap-median 分布**的分位数（与 step RMS 同一协议），
->    列名 `cos_*_bootmed_q*`；`pass_scale_evolution.png` panel B 改画 Q50。
+> 1. **turning cosine 推断修正**：`pass_step_stats.csv` 保留
+>    **bootstrap-median 分布**的五分位数，并新增逐 pass 独立置换的
+>    shared-middle null（Q2.5/Q50/Q97.5 与 lower-tail rank）。相邻差分共享中间
+>    表面，负 cosine 不能以 0 为科学空假设；panel B 用列名取 Q50，并同时画
+>    shared-middle null 的 95% 区间。
 > 2. **mixed-session 基线 cache key**：加入 per-session occupancy
 >    composition（`comp_key`），总 occupancy 相同但 session 构成不同的子集
 >    不再共享基线；`baseline_matched.csv` 记录逐 session 签名。
-> 3. **stable_call 规则**：robust_stable 要求 Q50 对 Q50 **且 Q90 对 Q90**
->    （基线同时保存 stat_Q50 与 stat_Q90）且 LOCO max<45°；其余同前
+> 3. **stable_call 规则**：matched random subset 每次分别保存 bootstrap angle
+>    的 stat_Q50 与 stat_Q90，形成两个独立 null；`robust_stable` 要求两者的
+>    empirical rank 均 ≥0.95 且 LOCO max<45°。该标签仅为 exploratory screen；其余同前
 >    （fragile_stable / not_called）。
 
 > ## 1.5R.1 修订（当前生效版本）
@@ -146,10 +149,10 @@ R_mid  = R − R_low − R_high = G_{σ_high}*R − G_{σ_low}*R   （2–8 µm 
   - formal 内 frequency_kHz ∈ {2,10,50,100,200}、pulse_duration_fs ∈ {500,1000,2000,4000,6000}、pass_count ∈ {1..5}（各 n=24）；
   - 全体 200 按深度四分位 Q1–Q4（n=50，注明 session 混杂警告）；
   - 60-pass 内 N ∈ {1..4}（n=15，样本量警告）。
-- 每个子集 × band：EVR PC1、cum3；**子集内部** cluster bootstrap B=200 → θ(k=1)、θ(k=1..3) median/IQR。
-- **样本量匹配基线**（§5）：每个子集从 160 个全局 cluster 中随机抽相同 cluster 数，同一 bootstrap 协议 → θ 的对照分布；报告 p-rank = P(θ_random > θ_conditional)。
+- 每个子集 × band：EVR PC1、cum3；**子集内部** cluster bootstrap B=1000 → θ(k=1)、θ(k=1..3) 分位数。
+- **样本量与 session composition 匹配基线**（§5）：同一 bootstrap 协议分别形成 stat_Q50 与 stat_Q90 的对照分布；分别报告 empirical rank。
 - 深度滑窗（H3）：按深度排序，窗 50 步 10 → 16 窗，相邻窗 PC1 与 PC1–3 子空间夹角 vs 窗中心深度。
-- 输出：`conditional_pca_table.csv`、`size_matched_baseline.csv`、`conditional_stability_heatmap.png`（图4）、`depth_window_table.csv`、`depth_window_mode_rotation.png`。
+- 输出：`conditional_pca_table.csv`、`baseline_matched.csv`、`conditional_stability_heatmap.png`（图4）、`depth_window_table.csv`、`depth_window_mode_rotation.png`。
 
 ### 04_pairwise_repeatability.py
 - 每 band 全对形貌距离 D_band（Gram 法，µm RMSE）；工艺距离 D_process：5 参数 z-score 欧氏（pulse/frequency/hatch/velocity/pass）。
@@ -160,7 +163,7 @@ R_mid  = R − R_low − R_high = G_{σ_high}*R − G_{σ_low}*R   （2–8 µm 
 
 ### 05_pass_scale_evolution.py
 - 描述符（§10，逐样本）：Sq、Sa、Ssk、Fisher Sku、梯度 RMS、Laplacian RMS、自相关 1/e 相关长度、x-y 各向异性（grad_x/grad_y RMS 比）、三 band 能量分数、坑密度（R < med − 3.5×1.4826·MAD 像素数/Mpx）、最深负残差。→ `morphology_descriptors.csv`。
-- pass 演化（§9）：15 条轨迹 × band：步长 RMS ‖ΔR_N‖、相邻步方向 cos θ_N、Δd_N → `pass_step_stats.csv`、`pass_scale_evolution.png`（图7）。
+- pass 演化（§9）：15 条 cross-sectional pseudo-trajectories × band：步长 RMS ‖ΔR_N‖、相邻步方向 cos θ_N、Δd_N。turning cosine 另与逐 pass 独立置换、但保留共享中间项的 null 比较 → `pass_step_stats.csv`、`pass_scale_evolution.png`（图7）。
 - deterministic–stochastic map（§11）：对每个量 q：
   - V(q) = 跨样本 SD（附 IQR）；
   - S(q) = 1 − SE_boot(median)/SD(q)（cluster bootstrap B=200，截断 [0,1]）；
@@ -174,7 +177,8 @@ R_mid  = R − R_low − R_high = G_{σ_high}*R − G_{σ_low}*R   （2–8 µm 
 ### 5.1 描述性基准（非通过/失败阈值）
 
 - **稳定**：某场/子集 θ_boot(k=1) median < 20°；**不稳定**：> 40°；20°–40° 记为中间。
-- 条件子集"显著更稳"：θ_cond(k=1) median 低于 matched 基线的 P25，且 p-rank ≥ 0.95。
+- 条件子集稳定性筛查：stat_Q50 与 stat_Q90 相对各自 matched null 的 empirical rank 均 ≥0.95，且 LOCO max <45°；仅作探索性标签。
+- pass turning 只有在 shared-middle permutation lower-tail rank ≤0.05 时，才记为超出相邻差分代数耦合的额外负方向证据；仅仅小于 0 不作 reversal 证据。
 - sentinel"高可复现"：分位 ≤ 5%；"低"：≥ 20%。
 - 滑窗"平滑旋转"：相邻窗 PC1 |cos| 中位数 ≥ 0.8 且随深度无跳变；"无组织"：中位数 < 0.5。
 
@@ -205,4 +209,18 @@ R_mid  = R − R_low − R_high = G_{σ_high}*R − G_{σ_low}*R   （2–8 µm 
 ## 7. 边界重申
 
 不做预测/NN/autoencoder/Mamba/SINDy；不做事后阈值筛选；PCA 维数不解释为物理维数；
-49/50 只有一对，永远只叫 repeatability sentinel；深度四分位与 session 混杂处必须带警告陈述。
+49/50 只有一对，永远只叫 repeatability sentinel；深度四分位与 session 混杂处必须带警告陈述；
+pass 数据永远只叫 cross-sectional pseudo-trajectories，不作同槽 dynamics 或 oscillation 解释。
+
+---
+
+## 8. Phase 1.5 冻结结论
+
+当前结果支持三项描述性结论：
+
+1. absolute height 的主变化与加工深度相关，去除深度后的 residual morphology 不是同一个一维问题；
+2. residual variance 主要分布在 ≥8 µm 的多个空间波段，但空间平滑不等于样本维度低；
+3. 少数表面对全局/条件 PCA 有很高杠杆，因此总体分布存在异质性。
+
+当前结果不单独支持：离散加工 regime、同一工艺下空间相位不唯一、稳定的 pass reversal，
+或同一位置的逐 pass dynamics。这些均保留为后续审计或补重复实验的候选假设。
