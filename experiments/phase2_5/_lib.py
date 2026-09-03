@@ -137,8 +137,8 @@ ILR_A = ilr_matrix()
 
 def ilr_transform(p: np.ndarray) -> np.ndarray:
     p = np.asarray(p, dtype=float)
-    require(np.all(p > 0), "ILR needs strictly positive compositions")
-    return np.log(p) @ ILR_A.T
+    # log-floor keeps extreme inverse-ILR predictions numerically safe
+    return np.log(np.maximum(p, 1e-300)) @ ILR_A.T
 
 
 def ilr_inverse(z: np.ndarray) -> np.ndarray:
@@ -298,12 +298,12 @@ def exact_signflip_test(dz: np.ndarray) -> dict:
             "n_configurations": 2 ** m, "coordinates": coord}
 
 
-def require_no_n4_to_5(groups: np.ndarray, pass_counts: np.ndarray) -> None:
-    """N4->5 is session-confounded (v2 §10.2) and must never be analysed."""
-    pairs = set(zip(groups.tolist(), pass_counts.tolist()))
-    bases = {g for g, c in pairs if c == 4}
-    bad = [g for g, c in pairs if c == 5 and g in bases]
-    require(not bad, f"N4->5 analysis attempted for confounded bases {bad}")
+def require_no_n4_to_5(steps) -> None:
+    """N4->5 is session-confounded (v2 §10.2): analysing that STEP is
+    forbidden. steps = iterable of (from_pass, to_pass) tuples."""
+    for s_from, s_to in steps:
+        require((int(s_from), int(s_to)) != (4, 5),
+                "N4->5 step is session-confounded and must not be analysed")
 
 
 # --------------------------------------------------------------------------- #
