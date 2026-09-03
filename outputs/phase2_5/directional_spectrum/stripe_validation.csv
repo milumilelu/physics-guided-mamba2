@@ -1,0 +1,2 @@
+metric,token,auc,rank_biserial,p_perm,n_positive,n_negative
+A2_8_16,periodic stripe,0.9696969696969697,0.9393939393939394,0.00029997000299970003,6,22

@@ -1,0 +1,9 @@
+band,identity,max_abs_residual
+8_16,frozen_vs_phase15_csv,1.1102230246251565e-16
+16_32,frozen_vs_phase15_csv,9.71445146547012e-17
+32_64,frozen_vs_phase15_csv,9.71445146547012e-17
+64_inf,frozen_vs_phase15_csv,9.71445146547012e-17
+8_16,clean_identity,7.771561172376096e-16
+16_32,clean_identity,2.7755575615628914e-16
+32_64,clean_identity,2.220446049250313e-16
+64_inf,clean_identity,9.992007221626409e-16

@@ -1,0 +1,10 @@
+n_bins,descriptor,spearman_vs_primary
+16,spectral_centroid_log_um,0.9986379659491489
+16,spectral_entropy,0.9749268731718295
+16,effective_band_number,0.9749268731718295
+24,spectral_centroid_log_um,1.0
+24,spectral_entropy,1.0
+24,effective_band_number,1.0
+32,spectral_centroid_log_um,0.9995829895747395
+32,spectral_entropy,0.9900562514062853
+32,effective_band_number,0.9900562514062853

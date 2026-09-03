@@ -1,0 +1,81 @@
+# Phase 2.5 shared configuration (frozen inputs; spectral composition & process control).
+# Binding spec: Phase2.5_落地执行细则.md. Quick mode: smoke only, isolated output root.
+
+random_seed: 20260903
+
+paths:
+  dataset_npz: outputs/rectangle_registration/manual_internal_roi_v1/dataset/stable_roi_80um_dataset.npz
+  exploration_manifest: outputs/phase1_minimal/exploration_manifest.csv
+  phase2_manifest: outputs/phase2/manifest/phase2_manifest.csv
+  output_root: outputs/phase2_5
+
+scales:                               # identical to Phase 1.5/2; do not change
+  pixel_um: 0.5
+  sigmas_px: [2, 4, 8, 16]
+  dct_bands_um: [[8, 16], [16, 32], [32, 64], [64, 1.0e9]]
+
+spectrum:
+  radial_log_bins: 24
+  lambda_lo_um: 0.7                   # DCT lambda actual lower bound 0.712 (checked)
+  lambda_hi_um: 160.0
+  radial_bin_sensitivity: [16, 24, 32]
+  low_mode_count_threshold: 20
+  reconciliation_atol: 1.0e-8
+
+composition:
+  zero_threshold: 1.0e-10
+  replacement_delta: 1.0e-6           # will NOT trigger on this data (min 0.00216)
+  replacement_sensitivity: [1.0e-8, 1.0e-6, 1.0e-5]
+  replacement_stop_fraction: 0.05
+
+directional:
+  theta_bins: 36
+  hann_window: true
+  bands_um: [[8, 16], [16, 32], [32, 64], [64, 1.0e9]]
+  blind_stripe_token: "periodic stripe"   # space-separated in the audit sheet
+  permutation_n: 10000
+
+input_sets:
+  A: [pulse_duration_fs, frequency_kHz, hatch_spacing_um, pass_count, velocity_mm_s]
+  C_extra: [pulse_energy_proxy_uJ, scan_spacing_um,
+            areal_pulse_density_per_mm2, areal_dose_proxy_J_per_mm2]
+
+targets:
+  primary_multivariate: ilr_z1_z4
+  primary_directional: [A2_8_16, angular_entropy_8_16]
+  secondary: [spectral_centroid_log_um, spectral_entropy,
+              effective_band_number, A2_16_32, A2_32_64]
+  reference: [median_depth_um, Sq_um, rms_DCT_8_16_um]
+
+cv:
+  n_splits: 5
+  gss_repeats: 5
+
+models:
+  ridge_alpha_grid: [0.01, 0.1, 1, 10, 100]
+  spline: {degree: 3, n_knots: 4}
+  extratrees: {n_estimators: 500, min_samples_leaf: 2}
+  oof_primary_model: ridge
+
+gates:                                # frozen BEFORE running Task 12 (细则 §0.8)
+  G1_multivariate_q2: 0.20
+  G1_formal_only_q2: 0.10
+  G1_balance_r2: 0.20
+  G2a_validation_p: 0.05
+  G2b_directional_r2: 0.20
+  G3_delta_q2: 0.05
+  G4_step_p: 0.05
+  G5_moran_p: 0.05
+  hotspot_quantile: 0.90
+
+pass:
+  exact_sign_flip: true
+
+error_atlas:
+  knn_k: [5, 10]
+  moran_permutations: 10000
+  hotspot_jaccard_ridge_et: true
+  linear_baseline_rule: {dR2_et_ridge: 0.10, min_folds_same_sign: 4}
+
+sentinel: {session: zro2_120_formal, processing_orders: [49, 50]}
+plot: {dpi: 150, diverging_cmap: RdBu_r}
