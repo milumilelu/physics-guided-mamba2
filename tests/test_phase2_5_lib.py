@@ -204,11 +204,10 @@ class PassSetTests(unittest.TestCase):
         self.assertEqual(len(ps), 20)
 
     def test_n4_to_5_refuses(self):
-        groups = np.array(["T01"] * 2)
-        counts = np.array([4, 5])
         with self.assertRaises(AssertionError):
-            p25.require_no_n4_to_5(groups, counts)
-        p25.require_no_n4_to_5(np.array(["T01", "T02"]), np.array([4, 5]))
+            p25.require_no_n4_to_5([(3, 4), (4, 5)])
+        p25.require_no_n4_to_5([(1, 2), (2, 3), (3, 4)])
+        p25.require_no_n4_to_5([(5, 6)])          # independent check allowed
 
 
 class SignFlipTests(unittest.TestCase):
