@@ -1,0 +1,17 @@
+model,target,k,spearman_error_vs_dproc
+extratrees,A2_8_16,5,0.2356139820046095
+extratrees,A2_8_16,10,0.19321392436956084
+extratrees,Sq_um,5,0.3128155932538735
+extratrees,Sq_um,10,0.28852859358555605
+extratrees,ilr_composition,5,0.029003306812980252
+extratrees,ilr_composition,10,0.023949796331543097
+extratrees,median_depth_um,5,0.24648609587770082
+extratrees,median_depth_um,10,0.1871064712965383
+ridge,A2_8_16,5,0.026424818310232884
+ridge,A2_8_16,10,0.009922829934433018
+ridge,Sq_um,5,0.14688982059133712
+ridge,Sq_um,10,0.13321417937599786
+ridge,ilr_composition,5,0.08134804882700174
+ridge,ilr_composition,10,0.07098761034045971
+ridge,median_depth_um,5,-0.1438386967214874
+ridge,median_depth_um,10,-0.19938512956234353
