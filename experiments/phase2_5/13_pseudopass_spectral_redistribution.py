@@ -134,23 +134,19 @@ def main() -> int:
                 i_from, i_to = int(c_from[0]), int(c_to[0])
                 dz.append(z[i_to] - z[i_from])
                 dd.append(float(depth[idxs[i_to]] - depth[idxs[i_from]]))
-                step_rows.append({
-                    "arm": arm, "base_condition_group": g,
-                    "step": f"{s_from}->{s_to}",
-                    **{f"d_z{j + 1}": float(dz[-1][j]) for j in range(4)},
-                    "d_depth_um": dd[-1]})
             if not dz:
                 continue
             dz = np.asarray(dz)
             p25.require_no_n4_to_5([(s_from, s_to)])
-            for (g, idxs, z, pp, counts), row_dz in zip(
+            for (g, idxs, z, pp, counts), row_dz, row_dd in zip(
                     [m for m in mats
                      if (int((m[4] == s_from).sum()) == 1
-                         and int((m[4] == s_to).sum()) == 1)], dz):
+                         and int((m[4] == s_to).sum()) == 1)], dz, dd):
                 ilr_step_rows.append({
                     "arm": arm, "base_condition_group": g,
                     "step": f"{s_from}->{s_to}",
-                    **{f"d_z{j + 1}": float(row_dz[j]) for j in range(4)}})
+                    **{f"d_z{j + 1}": float(row_dz[j]) for j in range(4)},
+                    "d_depth_um": float(row_dd)})
             res = p25.exact_signflip_test(dz)
             holm = _holm([c["p_exact_two_sided"]
                           for c in res["coordinates"]])

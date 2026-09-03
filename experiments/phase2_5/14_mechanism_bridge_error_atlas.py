@@ -119,7 +119,11 @@ def main() -> int:
          "depends_on_fixed_constants": True,
          "depends_on_measured_depth": False,
          "depends_on_measured_morphology": False,
-         "was_fitted_using_labels": False, "fit_scope": "n/a",
+         "current_200_morphology_label_fitted": False,
+         "historical_calibration_provenance":
+             "unknown (constants predate this repo; the mechanism module "
+             "has measured-depth fitting capability)",
+         "fit_scope": "n/a",
          "allowed_primary": False,
          "redundant_with_C": True,
          "notes": "monotone in pulse_energy_proxy_uJ (already in C)"},
@@ -130,7 +134,11 @@ def main() -> int:
          "depends_on_fixed_constants": True,
          "depends_on_measured_depth": False,
          "depends_on_measured_morphology": False,
-         "was_fitted_using_labels": False, "fit_scope": "n/a",
+         "current_200_morphology_label_fitted": False,
+         "historical_calibration_provenance":
+             "unknown (constants predate this repo; the mechanism module "
+             "has measured-depth fitting capability)",
+         "fit_scope": "n/a",
          "allowed_primary": False, "redundant_with_C": True,
          "notes": "function of pass_count only; constant original "
                   "calibration predates this repo"},
@@ -143,7 +151,11 @@ def main() -> int:
          "depends_on_fixed_constants": True,
          "depends_on_measured_depth": False,
          "depends_on_measured_morphology": False,
-         "was_fitted_using_labels": False, "fit_scope": "n/a",
+         "current_200_morphology_label_fitted": False,
+         "historical_calibration_provenance":
+             "unknown (constants predate this repo; the mechanism module "
+             "has measured-depth fitting capability)",
+         "fit_scope": "n/a",
          "allowed_primary": True, "redundant_with_C": False,
          "notes": "log(E_p) - (N-1)log(S): nonlinear combination outside C's "
                   "linear span"},
@@ -154,7 +166,11 @@ def main() -> int:
          "depends_on_fixed_constants": True,
          "depends_on_measured_depth": False,
          "depends_on_measured_morphology": False,
-         "was_fitted_using_labels": False, "fit_scope": "n/a",
+         "current_200_morphology_label_fitted": False,
+         "historical_calibration_provenance":
+             "unknown (constants predate this repo; the mechanism module "
+             "has measured-depth fitting capability)",
+         "fit_scope": "n/a",
          "allowed_primary": True, "redundant_with_C": False,
          "notes": "fixed lookup by pulse duration"},
         {"feature_name": "scan_spacing_um / areal_dose_proxy_j_mm2",
@@ -164,7 +180,11 @@ def main() -> int:
          "depends_on_fixed_constants": True,
          "depends_on_measured_depth": False,
          "depends_on_measured_morphology": False,
-         "was_fitted_using_labels": False, "fit_scope": "n/a",
+         "current_200_morphology_label_fitted": False,
+         "historical_calibration_provenance":
+             "unknown (constants predate this repo; the mechanism module "
+             "has measured-depth fitting capability)",
+         "fit_scope": "n/a",
          "allowed_primary": False, "redundant_with_C": True, "notes": ""},
     ])
     prov.to_csv(out_m / "mechanism_feature_provenance.csv", index=False)

@@ -48,6 +48,7 @@ EXPECTED = ["cv_fold_results.csv", "cv_summary.csv",
             "composition_oof_predictions.csv", "directional_oof_predictions.csv",
             "input_comparison.csv", "nonlinear_comparison.csv",
             "permutation_importance.csv", "additive_response_curves.csv",
+            "composition_anisotropy_bridge.csv",
             "spectrum_predictability_map.png", "ilr_balance_predictability.png",
             "predicted_vs_true_composition.png",
             "process_feature_importance.png", "README.md"]
@@ -159,15 +160,18 @@ def main() -> int:
 
     fit_rows, oof_comp, oof_dir = [], [], []
 
-    def _fit_predict(model_name, Xtr_raw, Xtr, ytr, Xte, groups_tr, fold_i):
+    def _fit_predict(model_name, Xtr_raw, Xte_raw, Xtr, Xte, ytr, groups_tr,
+                     fold_i):
         if model_name == "dummy":
             return DummyRegressor(strategy="mean").fit(Xtr, ytr).predict(Xte)
         if model_name == "ridge":
             best = _alpha_inner(Xtr_raw, ytr, groups_tr)
             return Ridge(alpha=best).fit(Xtr, ytr).predict(Xte)
         if model_name == "spline":
-            best = _alpha_inner(Xtr_raw, ytr, groups_tr)
-            return _spline_ridge_fit_predict(Xtr_raw, Xte, ytr, cfg, best)
+            # alpha selected INSIDE the spline pipeline (rev2 fix); knots and
+            # scaler both fitted on the training fold only
+            best = _select_alpha_spline(Xtr_raw, ytr, groups_tr)
+            return _spline_ridge(Xtr_raw, Xte_raw, ytr, best)
         if model_name == "extratrees":
             ec = cfg["models"]["extratrees"]
             return ExtraTreesRegressor(
@@ -176,6 +180,37 @@ def main() -> int:
                 random_state=seed + 700 + fold_i, n_jobs=-1
             ).fit(Xtr, ytr).predict(Xte)
         raise KeyError(model_name)
+
+    def _spline_ridge(Xtr_raw, Xte_raw, ytr, alpha):
+        sc = StandardScaler().fit(Xtr_raw)
+        Xtr_s = sc.transform(Xtr_raw)
+        spline = SplineTransformer(degree=int(cfg["models"]["spline"]["degree"]),
+                                   n_knots=int(cfg["models"]["spline"]["n_knots"]),
+                                   include_bias=False).fit(Xtr_s)
+        model = Ridge(alpha=float(alpha)).fit(spline.transform(Xtr_s), ytr)
+        return model.predict(spline.transform(sc.transform(Xte_raw)))
+
+    def _select_alpha_spline(X_raw, y, groups):
+        """Inner grouped CV with the FULL spline pipeline per alpha (rev2).
+        Alpha is selected on the first balance column (same convention as
+        the ridge branch)."""
+        y1 = y[:, 0] if y.ndim == 2 else y
+        grid = cfg["models"]["ridge_alpha_grid"]
+        if len(set(groups.tolist())) < 3:
+            return float(grid[len(grid) // 2])
+        scores = {a: [] for a in grid}
+        for itr, ival in GroupKFold(n_splits=3).split(X_raw, groups=groups):
+            if len(np.unique(y1[ival])) < 2:
+                continue
+            for a in grid:
+                pred = _spline_ridge(X_raw[itr], X_raw[ival], y1[itr], a)
+                scores[a].append(r2_score(y1[ival], pred))
+        best = grid[0]
+        med = {a: (np.nanmedian(v) if v else -np.inf) for a, v in scores.items()}
+        for a in grid[1:]:
+            if med[a] > med[best]:
+                best = a
+        return float(best)
 
     def _alpha_inner(X_raw, y, groups):
         # scalar y for alpha selection: use the first target column (multiout)
@@ -216,7 +251,7 @@ def main() -> int:
                 Xtr, Xte = sc.transform(X[tr]), sc.transform(X[te])
                 # ---- composition (multivariate) ----
                 for mname in ARM_MODELS:
-                    zp = _fit_predict(mname, X[tr], Xtr, Z[tr], Xte,
+                    zp = _fit_predict(mname, X[tr], X[te], Xtr, Xte, Z[tr],
                                       groups_tr, fi)
                     q2 = _q2_aitchison(Z[te], zp, Z[tr])
                     # d_A(p_hat, p) == ||z_hat - z|| exactly (ILR isometry):
@@ -250,7 +285,7 @@ def main() -> int:
                 # ---- scalar targets ----
                 for tid, y in scal.items():
                     for mname in ARM_MODELS:
-                        yp = _fit_predict(mname, X[tr], Xtr, y[tr], Xte,
+                        yp = _fit_predict(mname, X[tr], X[te], Xtr, Xte, y[tr],
                                           groups_tr, fi)
                         rho = (float(spearmanr(y[te], yp).statistic)
                                if len(np.unique(yp)) > 1
@@ -274,7 +309,7 @@ def main() -> int:
             p25.log(f"  [{vname}] fold {fi} done ({len(fit_rows)} rows, "
                     f"{time.time() - t0:.0f}s)")
 
-    # ---- sensitivity arms (composition only; 细则 §0.10/§11 S1–S3) ----------
+    # ---- sensitivity arms (composition only; 细则 §11 S1–S4) -----------------
     if not quick:
         rev = pd.read_csv(p25.l15.REPO / "outputs/phase2/instability/盲评"
                           / "instability_manual_review_completed.csv")
@@ -283,14 +318,26 @@ def main() -> int:
         yes_idx = rev[rev[col].astype(str).str.strip().str.lower() == "yes"][
             "dataset_index"].astype(int).tolist()
         rank = man["phase1_global_loco_rank"].to_numpy()
+        npz = np.load(p25.l15.REPO / cfg["paths"]["dataset_npz"])
+        V = npz["valid_mask"].astype(bool)
+        Hrepn = np.where(V, npz["height_repaired"].astype(float), np.nan)
+        R_rep = Hrepn - np.nanmedian(Hrepn, axis=(1, 2))[:, None, None]
+        p_rep, _ = p25.five_part_composition(
+            R_rep, float(cfg["scales"]["pixel_um"]))
+        Z_rep = p25.ilr_transform(
+            np.column_stack([p_rep[b] for b in p25.ILR_BANDS]))
         arms = {"formal_only": (man["session_role"] == "formal").to_numpy(),
                 "exclude_artifact_yes":
                     ~man["dataset_index"].isin(yes_idx).to_numpy(),
-                "minus_top5": rank > 5}
+                "minus_top5": rank > 5,
+                "repaired": np.ones(len(man), dtype=bool)}
         for arm, mask in arms.items():
             idx = np.flatnonzero(mask)
             man_arm = man.iloc[idx].reset_index(drop=True)
             groups_arm = man_arm["shared_height_source_id"].to_numpy()
+            # rev2 fix: fit/evaluate in the ARM-LOCAL target frame (Z[idx]);
+            # formal-only happens to be contiguous, artifact/top5 do not
+            Z_arm = (Z_rep if arm == "repaired" else Z)[idx]
             splits_a = p25.gkf_splits(groups_arm, int(cfg["cv"]["n_splits"]))
             p25.check_gkf_contract(groups_arm, splits_a)
             for fi, (tr, te) in enumerate(splits_a):
@@ -300,16 +347,71 @@ def main() -> int:
                     Xtr, Xte = sc.transform(X[tr]), sc.transform(X[te])
                     groups_tr = groups_arm[tr]
                     for mname in ("dummy", "ridge", "extratrees"):
-                        zp = _fit_predict(mname, X[tr], Xtr, Z[tr], Xte,
-                                          groups_tr, fi)
+                        zp = _fit_predict(mname, X[tr], X[te], Xtr, Xte,
+                                          Z_arm[tr], groups_tr, fi)
                         fit_rows.append({
                             "target": "ilr_z1_z4", "input_set": iname,
                             "model": mname,
                             "cv_variant": f"{arm}_src_gkf", "fold": fi,
                             "n_train": len(tr), "n_test": len(te),
-                            "Q2_Aitchison": _q2_aitchison(Z[idx][te], zp,
-                                                          Z[idx][tr])})
+                            "Q2_Aitchison": _q2_aitchison(Z_arm[te], zp,
+                                                          Z_arm[tr])})
             p25.log(f"  [sensitivity {arm}] done")
+
+    # ---- composition <-> anisotropy bridge (rev2; full 200) -----------------
+    # G2a validates A2 against the blind phenotype; it does NOT connect
+    # p_8-16 to A2. This block asks (diagnostic, transductive conditioning):
+    #   (i)  Spearman(p_8-16, A2_8-16) on raw values;
+    #   (ii) does process still explain A2 after conditioning on p_8-16
+    #        (and vice versa)? Fold-paired dR2 on src_gkf, ridge.
+    if not quick:
+        p8 = P[:, 1]
+        a2v = scal["A2_8_16"]
+        splits0 = variant_splits["src_gkf"]
+        X_A = X_by_input["A"]
+
+        def _ridge_r2s(Xin, y):
+            r2s = []
+            for fi, (tr, te) in enumerate(splits0):
+                sc = StandardScaler().fit(Xin[tr])
+                yp = _fit_predict("ridge", Xin[tr], Xin[te],
+                                  sc.transform(Xin[tr]),
+                                  sc.transform(Xin[te]), y[tr],
+                                  src_groups[tr], fi)
+                r2s.append(float(r2_score(y[te], yp)))
+            return r2s
+
+        r2_a2_u = _ridge_r2s(X_A, a2v)
+        r2_a2_u_p8 = _ridge_r2s(np.hstack([X_A, p8[:, None]]), a2v)
+        r2_p8_u = _ridge_r2s(X_A, p8)
+        r2_p8_u_a2 = _ridge_r2s(np.hstack([X_A, a2v[:, None]]), p8)
+        rho = float(spearmanr(p8, a2v).statistic)
+        bridge_rows = [
+            {"question": "rho_p8_A2_raw", "n_folds": 0,
+             "baseline_median": np.nan, "augmented_median": np.nan,
+             "dR2_median": rho, "n_pos": int(rho > 0)},
+            {"question": "A2 ~ u + p8 (process explains anisotropy given "
+                         "composition?)",
+             "n_folds": 5,
+             "baseline_median": float(np.median(r2_a2_u)),
+             "augmented_median": float(np.median(r2_a2_u_p8)),
+             "dR2_median": float(np.median(np.array(r2_a2_u_p8)
+                                           - np.array(r2_a2_u))),
+             "n_pos": int(np.sum(np.array(r2_a2_u_p8) > np.array(r2_a2_u)))},
+            {"question": "p8 ~ u + A2 (process explains composition given "
+                         "anisotropy?)",
+             "n_folds": 5,
+             "baseline_median": float(np.median(r2_p8_u)),
+             "augmented_median": float(np.median(r2_p8_u_a2)),
+             "dR2_median": float(np.median(np.array(r2_p8_u_a2)
+                                           - np.array(r2_p8_u))),
+             "n_pos": int(np.sum(np.array(r2_p8_u_a2) > np.array(r2_p8_u)))},
+        ]
+        pd.DataFrame(bridge_rows).to_csv(
+            out / "composition_anisotropy_bridge.csv", index=False)
+        p25.log(f"  bridge: rho(p8, A2)={rho:+.3f}; "
+                f"A2~u+p8 dR2={bridge_rows[1]['dR2_median']:+.3f}; "
+                f"p8~u+A2 dR2={bridge_rows[2]['dR2_median']:+.3f}")
 
     res = pd.DataFrame(fit_rows)
     res.to_csv(out / "cv_fold_results.csv", index=False)
@@ -409,7 +511,8 @@ def main() -> int:
 
     (out / "README.md").write_text(README, encoding="utf-8")
     expected = [f for f in EXPECTED
-                if not (quick and f in ("permutation_importance.csv",
+                if not (quick and f in ("composition_anisotropy_bridge.csv",
+                                        "permutation_importance.csv",
                                         "additive_response_curves.csv",
                                         "spectrum_predictability_map.png",
                                         "ilr_balance_predictability.png",

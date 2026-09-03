@@ -1,0 +1,4 @@
+question,n_folds,baseline_median,augmented_median,dR2_median,n_pos
+rho_p8_A2_raw,0,,,0.5527788194704868,1
+A2 ~ u + p8 (process explains anisotropy given composition?),5,0.5095332191546766,0.622461767115096,0.024245639528215124,5
+p8 ~ u + A2 (process explains composition given anisotropy?),5,0.422888881547959,0.5347708964366529,0.050195106365603426,5

@@ -103,7 +103,7 @@ def main() -> int:
     win_energy = (win ** 2).sum()
     kx = np.fft.fftfreq(nx, d=pixel)
     ky = np.fft.fftfreq(ny, d=pixel)
-    KY, KX = np.meshgrid(ky, kx)
+    KX, KY = np.meshgrid(kx, ky)   # 'xy': KX along axis1 (x), consistent with _lib
     lam = np.divide(1.0, np.hypot(KX, KY), where=np.hypot(KX, KY) > 0,
                     out=np.full((nx, ny), np.inf))
     theta = np.arctan2(KY, KX)

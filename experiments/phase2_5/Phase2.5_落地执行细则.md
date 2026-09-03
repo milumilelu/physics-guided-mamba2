@@ -1,6 +1,6 @@
 # Phase 2.5 落地执行细则（how）
 
-> 状态：**DRAFT_FOR_REVIEW**（首次正式运行前不得视为冻结）
+> 状态：**FROZEN_EXECUTED**（2026-09-03）。提交链：config/gate 预冻结 = `86ecd28`（先于 Task 12 运行，无 post-hoc gate）；formal 结果 = `df10dba`；外部审查二（Route P/T 保留、3 实现问题 + 2 解释问题）后的 review-fix = 本提交（修 spline 管道内选 alpha、敏感性 arm-local 索引、加权角熵、repaired 臂补齐 S4、Task 13 schema、provenance 字段降级，新增 p8↔A2 桥）。Gate 终判见 `outputs/phase2_5/summary/phase2_5_gate_eval.md`（rev3）：G1 ROBUST、G2a VALIDATED、G2b SUPPORTED（Route P+T 触发）、G3a/G3b/G4 未触发、G5 Sq 局域化。
 > 上位规划：同目录 `Phase2.5_形貌谱组成与工艺控制机制_执行细则.md`——它定 what/why（科学问题、Task 10–14、Gate G1–G5、语言边界）；本文件定 how：逐脚本的输入、约定、公式、QA 断言、输出 schema、测试与运行预算。两文件冲突时以本文件为准并回写上位规划。
 > 事实基线：`现有数据基础说明_v2.md`；`experiments/phase1_5/Phase1.5_本细则.md`；`experiments/phase2/Phase2_执行细则.md`（含 §0 收紧点 rev3）与 `outputs/phase2/phase2_gate_summary.md`（rev2）。
 > 继承原则：height_raw 为唯一主证据；residual 沿用冻结定义 R = H − per-sample valid-median；不重新定义 plane/depth/ROI/repair/朝向/DCT 带不改变（上位规划 §3.2）；49/50 永远只叫 repeatability sentinel；N4→5 因 session 混杂禁止分析；pass 数据只称 cross-sectional pseudo-trajectories。

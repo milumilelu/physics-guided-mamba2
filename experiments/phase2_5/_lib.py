@@ -251,8 +251,10 @@ def directional_band_metrics(R: np.ndarray, pixel_um: float,
             theta_k = float(0.5 * np.degrees(np.angle(s2)))
             stripe = (theta_k + 90.0) % 180.0
             th_fold = np.mod(th, np.pi)
-            hist, _ = np.histogram(th_fold, bins=edges)
-            q = hist / max(hist.sum(), 1)
+            # weighted by PSD power (rev2 fix): entropy describes the angular
+            # POWER distribution, not the grid-point count distribution
+            hist, _ = np.histogram(th_fold, bins=edges, weights=Pm)
+            q = hist / max(hist.sum(), 1e-300)
             with np.errstate(divide="ignore", invalid="ignore"):
                 qlogq = np.where(q > 0, q * np.log(np.maximum(q, 1e-300)), 0.0)
             ent = float(-qlogq.sum() / np.log(theta_bins))

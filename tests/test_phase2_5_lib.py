@@ -260,7 +260,13 @@ class TaskContractTests(unittest.TestCase):
         prim = prov[prov["allowed_primary"] == True]  # noqa: E712
         self.assertTrue((~prim["depends_on_measured_morphology"].astype(bool)
                          ).all())
-        self.assertTrue((~prim["was_fitted_using_labels"].astype(bool)).all())
+        # rev2: only the CURRENT-200 label dependency is boolean-asserted;
+        # historical calibration of the mechanism constants is recorded as
+        # unknown provenance, not claimed label-free
+        self.assertTrue(
+            (~prim["current_200_morphology_label_fitted"].astype(bool)).all())
+        self.assertTrue(prim["historical_calibration_provenance"]
+                        .str.contains("unknown").all())
 
     def test_oof_rows_unique_per_sample(self):
         path = REPO / "outputs/phase2_5/process_map" \
