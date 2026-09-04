@@ -70,7 +70,9 @@ def pick_alpha(X_train: np.ndarray, y_train: np.ndarray, groups_train: pd.Series
 
 
 def evaluate_folds(model_name: str, frame: pd.DataFrame, splits, *,
-                   target: str, seed: int) -> list[dict]:
+                   target: str, seed: int, variant: str) -> list[dict]:
+    # explicit variant label (封账修正：frame.attrs 在 df.copy() 链上不可靠，
+    # 曾把 primary 数据的 GSS 折误报为另一 variant)
     rows = []
     X = frame[FEATURES].to_numpy(dtype=float)
     y = frame[target].to_numpy(dtype=float)
@@ -94,7 +96,7 @@ def evaluate_folds(model_name: str, frame: pd.DataFrame, splits, *,
         model.fit(X[tr], y[tr])
         pred = model.predict(X[te])
         rows.append({
-            "variant": frame.attrs.get("variant", "primary"),
+            "variant": variant,
             "fold": fold, "model": model_name,
             "n_train": int(len(tr)), "n_test": int(len(te)),
             "R2": float(r2_score(y[te], pred)),
@@ -185,17 +187,29 @@ def main() -> int:
 
     rows: list[dict] = []
     rows += evaluate_folds("ridge", primary, splits, target="median_W50_um",
-                           seed=seed)
+                           seed=seed, variant="primary_gkf")
     rows += evaluate_folds("spline", primary, splits, target="median_W50_um",
-                           seed=seed)
+                           seed=seed, variant="primary_gkf")
     rows += evaluate_folds("extratrees", primary, splits,
-                           target="median_W50_um", seed=seed)
+                           target="median_W50_um", seed=seed,
+                           variant="primary_gkf")
     sens_splits = p26.p2.gkf_splits(sensitivity["single_line_id"], 5)
     p26.p2.check_gkf_contract(sensitivity["single_line_id"], sens_splits)
     rows += evaluate_folds("ridge", sensitivity, sens_splits,
-                           target="median_W50_um", seed=seed)
+                           target="median_W50_um", seed=seed,
+                           variant="sensitivity_gkf")
     rows += evaluate_folds("ridge", primary, gss, target="median_W50_um",
-                           seed=seed)
+                           seed=seed, variant="primary_gss")
+    # usable-only sensitivity (Phase 2.7 封账补充)：18 条 usable 线的
+    # W50/W_eq 一致性对照——uncertain 占多数时的保守下界
+    usable_only = primary[primary["qa_label"] == "usable"].copy()
+    p26.require(len(usable_only) >= 10,
+                f"usable-only arm too small: {len(usable_only)}")
+    usable_splits = p26.p2.gkf_splits(usable_only["single_line_id"], 5)
+    p26.p2.check_gkf_contract(usable_only["single_line_id"], usable_splits)
+    rows += evaluate_folds("ridge", usable_only, usable_splits,
+                           target="median_W50_um", seed=seed,
+                           variant="usable_only_gkf")
     folds = pd.DataFrame(rows)
     for column in ("R2", "MAE_um"):
         folds[column] = folds[column].astype(float)
@@ -210,7 +224,7 @@ def main() -> int:
                        index=False, encoding="utf-8-sig")
     p26.log(f"line_width_process_model.csv written: {len(folds)} fold rows | "
             f"primary Ridge median R2="
-            f"{summary_rows[(summary_rows['variant']=='primary') & (summary_rows['model']=='ridge')]['median_R2'].iloc[0]:.3f}")
+            f"{summary_rows[(summary_rows['variant']=='primary_gkf') & (summary_rows['model']=='ridge')]['median_R2'].iloc[0]:.3f}")
 
     # refit Ridge on the full primary set for response curves (alpha inner-GKF)
     X = primary[FEATURES].to_numpy(dtype=float)
@@ -274,12 +288,27 @@ def main() -> int:
     state_counts_all = {state: int((frame["width_identifiability"] == state).sum())
                         for state in ("estimable", "right_censored",
                                       "insufficient_sections")}
+    usable_only_block = {
+        "n": int(len(usable_only)),
+        "pooled_section_median_W50_um": float(
+            pooled[pooled["single_line_id"].isin(usable_only["single_line_id"])]
+            ["W50_um"].median()),
+        "line_median_W50_in_band_fraction": float(
+            in_band(usable_only["median_W50_um"]).mean()),
+        "pooled_section_weq_median_um": float(
+            pooled[pooled["single_line_id"].isin(usable_only["single_line_id"])]
+            ["W_eq_um"].median()),
+        "line_median_weq_in_band_fraction": float(
+            in_band(usable_only["median_W_eq_um"]).mean()),
+        "note": "usable-only sensitivity (Phase 2.7 封账)：18 条人工完全可用线",
+    }
     evaluation = {
         "population": "estimable & qa_label != reject_geometry",
         "n_gate": int(len(primary)),
         "n_estimable_all": state_counts_all,
         "n_right_censored_all": state_counts_all["right_censored"],
         "n_insufficient_all": state_counts_all["insufficient_sections"],
+        "usable_only_sensitivity": usable_only_block,
         "raw_arm": {"pooled_section_median_W50_um": pooled_median,
                     "line_median_W50_um": line_median,
                     "pooled_section_weq_median_um": pooled_weq_median,

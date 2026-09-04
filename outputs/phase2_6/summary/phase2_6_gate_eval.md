@@ -1,6 +1,7 @@
-# Phase 2.6 gate 评估（rev1）
+# Phase 2.6 gate 评估（rev2，封账版）
 
-> 状态：formal 完成（2026-09-04）。config/门槛预冻结于细则 v2（FROZEN_EXECUTED，提交 `2daa611`）；formal 链：Task 15/16（`65ded0e`/`7e99bf9`/`a469206`）→ 审计修复 + Task 17（`cdfda62`）→ Task 18（`dff4915`）→ Task 19/20（`8e646a1`）。预冻结后仅发生实现级修复（M0_RECON 参考交集与 Task 12 协议对齐、W_unavailable 两态、log10_tau 列序、sensitivity 臂自建 splits、pandas-3 lookup 语义），全部已回写细则 §0.15/§0.17 补注；G-SL1~G-SL4 门槛自冻结起未改动。formal 运行统一使用 `.venv`（pinned sklearn 1.7.2——`D:\anaconda` 的 sklearn 使内层 R² 微移致 α 翻转，是对账失败的根因，已固化为运行环境约定）。
+> 状态：**封账（2026-09-04）**。rev1 判定全部维持；rev2 仅做报告层修正（不重跑主结果，G-SL1/2/3 结论不变）：① 终判表述从"8–16 µm = hatch"收紧为"**8–16 µm 方向纹理具有强 hatch-related scale 证据**"（G-SL2 证明的是 λ_peak/h 聚集于 {1,2,3}，未分解到具体 m）；② 登记 formal 后稳定区规则发生过 **adaptive refinement**（central-70% → 深度台地最长连续段 + 碎片守卫 + qualifying-only 截面，经多轮实跑迭代定型——非预注册一步到位，已回写 §0.15 补注并留全程轨迹）；③ Task 17 variant 混报修复（GSS 折曾误标 variant）与 **usable-only sensitivity** 补充（n=18：W50 带内 0.0%、W_eq 带内 0.0%——保守下界与主口径同向）；④ Q5 回答改述为"**geometry compression 不成立**"（原文"劣于"暗示 h 差，实际 scalar retention 1.037 不劣于全工艺，是 composition 保持率 0.592 不达 0.80）。
+> 事实链：config/门槛预冻结于细则 v2（`2daa611`）；formal 链 Task 15–20 + 审计修复（`65ded0e`→`8e646a1`）；封账修正（`8189fc7` 之后、本提交）。运行环境强制 `.venv`（见 `summary/RUNTIME_ENVIRONMENT.md`——conda 解释器下 α 翻转致对账超差，复现必读）。
 
 ## 1. Gate 结果
 
@@ -16,7 +17,7 @@
 
 ## 2. 终判（上位规划 §17 矩阵）
 
-**G-SL1 NO + G-SL2 YES → 判定 B：8–16 µm 主要反映 hatch line array 的周期/整数倍结构（hatch-related periodic / integer-multiple scale），而非单轨本征宽度。**
+**G-SL1 NO + G-SL2 YES → 判定 B（rev2 表述收紧）：8–16 µm 方向纹理具有强 hatch-related scale 证据**——λ_peak/h 强聚集于 {1,2,3}（A_obs 0.904，p=0.0001），且该聚集不能用 DOE 结构性伪影解释（block-structured null）；但 {1,2,3} 内部的主导 m 尚未分解（P(m|h) 初步显示 m=2 份额随 h 单调下降：h=4 约 0.75 → h=10 约 0.25），"8–16 µm = hatch"的简单等式不成立，精确机制留给 Phase 2.7。
 
 支撑链（按 §0.17 证据优先级）：
 
@@ -33,10 +34,10 @@
 2. **8–16 µm 是否覆盖单线宽度主分布**：否（W50 带内 1.2%，W_eq 0%）。
 3. **宽度的主要受控变量**：预测力弱（R² ≈ 0，f 为 Ep-coupled 不可分离）——单线宽度对 (τ,f,v,N) 的响应弱于预期，宽度更多受局部/材料因素调制（response curves 见 `W_line_response_curves.csv`，描述性）。
 4. **λ 更接近 W、h 还是 2h**：λ_peak/h 聚集 1/2/3（G-SL2 SUPPORTED）；λ\*/W_line ≈ 2.09（direct bridge）→ **更接近 h 的整数倍尺度；与 2×W_line 的重合为探索性观察**。
-5. **W/h 是否优于单独 W 或 h**：composition 保持率不足（0.592）→ 否（G-SL3 NOT_SUPPORTED）。
+5. **geometry compression 是否成立**（rev2 改述）：不成立——3 个几何量 [Ŵ, h, Ŵ/h] 只保留 composition 可预测性的 59%（retention 0.592 < 0.80，G-SL3 NOT_SUPPORTED）；注意这不是"W/h 劣于 h"——scalar 臂 retention 1.037 说明几何量对 A2/角熵**不劣于**全工艺，失败 specifically 发生在完整谱组成上（Route P 仍需多因素）。另外实测 M2_h（h 单独）对 A2/角熵的 src_gkf 中位 R² 为 0.694/0.676，与全工艺 M0（0.663/0.648）相当——Route T 的 hatch 主导性是 Phase 2.7 G27-1 的正式检验对象。
 6. **Route P/T 是否随 overlap 几何改变**：几何量（Ŵ,h,Ŵ/h）对四 target 的 Spearman 显示方向性关联（A2 −0.836、角熵 +0.861、p_8_16 −0.630、ilr_z2 +0.564），但压缩保持率不足 → 关联存在、可压缩性不成立。
 7. **条纹方向与 scan/hatch 对应**：不可判定（无 provenance，G-SL4 = NA）；image-frame 0/90 聚集 117/200 仅为 descriptive。
-8. **最终解释**：**hatch-related periodic / integer-multiple scale（判定 B）**——8–16 µm 谱能量分配与方向纹理主要由线间填充阵列的整数倍周期结构决定；单轨本征宽度（≈5.8 µm）不在带内；overlap-composite 压缩命题未获支持。
+8. **最终解释**（rev2 收紧）：8–16 µm 方向纹理具有**强 hatch-related scale 证据**（判定 B），但主导尺度（h vs 2h vs 混合，及 P(m|h) 的 h 依赖）未分解；单轨本征宽度（≈5.8 µm）不在带内已确证；overlap-composite 压缩命题未获支持。理论要点（Phase 2.7 动机）：常数幅值 h-线阵的傅里叶梳齿位于 λ=h/j ≤ h，**不可能产生 λ=2h 峰**——实测 34% 的 m=2 份额因此要求两线周期组织（a_n 奇偶交替/two-line unit）或材料响应展宽（h < W 的熔并），这正是 G27-3 的证伪结构。
 
 ## 4. 权力与弱点（必读）
 

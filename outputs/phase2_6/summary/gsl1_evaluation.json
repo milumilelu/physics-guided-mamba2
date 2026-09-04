@@ -8,6 +8,14 @@
   },
   "n_right_censored_all": 0,
   "n_insufficient_all": 36,
+  "usable_only_sensitivity": {
+    "n": 18,
+    "pooled_section_median_W50_um": 5.757349452068972,
+    "line_median_W50_in_band_fraction": 0.0,
+    "pooled_section_weq_median_um": 5.822284943288728,
+    "line_median_weq_in_band_fraction": 0.0,
+    "note": "usable-only sensitivity (Phase 2.7 封账)：18 条人工完全可用线"
+  },
   "raw_arm": {
     "pooled_section_median_W50_um": 5.776160178215543,
     "line_median_W50_um": 5.720564801337228,
