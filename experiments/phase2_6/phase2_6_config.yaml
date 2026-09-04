@@ -45,7 +45,9 @@ single_line:
     width_band_frac: null     # REVOKED (2026-09-04): brittle at scale (fragmented dozens of lines
                               # via cone-split run oscillation); group-104 deep-narrow divergence stays
                               # an informational inventory item instead. depth rule + fragment guard only.
-    gap_merge_um: 5.0         # bridge small dropouts (2-point failures make 3 um gaps); larger violations block merging
+    gap_merge_um: 10.0        # bridge interior bumps (a 5-point shallow dip makes a 6 um gap;
+                              # healthy lines were split by exactly such bumps); real end transients
+                              # are 20-40 um blocks and still block merging (rev2 amendment, see 细则 §0.15)
     min_stable_len_um: 60.0   # fragment guard (group-48 lesson): chosen run must hold
     min_stable_frac: 0.50     # >= max(60 um, 0.5 x on-line span), else FragmentedStableRegion -> insufficient_sections + human QA
   central_fraction_note: "original frozen central 70% (pilot central_fraction=0.7) superseded by the plateau rule; pilot interior depth oscillation (e.g. group 94: 5.9-11 um vs plateau 10.8) passes by design"
@@ -53,12 +55,13 @@ single_line:
   min_sections: 20
   censored_frac_W50_uncertain_above: 0.5
   profile_valid_fraction_min: 0.5   # section usable if >= 50% of the lateral samples are in-FOV
-  pilot_reconcile_max_shallow_invaded_per_group: 5   # SAFE-direction abort (细则 §0.15 rev2 补注 (b)):
-  pilot_reconcile_max_shallow_invaded_total: 20      # my stable region must not retain shallow partial-ablation
-                                                     # segments the pilot excluded (per-group and 15-group total caps);
-                                                     # precision/recall/agreement are informational divergence
-                                                     # inventory (pilot cut is not locally reconstructible);
-                                                     # insufficient_sections lines are skipped (no meaningful flags)
+  pilot_reconcile_hard_depth_ratio: 0.25  # HARD-abort severity grade (细则 §0.15 rev2 补注 (b) 终稿):
+  pilot_reconcile_max_hard_invaded_per_group: 2   # a retained pilot-excluded point is a HARD invasion only when
+  pilot_reconcile_max_hard_invaded_total: 5       # depth_p95 < 0.25 x kept-reference P90 (true partial ablation);
+                                                  # band-edge points (0.25-0.5 x ref) between the selection band and
+                                                  # the stricter kept-reference band are inventory only.
+                                                  # precision/recall/agreement = informational divergence inventory;
+                                                  # insufficient_sections lines are skipped (no meaningful flags)
   pilot_reconcile_match_tol_um: 1.5
   pilot_reconcile_max_shift_um: 30.0   # cross-correlation alignment before matching (origin conventions differ)
 

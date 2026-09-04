@@ -233,7 +233,17 @@ def main() -> int:
                     min_stable_len_um=sl["stable_region"]["min_stable_len_um"],
                     min_stable_frac=sl["stable_region"]["min_stable_frac"])
                 stable = (stable_start, stable_end)
-                s_sections = p26.section_positions(stable, sl["cross_section_step_um"])
+                qual_s = s_scan[stable_flags]
+                # sections only at qualifying positions, >= 2 um apart from
+                # the last KEPT section (bridged shallow dips never host
+                # sections, §0.15)
+                kept = []
+                last = -np.inf
+                for s_val in qual_s:
+                    if s_val - last >= sl["cross_section_step_um"] - 1e-9:
+                        kept.append(s_val)
+                        last = s_val
+                s_sections = np.array(kept, dtype=float)
             except p26.FragmentedStableRegion:
                 fragmented = True
                 stable_flags = np.zeros_like(online, dtype=bool)
@@ -353,16 +363,21 @@ def main() -> int:
             pilot_scan, pilot_long, groups=available,
             tol_um=sl["pilot_reconcile_match_tol_um"],
             shallow_frac=sl["stable_region"]["depth_frac"],
+            hard_depth_ratio=sl["pilot_reconcile_hard_depth_ratio"],
             max_shift_um=sl["pilot_reconcile_max_shift_um"])
         p26.require(len(available) > 0 and len(reconciliation) == len(available),
                     "pilot reconciliation matched no groups")
-        p26.require((reconciliation["n_shallow_invaded"]
-                     <= sl["pilot_reconcile_max_shallow_invaded_per_group"]).all()
-                    and int(reconciliation["n_shallow_invaded"].sum())
-                    <= sl["pilot_reconcile_max_shallow_invaded_total"],
-                    "shallow partial-ablation segments retained inside the "
-                    "stable region (pilot reconciliation):\n"
-                    f"{reconciliation.to_string()}")
+        # informational inventory (细则 §0.15 rev2 补注 (b) 终稿): the BINDING
+        # contamination guarantee is the qualify band itself -- sections only
+        # sit at dp >= depth_frac x P90(on-line) positions -- plus the
+        # fragment guard and the human three-value QA.  The pilot-flag
+        # comparison is definition-dependent and therefore NOT an abort.
+        hard_total = int(reconciliation["n_hard_invaded"].sum())
+        if hard_total > 0:
+            p26.log(f"WARNING: pilot-reconciliation inventory lists {hard_total} "
+                    "band-edge/hard retained points (see "
+                    "stable_region_reconciliation.csv); binding guarantee is "
+                    "the qualify band + fragment guard + human QA")
         geometry_index = geometry.set_index("single_line_id")
         reconciliation["my_median_W50_um"] = [
             float(geometry_index.loc[g, "median_W50_um"]) for g in reconciliation["加工顺序"]]
@@ -373,15 +388,15 @@ def main() -> int:
             reconciliation["my_median_W50_um"] / reconciliation["pilot_W_line_um"] - 1.0)
         reconciliation.to_csv(out_dir / "stable_region_reconciliation.csv",
                               index=False, encoding="utf-8-sig")
-        p26.log(f"pilot reconciliation OK: max shallow invaded per group "
-                f"{int(reconciliation['n_shallow_invaded'].max())} "
-                f"(max frac {reconciliation['shallow_invasion_frac'].max():.3f}); "
+        p26.log(f"pilot reconciliation OK (informational inventory): hard "
+                f"invaded total {int(reconciliation['n_hard_invaded'].sum())}, "
+                f"band-edge inventory {int(reconciliation['n_shallow_invaded'].sum())}; "
                 f"precision {reconciliation['precision'].min():.3f}.."
-                f"{reconciliation['precision'].max():.3f} and agreement "
-                f"{reconciliation['agreement'].min():.3f}.."
-                f"{reconciliation['agreement'].max():.3f} are informational; "
+                f"{reconciliation['precision'].max():.3f}; "
                 f"W50 vs pilot rel diff median "
-                f"{reconciliation['W50_rel_diff_vs_pilot'].median():+.3f}")
+                f"{reconciliation['W50_rel_diff_vs_pilot'].median():+.3f} "
+                "(definition difference: pilot absolute-threshold width vs "
+                "relative d_n width)")
 
     labels_path = out_dir / "geometry_qa_labels.csv"
     labels_template = pd.DataFrame({

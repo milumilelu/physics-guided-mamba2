@@ -561,7 +561,10 @@ def plateau_stable_run(s_scan: np.ndarray, online: np.ndarray,
         raise FragmentedStableRegion(
             f"plateau run {hi - lo:.1f} um < guard {guard:.1f} um "
             f"(on-line span {online_span:.1f} um); needs human QA")
-    return (s_scan >= lo) & (s_scan <= hi), lo, hi
+    # membership = qualifying positions inside the chosen run ONLY: bridged
+    # shallow dips stay inside the interval but never host sections, so
+    # shallow partial-ablation retention is zero by construction (§0.15)
+    return qualify & (s_scan >= lo) & (s_scan <= hi), lo, hi
 
 
 # --------------------------------------------------------------------------- #
@@ -569,7 +572,7 @@ def plateau_stable_run(s_scan: np.ndarray, online: np.ndarray,
 # --------------------------------------------------------------------------- #
 def reconcile_stable_region(my_frame: pd.DataFrame, pilot: pd.DataFrame, *,
                             groups: tuple[int, ...], tol_um: float,
-                            shallow_frac: float,
+                            shallow_frac: float, hard_depth_ratio: float,
                             max_shift_um: float = 30.0) -> pd.DataFrame:
     """Stable-region reconciliation against the pilot flags (§0.15 rev2).
 
@@ -577,13 +580,12 @@ def reconcile_stable_region(my_frame: pd.DataFrame, pilot: pd.DataFrame, *,
     (the three origin conventions -- sampling anchor, detected-extent center,
     pilot center -- are not interchangeable; the estimated shift is reported
     per group).  The pilot flags encode a per-line, pipeline-driven cut that
-    is NOT locally reconstructible (it excludes locally-healthy deep
-    full-width segments as parts of broader transition runs while keeping
-    short shallow dips), so the gated quantity is the shallow-invasion rate:
-    among pilot-excluded positions that are locally shallow (depth_p95 <
-    `shallow_frac` x the plateau reference P90 of my kept positions), the
-    fraction my stable region retains.  Precision/recall/agreement are
-    informational divergence inventory.
+    is NOT locally reconstructible, so the gated quantity is SEVERITY-GRADED:
+    a retained pilot-excluded point is a HARD invasion only when it is true
+    partial ablation (depth_p95 < `hard_depth_ratio` x the kept-reference
+    P90); band-edge points between the selection band (0.5 x P90 over online)
+    and the stricter kept-reference band are inventory only.  Precision /
+    recall / agreement are informational divergence inventory.
 
     `my_frame` needs (加工顺序, s_center_um, stable_flag, depth_p95) rows at
     1-um scan step; pilot rows are matched within `tol_um` on
@@ -628,6 +630,13 @@ def reconcile_stable_region(my_frame: pd.DataFrame, pilot: pd.DataFrame, *,
         shallow_excluded = (~t_kept) & (depth < shallow_frac * reference)
         shallow_invaded = m_kept & shallow_excluded
         n_shallow = int(shallow_excluded.sum())
+        n_invaded = int(shallow_invaded.sum())
+        if n_invaded and reference > 0:
+            ratios = depth[shallow_invaded] / reference
+            min_ratio = float(ratios.min())
+            n_hard = int((ratios < hard_depth_ratio).sum())
+        else:
+            min_ratio, n_hard = np.nan, 0
         both = m_kept & t_kept
         records.append({
             "加工顺序": group,
@@ -635,8 +644,10 @@ def reconcile_stable_region(my_frame: pd.DataFrame, pilot: pd.DataFrame, *,
             "n_matched": int(hit.sum()),
             "n_unmatched_pilot": int(pilot_s.size - len(np.unique(choose[hit]))),
             "n_shallow_excluded": n_shallow,
-            "n_shallow_invaded": int(shallow_invaded.sum()),
-            "shallow_invasion_frac": (float(shallow_invaded.sum() / n_shallow)
+            "n_shallow_invaded": n_invaded,
+            "invaded_min_depth_ratio": min_ratio,
+            "n_hard_invaded": n_hard,
+            "shallow_invasion_frac": (float(n_invaded / n_shallow)
                                       if n_shallow else 0.0),
             "precision": float(both.sum() / m_kept.sum()) if m_kept.any() else np.nan,
             "recall": float(both.sum() / t_kept.sum()) if t_kept.any() else np.nan,

@@ -248,6 +248,7 @@ class ExtentTests(unittest.TestCase):
                               "included_in_stable_region": pilot_kept.astype(int)})
         frame = p26.reconcile_stable_region(my, pilot, groups=(1,),
                                             tol_um=1.5, shallow_frac=0.5,
+                                            hard_depth_ratio=0.25,
                                             max_shift_um=30.0)
         p26.require(abs(frame.loc[0, "alignment_shift_um"] - 7.0) <= 1.0,
                     f"alignment shift {frame.loc[0, 'alignment_shift_um']} != 7")
