@@ -117,6 +117,7 @@ def main() -> int:
     sub = manifest[in_box]
     sub_splits = {"src_gkf_inbox": p27.p2.gkf_splits(
         sub["shared_height_source_id"], 5)}
+    rows_inbox = []
     for name, splits in sub_splits.items():
         p27.p2.check_gkf_contract(sub["shared_height_source_id"], splits)
         for model_name, X in matrices.items():
@@ -145,12 +146,18 @@ def main() -> int:
                         pred = model.predict(Xs[te])
                         score = float(r2_score(y_all[te], pred))
                         metric = "R2"
-                    rows.append({"variant": name, "fold": fold,
+                    rows_inbox.append({"variant": name, "fold": fold,
                                  "model": model_name, "target": target,
                                  "metric": metric, "score": float(score),
                                  "alpha": alpha, "n_train": int(len(tr)),
                                  "n_test": int(len(te))})
-    folds = pd.concat([folds, pd.DataFrame(rows)], ignore_index=True)
+    # 2.7r1 fix: keep sensitivity rows in a SEPARATE list -- appending them to
+    # the primary `rows` duplicated every full-200 fold row and inflated
+    # n_folds_positive to 10
+    folds = pd.concat([folds, pd.DataFrame(rows_inbox)], ignore_index=True)
+    p27.require(not folds.duplicated(
+        ["variant", "model", "target", "metric", "fold"]).any(),
+        "duplicate fold rows detected (formal-contract violation)")
     folds.to_csv(out / "hatch_ablation_cv.csv", index=False,
                  encoding="utf-8-sig")
 
@@ -161,6 +168,8 @@ def main() -> int:
                 ["target", "metric"]):
             full = block[block["model"] == "M_full"].set_index("fold")["score"]
             minus = block[block["model"] == "M_minus_h"].set_index("fold")["score"]
+            # 2.7r1 fix: FROZEN statistic is the median of FOLD-PAIRED deltas,
+            # not the difference of medians (report both; gate uses paired)
             delta = (full - minus).dropna()
             delta_rows.append({
                 "variant": variant, "target": target, "metric": metric,

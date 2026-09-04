@@ -28,8 +28,8 @@
   "t_null_median": 0.10805353356270077,
   "H_DEPENDENT": {
     "slope": -0.33234665899340665,
-    "p_value": 0.0004997501249375312,
-    "flag": "YES",
+    "p_value": 0.4102948525737131,
+    "flag": "NO",
     "n_perm": 2000
   },
   "G_SL27_2": "DOMINANT_m=1"

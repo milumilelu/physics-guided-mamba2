@@ -133,13 +133,19 @@ def main() -> int:
         shuf = p27.shuffle_h_by_block(frame, unit_columns=("session_id",
                                       "base_condition_group"),
                                       seed=seed + int(cfg["seeds"]["logistic_perm"]) + b)
-        # shuffle returns a Series aligned to `frame`'s index; family is a
-        # subset, so reindex by family dataset_index before fitting
-        h_perm = shuf.reindex(family_rows["dataset_index"]).to_numpy(
-            dtype=float)
-        slope_perm[b] = p27.logistic_slope(h_perm, is_m2)
-    p_logistic = float((1 + int((slope_perm <= slope_obs).sum()))
-                       / (1 + n_perm_log))
+        # v2.1 冻结：permutation 必须用 shuffled h 重算 class 和 family
+        h_shuffled = shuf.reindex(frame["dataset_index"]).to_numpy(dtype=float)
+        cls_b = p27.assign_class(r_peak / h_shuffled, valid)
+        fam_b = valid & (cls_b != p27.CODE_OUT) & (cls_b != p27.CODE_INVALID)
+        h_fam_b = h_shuffled[fam_b]
+        is_m2_b = (cls_b[fam_b] == p27.CODE_M2).astype(int)
+        if len(h_fam_b) < 3:
+            slope_perm[b] = np.nan
+            continue
+        slope_perm[b] = p27.logistic_slope(h_fam_b, is_m2_b)
+    finite_slopes = slope_perm[np.isfinite(slope_perm)]
+    p_logistic = float((1 + int((finite_slopes <= slope_obs).sum()))
+                       / (1 + len(finite_slopes)))
     h_dependent = "YES" if (slope_obs < 0 and p_logistic <= 0.05) else "NO"
 
     evaluation = {

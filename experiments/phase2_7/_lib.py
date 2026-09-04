@@ -176,10 +176,10 @@ def synth_field(profile: np.ndarray, x_profile: np.ndarray, h: float,
     return field
 
 
-def field_class(field: np.ndarray, *, pixel_um: float = 0.5,
+def field_class(field: np.ndarray, *, h: float, pixel_um: float = 0.5,
                 window_um: tuple[float, float] = (4.0, 32.0)) -> tuple[int, float]:
     """Same-pipeline peak extraction: 2D residual → p25.radial_spectrum →
-    the frozen 4–32 µm peak validity → interval assignment."""
+    the frozen 4–32 µm peak validity → r = λ_peak/h → interval assignment."""
     r = np.asarray(field, dtype=float)[None, :, :]
     r = r - np.median(r)
     out, _ = p25.radial_spectrum(r, pixel_um, 24, 0.7, 160.0)
@@ -193,7 +193,8 @@ def field_class(field: np.ndarray, *, pixel_um: float = 0.5,
                                 share_min=0.20)
     valid = bool(peak.loc[0, "lambda_peak_valid"])
     lam = float(peak.loc[0, "lambda_peak_4_32_um"]) if valid else np.nan
-    cls = int(assign_class(np.array([lam]), np.array([valid]))[0]) if valid \
+    ratio = lam / h if valid else np.nan
+    cls = int(assign_class(np.array([ratio]), np.array([valid]))[0]) if valid \
         else CODE_INVALID
     return cls, lam
 
