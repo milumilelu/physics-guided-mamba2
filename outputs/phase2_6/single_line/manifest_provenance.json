@@ -1,0 +1,55 @@
+{
+  "rows": 120,
+  "design_grid": {
+    "tau_fs": [
+      223,
+      500,
+      1000,
+      2000,
+      4000
+    ],
+    "f_khz": [
+      2,
+      5,
+      10,
+      20,
+      40
+    ],
+    "v_mm_s": [
+      5,
+      10,
+      15,
+      20,
+      25
+    ],
+    "N": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "unique_conditions": 120,
+  "pixel_pitch_um": 0.278657,
+  "cag_spot_check_groups": [
+    13,
+    60,
+    116
+  ],
+  "checks": {
+    "same_laser_system": true,
+    "power_condition_convertible": true,
+    "units_native_consistent": true,
+    "pixel_size_trusted": true,
+    "full_groove_cross_section": "checked_in_task_16",
+    "edge_clipping_truncation": "checked_in_task_16",
+    "repeated_positions": 0,
+    "background_plane": "frozen_plane_from_view_manifest",
+    "scan_direction_recoverability": "partial: axis yes, sign no"
+  },
+  "excluded": {
+    "氧化锆/72组单脉冲直线.cag": "no design table -> no provenance"
+  },
+  "power_provenance": "measured post-objective 5.3333 W, no independent record (v2 §11); rectangle side carries the same value with PENDING_REGISTRATION"
+}

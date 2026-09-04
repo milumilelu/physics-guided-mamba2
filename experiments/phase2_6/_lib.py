@@ -57,7 +57,7 @@ def load_config(description: str) -> tuple[dict, bool]:
                            else "outputs/phase2_6")
     cfg["_quick"] = bool(args.quick)
     cfg["_limit"] = args.limit
-    return cfg, quick
+    return cfg, bool(args.quick)
 
 
 def output_dir(cfg: dict, sub: str = "") -> Path:
