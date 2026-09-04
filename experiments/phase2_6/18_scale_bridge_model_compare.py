@@ -228,12 +228,15 @@ def direct_bridge(match: pd.DataFrame, line_conditions: pd.DataFrame) -> pd.Data
         w_measured, w_source = np.nan, "W_unavailable"
         if len(hits):
             row = hits.iloc[0]
-            if row["qa_label"] == "reject_geometry":
-                w_source = "rejected_by_qa"
-            elif row["width_identifiability"] in state_map:
+            if row["width_identifiability"] in state_map:
+                # insufficient (+possibly reject) -> W_unavailable first: no
+                # width estimate exists, the stronger diagnostic state
+                # (audit: lines 10/83/90 are reject AND insufficient)
                 w_source = state_map[row["width_identifiability"]]
                 if w_source == "W_lower_bound":
                     w_measured = float(row["median_W50_um"])
+            elif row["qa_label"] == "reject_geometry":
+                w_source = "rejected_by_qa"
             else:
                 w_measured = float(row["median_W50_um"])
                 w_source = "estimable"
@@ -283,9 +286,12 @@ def run_model_matrix(frame: pd.DataFrame, splits, targets: dict[str, pd.Series],
     }
     for model_name, X in models.items():
         for target, y in targets.items():
+            y_all = y.to_numpy(dtype=float)
+            valid = (np.isfinite(y_all).all(axis=1) if y_all.ndim > 1
+                     else np.isfinite(y_all))
             for fold, (tr, te) in enumerate(splits):
-                tr = np.array([i for i in tr if np.isfinite(y.to_numpy(dtype=float)[i])])
-                te = np.array([i for i in te if np.isfinite(y.to_numpy(dtype=float)[i])])
+                tr = np.array([i for i in tr if valid[i]])
+                te = np.array([i for i in te if valid[i]])
                 if target == "ilr_z1_z4":
                     z = y.to_numpy(dtype=float)
                     pred_te = np.empty((len(te), z.shape[1]))
@@ -295,7 +301,7 @@ def run_model_matrix(frame: pd.DataFrame, splits, targets: dict[str, pd.Series],
                             frame["cv_process_group"].iloc[tr])
                         pred_te[:, j] = p26.make_ridge(alpha).fit(
                             X[tr], z[tr, j]).predict(X[te])
-                    q2 = aitchison_q2(pred_te, z[tr], z[te])
+                    q2 = q2_aitchison_ilr(z[te], pred_te, z[tr])
                     fold_rows.append({"variant": variant, "fold": fold,
                                       "model": model_name, "target": target,
                                       "metric": "Q2_Aitchison", "score": q2,
@@ -320,24 +326,6 @@ def run_model_matrix(frame: pd.DataFrame, splits, targets: dict[str, pd.Series],
                                      "y_true": float(y_all[idx]),
                                      "y_pred": float(pred[local])})
     return pd.DataFrame(fold_rows), pd.DataFrame(oof_rows)
-
-
-def aitchison_q2(pred_z: np.ndarray, true_z_tr: np.ndarray,
-                 true_z_te: np.ndarray) -> float:
-    """Q2 on the full composition: predictions are ILR coordinates ->
-    ilr_inverse -> Aitchison distance; reference = train-fold geometric mean."""
-    p_hat = p25_inverse(pred_z)
-    p_true_te = p25_inverse(true_z_te)
-    p_ref = p25_inverse(np.mean(true_z_tr, axis=0))
-    d_te = p26.p25.aitchison_distance(p_hat, p_true_te)
-    d_ref = p26.p25.aitchison_distance(p_ref, p_true_te)
-    return float(1.0 - np.sum(d_te ** 2) / np.sum(d_ref ** 2))
-
-
-def p25_inverse(z: np.ndarray) -> np.ndarray:
-    p = p26.p25.ilr_inverse(np.asarray(z, dtype=float))
-    p, _ = p26.p25.apply_zero_replacement(p, 1e-6, 1e-6)
-    return p
 
 
 # --------------------------------------------------------------------------- #
@@ -389,8 +377,9 @@ def main() -> int:
                   .merge(pd.read_csv(p26.REPO / "outputs/phase2_6/single_line"
                                      "/single_line_manifest.csv",
                                      encoding="utf-8-sig")[
-                      ["single_line_id"] + WHAT_FEATURES
-                      + ["pulse_duration_fs"]], on="single_line_id"))
+                      ["single_line_id", "pulse_duration_fs",
+                       "frequency_kHz", "velocity_mm_s", "pass_count"]],
+                      on="single_line_id"))
     line_frame["log10_tau"] = np.log10(line_frame["pulse_duration_fs"]
                                        .astype(float))
     train = line_frame[(line_frame["width_identifiability"] == "estimable")
@@ -415,9 +404,18 @@ def main() -> int:
     key = pd.MultiIndex.from_arrays([
         manifest["pulse_duration_fs"], manifest["frequency_kHz"],
         manifest["pass_count"], manifest["velocity_mm_s"]])
-    manifest["W_hat_lookup_um"] = [float(lookup.get(k, np.nan)) for k in key]
+    # pandas-3-proof exact-match lookup: isin + reindex (Series.get(tuple)
+    # silently returned NaN for some keys -- audit run lost 6 of 19 conditions)
+    hit_mask = key.isin(lookup.index)
+    manifest["W_hat_lookup_um"] = np.where(
+        hit_mask, lookup.reindex(key).to_numpy(dtype=float), np.nan)
+    # bridge_coverage = "does this sample's (tau,f,v,N) condition exist in the
+    # single-line DOE" — INDEPENDENT of whether that line's width turned out
+    # measurable.  A NaN lookup here (line later flagged W_unavailable) must
+    # NOT demote the sample to in_box_pred (audit fix: 20 exact-match samples
+    # over 19 conditions, of which 5 conditions are W_unavailable downstream).
     manifest["bridge_coverage"] = np.where(
-        manifest["W_hat_lookup_um"].notna(), "exact_match",
+        hit_mask, "exact_match",
         np.where(manifest["in_box"], "in_box_pred", "out_of_box"))
     manifest["eta_h"] = manifest["W_hat_um"] / manifest["hatch_spacing_um"]
 
@@ -637,14 +635,18 @@ def run_spline_arm(frame: pd.DataFrame, splits, targets: dict[str, pd.Series],
     for model_name, X in (("M0_u", u), ("M_GEO_What_h_eta",
                                         np.column_stack([w_hat, hatch, eta]))):
         for target, y in targets.items():
+            y_all = y.to_numpy(dtype=float)
+            valid = (np.isfinite(y_all).all(axis=1) if y_all.ndim > 1
+                     else np.isfinite(y_all))
             for fold, (tr, te) in enumerate(splits):
-                model = make_spline().fit(X[tr], y.to_numpy(dtype=float)[tr])
+                tr = np.array([i for i in tr if valid[i]])
+                te = np.array([i for i in te if valid[i]])
+                model = make_spline().fit(X[tr], y_all[tr])
                 pred = model.predict(X[te])
                 rows.append({"variant": variant, "fold": fold,
                              "model": model_name, "target": target,
                              "metric": "R2",
-                             "score": float(r2_score(
-                                 y.to_numpy(dtype=float)[te], pred)),
+                             "score": float(r2_score(y_all[te], pred)),
                              "n_train": int(len(tr)), "n_test": int(len(te)),
                              "alpha": np.nan})
     return pd.DataFrame(rows)

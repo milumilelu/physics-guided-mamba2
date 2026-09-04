@@ -1,0 +1,18 @@
+{
+  "type": "geometry_compression",
+  "population": "in_box_101",
+  "retention_composition_Q2": 0.5917271194566537,
+  "retention_scalar_median": 1.036706298388856,
+  "retention_composition_proc_gkf": 0.4896375787171238,
+  "n_folds_retention_ge_0.60_composition": 2,
+  "thresholds": {
+    "min_supported": 0.8,
+    "strong_tier": 0.9,
+    "fold_min": 0.6,
+    "min_folds": 4,
+    "proc_min_agree": 0.7,
+    "m0_perf_floor": 0.1
+  },
+  "G_SL3": "NOT_SUPPORTED",
+  "reading": "五维工艺关系可压缩为单轨宽度–hatch overlap 几何（仅在 SUPPORTED/strong 时成立；Δ(M1−M0) 属 LOW-CAPACITY REPRESENTATION GAIN，非机制证据）"
+}

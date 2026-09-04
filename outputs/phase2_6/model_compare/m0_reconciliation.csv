@@ -1,0 +1,4 @@
+﻿target,metric,status,phase25_median,rerun_median,abs_delta,within_tolerance,fold_alphas
+ilr_z1_z4,Q2_Aitchison,reconciled,0.3126898154678988,0.31268981546789887,5.551115123125783e-17,True,1;1;1;0.01;0.01
+A2_8_16,R2,reconciled,0.5095332191546766,0.5095332191546766,0.0,True,1;10;0.01;0.01;0.01
+angular_entropy_8_16,R2,reconciled,0.6071478014234697,0.6071478014234697,0.0,True,0.01;0.01;0.01;1;0.01
