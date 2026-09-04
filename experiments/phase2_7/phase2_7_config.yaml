@@ -1,0 +1,65 @@
+meta:
+  random_seed: 20260904
+  quick_output_root: outputs/phase2_7_quick
+
+paths:
+  line_cag: "氧化锆/120组直线.cag"
+  line_view_manifest: "annotations/single_line_view_manifest.csv"
+  single_line_geometry: "outputs/phase2_6/single_line/single_line_geometry.csv"
+  single_line_manifest: "outputs/phase2_6/single_line/single_line_manifest.csv"
+  geometry_qa_labels: "outputs/phase2_6/single_line/geometry_qa_labels.csv"
+  phase2_manifest: "outputs/phase2/manifest/phase2_manifest.csv"
+  lambda_over_hatch: "outputs/phase2_6/scale_bridge/lambda_over_hatch.csv"
+  direct_bridge: "outputs/phase2_6/scale_bridge/direct_bridge_exact_match.csv"
+  p25_spectral_csv: "outputs/phase2_5/spectral_composition/spectral_composition.csv"
+  p25_ilr_csv: "outputs/phase2_5/spectral_composition/ilr_coordinates.csv"
+  p25_directional_csv: "outputs/phase2_5/directional_spectrum/directional_metrics.csv"
+  p25_radial_long_csv: "outputs/phase2_5/spectral_composition/radial_spectrum_long.csv"
+  p25_cv_fold_csv: "outputs/phase2_5/process_map/cv_fold_results.csv"
+
+classes:
+  intervals: {m1: [0.75, 1.25], m2: [1.75, 2.25], m3: [2.75, 3.25]}
+
+g27_2:
+  c_family_min: 0.70
+  tv_min: 0.15
+  p_max: 0.05
+  mixed_gap: 0.15
+  mixed_p2_min: 0.25
+  dominant_min: 0.50
+  low_n_family: 8
+  n_perm_tv: 10000
+  n_perm_logistic: 2000
+  h_dependent_slope: negative
+
+g27_1:
+  delta_min: 0.05
+  min_folds_positive: 4
+  route_t: [A2_8_16, angular_entropy_8_16]
+  route_p: [p_8_16, ilr_z1_z4]
+  proc_cap: {median_delta_gt: 0.0, min_folds_positive: 3}
+
+g27_3:
+  c_grid: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+  phases_scan: 16
+  lines_scan: 27
+  phases_final: 32
+  lines_final: 81
+  phase_grid_sensitivity: [16, 32, 64]
+  roi_um: 80.0
+  pixel_um: 0.5
+  cycles: {high: 2.0, low_min: 1.2}
+  edge_frac_max: 0.15
+  window_um: [4.0, 32.0]
+  peak_n_modes_min: 20
+  peak_min_energy_share: 0.20
+  tv: {delta_min: 0.10, period2_max: 0.20, inadequate: 0.30}
+  bootstrap: {B: 2000, ci: 0.95}
+  h_consistency: {h_eval: [4, 6, 8, 10], min_n_obs: 8, min_wins: 3,
+                  min_evaluable: 3}
+  d_guard: {n_eval_min: 8, contradiction_frac: 0.3334}
+
+seeds:
+  tv_perm: 800
+  logistic_perm: 850
+  bootstrap: 900
