@@ -470,34 +470,176 @@ def shuffle_h_by_block(manifest: pd.DataFrame, *, unit_columns: tuple[str, ...],
     return shuffled
 
 
+def scan_plateau_features(profiles: np.ndarray, threshold_um: float,
+                          dv: float) -> tuple[np.ndarray, np.ndarray]:
+    """Per-position plateau descriptors at the fine scan step.
+
+    `depth_p95` = P95 of the positive removal depth (the pilot longitudinal
+    descriptor; tracks the local deepest valid pixel, hence cone-core
+    sensitive); `abs_width` = longest above-threshold run x dv (pilot-style
+    absolute-threshold width).  Both are used ONLY to choose the stable
+    region (§0.15 rev2 refinement) -- the reported widths remain the frozen
+    relative d_n family.
+    """
+    n = profiles.shape[0]
+    depth_p95 = np.zeros(n, dtype=float)
+    abs_width = np.zeros(n, dtype=float)
+    for i in range(n):
+        prof = profiles[i]
+        finite = np.isfinite(prof)
+        if not finite.any():
+            continue
+        positive = np.where(finite & (prof > 0), prof, np.nan)
+        depth_p95[i] = (float(np.nanpercentile(positive, 95))
+                        if np.isfinite(positive).any() else 0.0)
+        above = finite & (prof > threshold_um)
+        if not above.any():
+            continue
+        edges = np.flatnonzero(np.diff(np.concatenate(
+            ([0], above.view(np.int8), [0]))))
+        starts, stops = edges[0::2], edges[1::2]
+        run_spans = [b - a + 1 for a, b in zip(starts, stops)]
+        abs_width[i] = float(max(run_spans) * dv)
+    return depth_p95, abs_width
+
+
+class FragmentedStableRegion(ValueError):
+    """The chosen plateau run is a pathological fragment of the on-line span
+    (e.g. a discrete-mode double-crater line); the line needs human QA
+    instead of a silent automatic region."""
+
+
+def plateau_stable_run(s_scan: np.ndarray, online: np.ndarray,
+                       depth_p95: np.ndarray, abs_width: np.ndarray, *,
+                       depth_frac: float, ref_quantile: float,
+                       width_band_frac: float, gap_merge_um: float,
+                       min_stable_len_um: float = 60.0,
+                       min_stable_frac: float = 0.5
+                       ) -> tuple[np.ndarray, float, float]:
+    """Longest contiguous qualifying run: on-line with plateau-level depth.
+
+    Depth reference = P`ref_quantile` of depth_p95 over on-line positions
+    (median is pulled down by entry/exit ramps); positions below
+    `depth_frac` x reference are shallow partial-ablation ramps.  The
+    optional width band (`width_band_frac`, revoked in the frozen config for
+    brittleness at scale but kept switchable) would additionally cut
+    deep-but-narrow shoulder segments.  Legitimate interior depth
+    oscillation passes by design.  Gaps up to `gap_merge_um` are bridged;
+    larger violations block the merge.  A chosen run shorter than
+    max(`min_stable_len_um`, `min_stable_frac` x on-line span) raises
+    `FragmentedStableRegion` (human QA path) instead of silently selecting a
+    pathological fragment.  Returns (membership flags, run_start, run_end).
+    """
+    require(online.any(), "no on-line positions for plateau selection")
+    reference = float(np.quantile(depth_p95[online], ref_quantile))
+    qualify = online & (depth_p95 >= depth_frac * reference)
+    if width_band_frac is not None:
+        qualify = qualify & (abs_width >= width_band_frac
+                             * float(np.median(abs_width[online])))
+    if not qualify.any():
+        raise ValueError("no position passes the plateau bands")
+    runs: list[tuple[int, int]] = []
+    start = None
+    for index, flag in enumerate(qualify):
+        if flag and start is None:
+            start = index
+        if (not flag or index == qualify.size - 1) and start is not None:
+            end = index if flag else index - 1
+            runs.append((start, end))
+            start = None
+    merged: list[list[int]] = []
+    for run in runs:
+        if merged and (s_scan[run[0]] - s_scan[merged[-1][1]]) <= gap_merge_um:
+            merged[-1][1] = run[1]
+        else:
+            merged.append(list(run))
+    longest = max(merged, key=lambda r: s_scan[r[1]] - s_scan[r[0]])
+    lo, hi = float(s_scan[longest[0]]), float(s_scan[longest[1]])
+    online_span = float(s_scan[online].max() - s_scan[online].min()) if online.any() else 0.0
+    guard = max(min_stable_len_um, min_stable_frac * online_span)
+    if hi - lo < guard:
+        raise FragmentedStableRegion(
+            f"plateau run {hi - lo:.1f} um < guard {guard:.1f} um "
+            f"(on-line span {online_span:.1f} um); needs human QA")
+    return (s_scan >= lo) & (s_scan <= hi), lo, hi
+
+
 # --------------------------------------------------------------------------- #
 # Pilot reconciliation (§0.15)
 # --------------------------------------------------------------------------- #
 def reconcile_stable_region(my_frame: pd.DataFrame, pilot: pd.DataFrame, *,
-                            groups: tuple[int, ...], tol_um: float
-                            ) -> pd.DataFrame:
-    """Section-level agreement between my stable flags and pilot flags.
+                            groups: tuple[int, ...], tol_um: float,
+                            shallow_frac: float,
+                            max_shift_um: float = 30.0) -> pd.DataFrame:
+    """Stable-region reconciliation against the pilot flags (§0.15 rev2).
 
-    `my_frame` needs (加工顺序, s_center_um, stable_flag) rows at 1-um scan
-    step; pilot rows are matched within `tol_um` on center-relative s.
+    Matching is aligned first by cross-correlation over +/-`max_shift_um`
+    (the three origin conventions -- sampling anchor, detected-extent center,
+    pilot center -- are not interchangeable; the estimated shift is reported
+    per group).  The pilot flags encode a per-line, pipeline-driven cut that
+    is NOT locally reconstructible (it excludes locally-healthy deep
+    full-width segments as parts of broader transition runs while keeping
+    short shallow dips), so the gated quantity is the shallow-invasion rate:
+    among pilot-excluded positions that are locally shallow (depth_p95 <
+    `shallow_frac` x the plateau reference P90 of my kept positions), the
+    fraction my stable region retains.  Precision/recall/agreement are
+    informational divergence inventory.
+
+    `my_frame` needs (加工顺序, s_center_um, stable_flag, depth_p95) rows at
+    1-um scan step; pilot rows are matched within `tol_um` on
+    center-relative s.
     """
     records = []
     for group in groups:
         mine = my_frame[my_frame["加工顺序"] == group]
-        theirs = pilot[pilot["加工顺序"] == group]
+        theirs = pilot[pilot["加工顺序"] == group].copy()
         if not len(mine) or not len(theirs):
             continue
-        merged = pd.merge_asof(
-            theirs.sort_values("s_um").rename(columns={"s_um": "s_pilot"}),
-            mine.sort_values("s_center_um"),
-            left_on="s_pilot", right_on="s_center_um",
-            tolerance=tol_um, direction="nearest")
-        merged = merged.dropna(subset=["stable_flag"])
-        if not len(merged):
+        theirs["s_pilot"] = theirs["s_um"].astype(float)
+        mine = mine.assign(s_center_um=mine["s_center_um"].astype(float))
+        pilot_s = theirs["s_pilot"].to_numpy(dtype=float)
+        pilot_kept = theirs["included_in_stable_region"].astype(bool).to_numpy()
+        my_s = mine["s_center_um"].to_numpy(dtype=float)
+        my_kept = mine["stable_flag"].astype(bool).to_numpy()
+        my_depth = mine["depth_p95"].to_numpy(dtype=float)
+        best = None
+        for shift in np.arange(-max_shift_um, max_shift_um + 1e-9, 1.0):
+            mapped = my_s - shift
+            right = np.searchsorted(pilot_s, mapped)
+            left = np.clip(right - 1, 0, pilot_s.size - 1)
+            choose = np.where(
+                np.abs(pilot_s[right.clip(0, pilot_s.size - 1)] - mapped)
+                <= np.abs(pilot_s[left] - mapped), right.clip(0, pilot_s.size - 1), left)
+            hit = np.abs(pilot_s[choose] - mapped) <= tol_um
+            if not hit.any():
+                continue
+            agreement = float((my_kept[hit] == pilot_kept[choose[hit]]).mean())
+            if best is None or agreement > best[0]:
+                best = (agreement, float(shift), choose.copy(), hit.copy())
+        if best is None:
             continue
-        agreement = float((merged["stable_flag"].astype(bool)
-                           == merged["included_in_stable_region"].astype(bool)).mean())
-        records.append({"加工顺序": group, "n_matched": int(len(merged)),
-                        "n_unmatched_pilot": int(len(theirs) - len(merged)),
-                        "agreement": agreement})
+        _, shift, choose, hit = best
+        m_kept = my_kept[hit]
+        t_kept = pilot_kept[choose[hit]]
+        depth = my_depth[hit]
+        kept_depth = depth[m_kept]
+        reference = (float(np.quantile(kept_depth, 0.90))
+                     if kept_depth.size else np.nan)
+        shallow_excluded = (~t_kept) & (depth < shallow_frac * reference)
+        shallow_invaded = m_kept & shallow_excluded
+        n_shallow = int(shallow_excluded.sum())
+        both = m_kept & t_kept
+        records.append({
+            "加工顺序": group,
+            "alignment_shift_um": shift,
+            "n_matched": int(hit.sum()),
+            "n_unmatched_pilot": int(pilot_s.size - len(np.unique(choose[hit]))),
+            "n_shallow_excluded": n_shallow,
+            "n_shallow_invaded": int(shallow_invaded.sum()),
+            "shallow_invasion_frac": (float(shallow_invaded.sum() / n_shallow)
+                                      if n_shallow else 0.0),
+            "precision": float(both.sum() / m_kept.sum()) if m_kept.any() else np.nan,
+            "recall": float(both.sum() / t_kept.sum()) if t_kept.any() else np.nan,
+            "agreement": float((m_kept == t_kept).mean()),
+        })
     return pd.DataFrame(records)

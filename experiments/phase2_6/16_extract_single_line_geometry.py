@@ -138,9 +138,10 @@ def render_montage(target: Path, group: int, hm, depth: np.ndarray,
         ax.set_title("cross-section: none")
     ax = axes[1, 0]
     ax.plot(sections["s_um"], sections["D_max_um"], color="k", lw=1.0)
-    for s_val, style in ((meta["s_start"], "c--"), (meta["s_end"], "c--")):
-        ax.axvline(s_val, color="c", ls=style, lw=0.9)
-    ax.axvspan(meta["stable"][0], meta["stable"][1], color="k", alpha=0.12)
+    if np.isfinite(meta["s_start"]):
+        for s_val in (meta["s_start"], meta["s_end"]):
+            ax.axvline(s_val, color="c", ls="--", lw=0.9)
+        ax.axvspan(meta["stable"][0], meta["stable"][1], color="k", alpha=0.12)
     ax.set_title("section D_max along s | dashed=extent, grey=stable region")
     ax = axes[1, 1]
     uncensored = sections[~sections["censored_W50"].astype(bool)]["W50_um"].dropna()
@@ -172,6 +173,7 @@ def main() -> int:
     sl = cfg["single_line"]
     out_dir = p26.output_dir(cfg, "single_line")
     montage_dir = out_dir / "qa_montages"
+    montage_dir.mkdir(parents=True, exist_ok=True)
     view = pd.read_csv(cfg["paths"]["line_view_manifest"], encoding="utf-8-sig")
     view_field = view.set_index(view["measurement_id"].astype(int))
     groups = sorted(int(g) for g in view_field.index)
@@ -218,10 +220,36 @@ def main() -> int:
             s_start, s_end = p26.line_extent(
                 s_scan, online, min_run_um=sl["min_extent_run_um"],
                 merge_gap_um=sl["extent_merge_gap_um"])
-            stable = p26.stable_region(
-                s_start, s_end, pad_low=sl["stable_region"]["pad_low"],
-                pad_high=sl["stable_region"]["pad_high"])
-            s_sections = p26.section_positions(stable, sl["cross_section_step_um"])
+            depth_p95_s, abs_width_s = p26.scan_plateau_features(
+                profiles_fine, threshold, hm.dy_um)
+            fragmented = False
+            try:
+                stable_flags, stable_start, stable_end = p26.plateau_stable_run(
+                    s_scan, online, depth_p95_s, abs_width_s,
+                    depth_frac=sl["stable_region"]["depth_frac"],
+                    ref_quantile=sl["stable_region"]["ref_quantile"],
+                    width_band_frac=sl["stable_region"]["width_band_frac"],
+                    gap_merge_um=sl["stable_region"]["gap_merge_um"],
+                    min_stable_len_um=sl["stable_region"]["min_stable_len_um"],
+                    min_stable_frac=sl["stable_region"]["min_stable_frac"])
+                stable = (stable_start, stable_end)
+                s_sections = p26.section_positions(stable, sl["cross_section_step_um"])
+            except p26.FragmentedStableRegion:
+                fragmented = True
+                stable_flags = np.zeros_like(online, dtype=bool)
+                stable = (np.nan, np.nan)
+                s_sections = np.array([], dtype=float)
+            empty_sections = pd.DataFrame({
+                "s_um": pd.Series(dtype=float),
+                **{key: pd.Series(dtype=float) for key in (
+                    "n_valid_samples", "n_above_threshold", "D_max_um",
+                    "A_remove_um2", "W_eq_um", "W20_um", "W50_um", "W80_um",
+                    "n_runs_W20", "n_runs_W50", "n_runs_W80",
+                    "total_width_W20_um", "total_width_W50_um",
+                    "total_width_W80_um", "censored_W20", "censored_W50",
+                    "censored_W80", "W_affected_um", "left_slope", "right_slope",
+                    "edge_asymmetry", "ridge_left_um", "ridge_right_um",
+                    "ridge_separation_um", "profile_skewness")}})
 
             def extract(depth_field: np.ndarray) -> pd.DataFrame:
                 profiles, _ = p26.sample_profiles(
@@ -237,12 +265,19 @@ def main() -> int:
                     for i in range(len(s_sections))]
                 return pd.concat([frame, pd.DataFrame(features)], axis=1)
 
-            sections_raw = extract(depth)
-            z_rep, repair_mask, rep_components, _ = repair_compact_dropouts(
-                hm.z, hm.valid_mask, dx_um=hm.dx_um, dy_um=hm.dy_um,
-                config=cone_cfg)
-            sections_rep = extract(plane_depth(z_rep, hm.valid_mask,
-                                               hm.dx_um, hm.dy_um, fit))
+            if not fragmented:
+                sections_raw = extract(depth)
+                z_rep, repair_mask, rep_components, _ = repair_compact_dropouts(
+                    hm.z, hm.valid_mask, dx_um=hm.dx_um, dy_um=hm.dy_um,
+                    config=cone_cfg)
+                sections_rep = extract(plane_depth(z_rep, hm.valid_mask,
+                                                   hm.dx_um, hm.dy_um, fit))
+            else:
+                sections_raw = empty_sections.copy()
+                sections_rep = empty_sections.copy()
+                z_rep = hm.z
+                repair_mask = np.zeros_like(hm.valid_mask)
+                rep_components = []
             for frame, arm in ((sections_raw, "raw"), (sections_rep, "repaired")):
                 frame.insert(0, "arm", arm)
                 frame.insert(0, "single_line_id", group)
@@ -255,12 +290,15 @@ def main() -> int:
                 sections_rep, min_sections=sl["min_sections"],
                 censored_frac_limit=sl["censored_frac_W50_uncertain_above"])
             flags = auto_qc_flags(aggregate, (s_start, s_end), s_bounds, cfg)
+            if fragmented:
+                flags.append("fragmented_stable_region")
             center = (s_start + s_end) / 2.0
-            stable_flags = online & (s_scan >= stable[0]) & (s_scan <= stable[1])
+            stable_flags = (s_scan >= stable[0]) & (s_scan <= stable[1])
             scan_rows.append(pd.DataFrame({
                 "加工顺序": group,
                 "s_center_um": s_scan - center,
-                "stable_flag": stable_flags.astype(int)}))
+                "stable_flag": stable_flags.astype(int),
+                "depth_p95": depth_p95_s}))
             line_row = {
                 "single_line_id": group,
                 "theta_line_deg": theta,
@@ -306,22 +344,44 @@ def main() -> int:
     if not quick:
         pilot_scan = pd.concat(scan_rows, ignore_index=True)
         pilot_long = pd.read_csv(cfg["paths"]["pilot_longitudinal_csv"])
-        available = tuple(g for g in geometry["single_line_id"].tolist()
+        pilot_features = pd.read_csv(cfg["paths"]["pilot_features_csv"])
+        valid_ids = geometry.loc[geometry["width_identifiability"]
+                                 != "insufficient_sections", "single_line_id"]
+        available = tuple(g for g in valid_ids.tolist()
                           if g in set(pilot_long["加工顺序"].unique().tolist()))
         reconciliation = p26.reconcile_stable_region(
             pilot_scan, pilot_long, groups=available,
-            tol_um=sl["pilot_reconcile_match_tol_um"])
+            tol_um=sl["pilot_reconcile_match_tol_um"],
+            shallow_frac=sl["stable_region"]["depth_frac"],
+            max_shift_um=sl["pilot_reconcile_max_shift_um"])
         p26.require(len(available) > 0 and len(reconciliation) == len(available),
                     "pilot reconciliation matched no groups")
-        p26.require(reconciliation["agreement"].min()
-                    >= sl["pilot_reconcile_min_agreement"],
-                    "pilot stable-region agreement below threshold:\n"
+        p26.require((reconciliation["n_shallow_invaded"]
+                     <= sl["pilot_reconcile_max_shallow_invaded_per_group"]).all()
+                    and int(reconciliation["n_shallow_invaded"].sum())
+                    <= sl["pilot_reconcile_max_shallow_invaded_total"],
+                    "shallow partial-ablation segments retained inside the "
+                    "stable region (pilot reconciliation):\n"
                     f"{reconciliation.to_string()}")
+        geometry_index = geometry.set_index("single_line_id")
+        reconciliation["my_median_W50_um"] = [
+            float(geometry_index.loc[g, "median_W50_um"]) for g in reconciliation["加工顺序"]]
+        reconciliation["pilot_W_line_um"] = [
+            float(pilot_features.set_index("加工顺序").loc[g, "W_line_um"])
+            for g in reconciliation["加工顺序"]]
+        reconciliation["W50_rel_diff_vs_pilot"] = (
+            reconciliation["my_median_W50_um"] / reconciliation["pilot_W_line_um"] - 1.0)
         reconciliation.to_csv(out_dir / "stable_region_reconciliation.csv",
                               index=False, encoding="utf-8-sig")
-        p26.log(f"pilot reconciliation OK: min agreement "
-                f"{reconciliation['agreement'].min():.3f} "
-                f"over {len(reconciliation)} groups")
+        p26.log(f"pilot reconciliation OK: max shallow invaded per group "
+                f"{int(reconciliation['n_shallow_invaded'].max())} "
+                f"(max frac {reconciliation['shallow_invasion_frac'].max():.3f}); "
+                f"precision {reconciliation['precision'].min():.3f}.."
+                f"{reconciliation['precision'].max():.3f} and agreement "
+                f"{reconciliation['agreement'].min():.3f}.."
+                f"{reconciliation['agreement'].max():.3f} are informational; "
+                f"W50 vs pilot rel diff median "
+                f"{reconciliation['W50_rel_diff_vs_pilot'].median():+.3f}")
 
     labels_path = out_dir / "geometry_qa_labels.csv"
     labels_template = pd.DataFrame({

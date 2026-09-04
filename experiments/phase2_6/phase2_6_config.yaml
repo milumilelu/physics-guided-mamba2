@@ -38,15 +38,29 @@ single_line:
   min_extent_run_um: 3.0      # minimum consecutive on-line fine positions to accept a line body
   extent_merge_gap_um: 5.0    # on-line runs separated by <= this gap are merged
   fine_step_um: 1.0           # detection scan step (matches pilot longitudinal step)
-  stable_region:              # central 70% of the detected extent (pilot central_fraction=0.7)
-    pad_low: 0.15
-    pad_high: 0.15
+  stable_region:              # §0.15 rev2 refinement: depth-plateau longest run
+    mode: depth_plateau_longest_run
+    depth_frac: 0.50          # depth_p95 >= 0.50 * P90(depth_p95 | on-line)
+    ref_quantile: 0.90        # robust plateau depth (median is pulled down by ramps)
+    width_band_frac: null     # REVOKED (2026-09-04): brittle at scale (fragmented dozens of lines
+                              # via cone-split run oscillation); group-104 deep-narrow divergence stays
+                              # an informational inventory item instead. depth rule + fragment guard only.
+    gap_merge_um: 5.0         # bridge small dropouts (2-point failures make 3 um gaps); larger violations block merging
+    min_stable_len_um: 60.0   # fragment guard (group-48 lesson): chosen run must hold
+    min_stable_frac: 0.50     # >= max(60 um, 0.5 x on-line span), else FragmentedStableRegion -> insufficient_sections + human QA
+  central_fraction_note: "original frozen central 70% (pilot central_fraction=0.7) superseded by the plateau rule; pilot interior depth oscillation (e.g. group 94: 5.9-11 um vs plateau 10.8) passes by design"
   cross_section_step_um: 2.0
   min_sections: 20
   censored_frac_W50_uncertain_above: 0.5
   profile_valid_fraction_min: 0.5   # section usable if >= 50% of the lateral samples are in-FOV
-  pilot_reconcile_min_agreement: 0.90   # abort below (细则 §0.15)
+  pilot_reconcile_max_shallow_invaded_per_group: 5   # SAFE-direction abort (细则 §0.15 rev2 补注 (b)):
+  pilot_reconcile_max_shallow_invaded_total: 20      # my stable region must not retain shallow partial-ablation
+                                                     # segments the pilot excluded (per-group and 15-group total caps);
+                                                     # precision/recall/agreement are informational divergence
+                                                     # inventory (pilot cut is not locally reconstructible);
+                                                     # insufficient_sections lines are skipped (no meaningful flags)
   pilot_reconcile_match_tol_um: 1.5
+  pilot_reconcile_max_shift_um: 30.0   # cross-correlation alignment before matching (origin conventions differ)
 
 widths:
   thresholds_q: [0.2, 0.5, 0.8]

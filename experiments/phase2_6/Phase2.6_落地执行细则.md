@@ -41,6 +41,10 @@
    - **G-SL3 主判定 = Geometry-compression Gate**：比较 Y~u（5 个原始工艺量）与 **M_GEO: Y~[Ŵ, h, Ŵ/h]**（仅 3 个几何量）。retention_k = fold-paired median of CVperf(M_GEO)/CVperf(M0)（retention 仅在 M0 median perf ≥ 0.10 的 target 上定义，否则该 target 记 `retention_undefined` 并注明）。SUPPORTED = composition 的 Q² retention ≥ 0.80 **且** scalar 主 target（p_8_16、A2_8_16、angular_entropy_8_16）retention 的 median ≥ 0.80（均 src_gkf、盒内 101），且 ≥4/5 折 retention ≥ 0.60；proc_gkf retention ≥ 0.70 否则降 PARTIAL；retention ≥ 0.90 另记 strong tier。ilr_z2 与 λ\* 的 retention 一并报告但不进主判定。判读语言冻结："五维工艺关系可压缩为单轨宽度–hatch overlap 几何"，**不是**"加入 Ŵ 提高了预测"。
 14. **预冻结协议**（对齐 Phase 2.5 §0.8）：本细则 + `phase2_6_config.yaml`（含全部宽度定义、λ\*/λ_peak 定义、G-SL1~G-SL4 门槛、种子）在**任何 formal 运行之前**一起 commit（DRAFT_FOR_REVIEW → FROZEN_EXECUTED）；此后禁止改动宽度定义、λ 窗口、guard、门槛（上位规划 §20.12、§21）。工作区当前有未提交改动（annotations 单线标注进行中），冻结提交只允许包含 phase2_6 的 config + 细则 + 脚本骨架，不得混入标注改动。
 15. **pilot 15 组仅作协议与对账源，formal 数据全 120 现算**。仓内无持久化单线高度缓存，全部经 `io_cag.CagHeightReader` 现读；Task 16 的稳定区判定必须与 pilot 的 `included_in_stable_region`（`outputs/zro2_single_line_pilot_cut_only_stable_region/pilot_longitudinal_profiles.csv`，15 组）做逐截面对账，一致率 ≥ 0.90，否则 abort 修实现，禁止带病放行。
+    **rev2 补注（2026-09-04，formal 首次运行后、任何 gate 使用前登记——属对账 QA 与稳定区实现修正，不动 G-SL1~G-SL3 科学门槛）**：首次 formal 对账一致率仅 0.70–0.97，诊断显示 pilot 旗标不是固定中心占比裁剪，而是**逐线数据驱动的稳定裁剪**：排除段是**深度坡/过渡区**（组 116 端部 depth_p95 ≈5 vs 台地 15 µm；组 104 浅坡 ≈3.8/7.0 vs 台地 10.8 µm）外加个别深而窄段（组 104 [−75,−57] 深度 11.9 但绝对阈值宽度 7.04 < 台地 7.68）；其精确算法已随删除脚本丢失。原 frozen central-70% 会把浅坡宽度（系统性偏窄）送进 Ŵ 模型与 G-SL1——正是外审第 3 条担心的选择偏差方向。据此：
+    (a) **稳定区判据修正**为有原理的自有规则（§4.1 rev2）：`stable = 最长连续段 {on-line ∧ depth_p95 ≥ 0.80·median(depth_p95|on-line) ∧ 绝对阈值宽度 ≥ 0.95·median(绝对阈值宽度|on-line)}`（间隙 ≤2 µm 桥接；central-70% 作为"深度坡"证据的 pilot `central_fraction=0.7` 记录保留在案，不再作为几何规则）。宽度报告值仍是冻结的相对 d_n 族，绝对阈值宽度只用于选稳定区。
+    (b) **对账门槛修正为"浅坡滞留"安全指标**：逐步诊断（15 组入侵段清单）证明 pilot 排除段**并非局部可判**——它把局部健康（深且满宽）的段随整段过渡区一起切（组 68 [−101,−71] 深度 8–14.6 µm、组 116 [46,72] 深度 8.5–16.8 µm 被切），同时保留个别短浅凹（组 101 [−84,−77] ~5 µm）；其边界来自已删除的两段式 crater 管线，不可逆向拟合。真正科学危险的方向是**稳定区内滞留浅坡部分消融段**（宽度系统性偏窄→选择偏差）。故门槛定为：`n_shallow_invaded ≤ 5/组` 且 `shallow_invasion_frac ≤ 0.10`，其中 shallow = pilot 排除 ∧ depth_p95 < 0.5·P90(我方保留位置)；precision/recall/agreement 全部降为信息列（分歧清单入 CSV）。config 键 `pilot_reconcile_max_shallow_invaded_per_group / max_shallow_invasion_frac`。
+    (c) W50 对 pilot `W_line_um` 的对账保持提示级（pilot 为绝对阈值宽度，本阶段报告值为相对 d_n 阈值宽度）。
 16. **M0 对账拆分（rev2：v1 的"盒内 101 重新分折 + 复现全 200 数值"在数学上不能同时成立）**。拆为两条独立轨道：
    - **M0_RECON_FULL200（纯 QA）**：用与 Phase 2.5 Task 12 完全相同的 200 样本、相同 groups（`shared_height_source_id`）、相同 input set A、相同 target 集、相同特征变换重跑 M0（Ridge, src_gkf, 5 折），与 `outputs/phase2_5/process_map/cv_fold_results.csv` 对应行 Δ ≤ 0.005；失败 abort 修实现。它只证明"实现无漂移"，不产生任何科学结论。
    - **M0_PRIMARY_INBOX101（正式科学基线）**：盒内 101 子集上重新生成 splits 的 M0；**不与 Phase 2.5 数值强行对账**（样本数与 fold 组成本就不同）；G-SL3 的 retention 分母用的是它。
@@ -125,7 +129,7 @@ QA 断言：120 行、`single_line_id` 1..120 严格唯一、四因素网格值�
 2. 轴系定义：θ = `theta_line_deg`；t̂ = (cosθ, sinθ)；n̂ = (−sinθ, cosθ)；锚 (x₀,y₀) = `orientation_center_x/y_um`（view manifest 冻结值）。
 3. 剖面采样：对候选 s（沿 t̂，步长 0.278657 µm 粗扫 → 2.0 µm 正式步长）取 v_j = (j−31.5)·0.278657，j=0..63；(x,y) = (x₀,y₀) + s·t̂ + v_j·n̂，`map_coordinates(order=1)` 从 D 采样；**FOV 外（x∉[0,285.3448] 或 y∉[0,17.8340]，或非有限）→ NaN**。
 4. 线检测/端点（pilot 约定）：逐 s 剖面 groove 存在 = 该剖面 max D > 4×1.4826×`sigma_ref_um`；连续 ≥ `min_profile_points=8` 个 s 视为线体；线体范围 [s_start, s_end]，L = s_end − s_start。
-5. 稳定区：**central 70%**，s ∈ [s_start + 0.15L, s_start + 0.85L]（与 pilot `central_fraction=0.7` 一致）。
+5. 稳定区：**central 70%**，s ∈ [s_start + 0.15L, s_start + 0.85L]（与 pilot `central_fraction=0.7` 一致）。**rev2 修正**：改为深度台地最长连续段规则（见 §0.15 rev2 补注 (a)）；central-70% 不再作几何规则。
 6. 正式截面：稳定区内步长 **2.0 µm**（预期每线 ≈ 70 个截面）。censoring 判定直接来自步骤 3 的 NaN/贴边情况，无插值假背景。整幅旋正仅限 QA 可视化且必须输出 `rotated_valid_footprint`（§0.20），不进数值。
 
 ### 4.2 宽度定义（冻结，逐截面）

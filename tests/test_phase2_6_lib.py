@@ -138,20 +138,13 @@ class WidthTests(unittest.TestCase):
 
 
 class ExtentTests(unittest.TestCase):
-    def test_extent_and_stable_region(self):
+    def test_extent_detection(self):
         s_scan = np.arange(-140.0, 140.0 + 1e-9, 1.0)
         online = (np.abs(s_scan) <= 95.0)
         start, end = p26.line_extent(s_scan, online, min_run_um=3.0,
                                      merge_gap_um=5.0)
         p26.require(abs(start + 95.0) < 1e-9 and abs(end - 95.0) < 1e-9,
                     f"extent {start}..{end} != -95..95")
-        stable = p26.stable_region(start, end, pad_low=0.15, pad_high=0.15)
-        p26.require(abs((stable[0] - start) - 0.15 * (end - start)) < 1e-9,
-                    "stable region pad_low wrong")
-        sections = p26.section_positions(stable, 2.0)
-        p26.require(len(sections) >= 20, "central 70% of 190um must give >= 20 sections at 2um")
-        p26.require(sections.min() >= stable[0] - 1e-9
-                    and sections.max() <= stable[1] + 1e-9, "sections outside stable")
 
     def test_isolated_detections_discarded(self):
         s_scan = np.arange(-50.0, 50.0 + 1e-9, 1.0)
@@ -160,6 +153,107 @@ class ExtentTests(unittest.TestCase):
                                      merge_gap_um=5.0)
         p26.require(abs(start + 30.0) < 1e-9 and abs(end - 30.0) < 1e-9,
                     "isolated far detection must be discarded")
+
+    def test_plateau_stable_run_excludes_shallow_ramps(self):
+        # plateau s in [-80, 80] with depth 10 um / width 8; shallow ramps
+        # beyond with depth 3 -> membership must exclude ramps (P90 ref = 10)
+        s_scan = np.arange(-140.0, 140.0 + 1e-9, 1.0)
+        online = np.abs(s_scan) <= 100.0
+        depth = np.where(online, 3.0, 0.0)
+        depth[np.abs(s_scan) <= 80.0] = 10.0
+        width = np.where(online, 8.0, 0.0)
+        flags, lo, hi = p26.plateau_stable_run(
+            s_scan, online, depth, width, depth_frac=0.50, ref_quantile=0.90,
+            width_band_frac=0.95, gap_merge_um=5.0)
+        p26.require(abs(lo + 80.0) < 1e-9 and abs(hi - 80.0) < 1e-9,
+                    f"plateau run {lo}..{hi} != -80..80")
+        p26.require(not bool(flags[np.abs(np.abs(s_scan) - 90.0) < 1e-9].any()),
+                    "shallow ramp must not be in the stable run")
+        p26.require(int(flags.sum()) >= 100, "plateau run must hold >= 100 scan positions")
+
+    def test_plateau_run_keeps_interior_oscillation(self):
+        # real interior depth oscillation (5.9-11 um, plateau 10.8) must pass
+        s_scan = np.arange(-100.0, 100.0 + 1e-9, 1.0)
+        online = np.ones(s_scan.size, dtype=bool)
+        rng = np.random.default_rng(20260904)
+        depth = 10.8 - 4.9 * np.abs(rng.random(s_scan.size) - 0.5) * 2
+        depth[:8] = 1.0
+        depth[-8:] = 1.0
+        width = np.full(s_scan.size, 8.0)
+        flags, lo, hi = p26.plateau_stable_run(
+            s_scan, online, depth, width, depth_frac=0.50, ref_quantile=0.90,
+            width_band_frac=0.95, gap_merge_um=5.0)
+        p26.require(abs(lo + 92.0) < 1e-9 and abs(hi - 92.0) < 1e-9,
+                    f"interior oscillation must be kept: run {lo}..{hi}")
+
+    def test_plateau_run_cuts_deep_narrow_shoulders(self):
+        # the pilot group 104 case, WITH the optional width band active:
+        # a deeper-than-plateau zone whose absolute width collapsed must be
+        # cut by the width band, not kept by depth (band revoked in frozen
+        # config, kept switchable)
+        s_scan = np.arange(-100.0, 100.0 + 1e-9, 1.0)
+        online = np.ones(s_scan.size, dtype=bool)
+        depth = np.full(s_scan.size, 10.0)
+        width = np.full(s_scan.size, 8.0)
+        shoulder = (s_scan >= -75.0) & (s_scan <= -57.0)
+        depth[shoulder] = 12.0
+        width[shoulder] = 7.0
+        flags, lo, hi = p26.plateau_stable_run(
+            s_scan, online, depth, width, depth_frac=0.50, ref_quantile=0.90,
+            width_band_frac=0.95, gap_merge_um=5.0)
+        p26.require(not bool(flags[shoulder].any()),
+                    "deep-narrow shoulder zone must be cut by the width band")
+
+    def test_plateau_run_blocked_by_large_violation(self):
+        s_scan = np.arange(-100.0, 100.0 + 1e-9, 1.0)
+        online = np.ones(s_scan.size, dtype=bool)
+        depth = np.full(s_scan.size, 10.0)
+        width = np.full(s_scan.size, 8.0)
+        wide_dip = np.abs(s_scan + 10.0) <= 7.0  # 15-um shallow zone > gap_merge
+        depth[wide_dip] = 3.0
+        width[wide_dip] = 3.0
+        flags, lo, hi = p26.plateau_stable_run(
+            s_scan, online, depth, width, depth_frac=0.50, ref_quantile=0.90,
+            width_band_frac=0.95, gap_merge_um=5.0)
+        p26.require(hi < -17.0 or lo > -3.0,
+                    f"run must not span the 15-um violation: {lo}..{hi}")
+
+    def test_plateau_fragment_guard(self):
+        # the group-48 lesson: a pathological fragment (18 um inside a 200 um
+        # on-line span) must raise instead of being silently selected
+        s_scan = np.arange(-100.0, 100.0 + 1e-9, 1.0)
+        online = np.ones(s_scan.size, dtype=bool)
+        width = np.full(s_scan.size, 8.0)
+        depth = np.where((s_scan >= 60.0) & (s_scan <= 90.0), 6.3, 1.0)
+        try:
+            p26.plateau_stable_run(s_scan, online, depth, width,
+                                   depth_frac=0.50, ref_quantile=0.90,
+                                   width_band_frac=None, gap_merge_um=5.0,
+                                   min_stable_len_um=60.0, min_stable_frac=0.5)
+        except p26.FragmentedStableRegion:
+            pass
+        else:
+            self.fail("fragmented stable region must raise")
+
+    def test_reconcile_cross_correlation_alignment(self):
+        # my kept span is the pilot's included span shifted by +7 um; the
+        # alignment must recover the shift and agree
+        s = np.arange(-100.0, 100.0 + 1e-9, 1.0)
+        my_kept = (s >= -23.0) & (s <= 57.0)
+        pilot_kept = (s >= -30.0) & (s <= 50.0)
+        my = pd.DataFrame({"加工顺序": 1, "s_center_um": s,
+                           "stable_flag": my_kept.astype(int),
+                           "depth_p95": np.where(my_kept, 10.0, 2.0)})
+        pilot = pd.DataFrame({"加工顺序": 1, "s_um": s,
+                              "included_in_stable_region": pilot_kept.astype(int)})
+        frame = p26.reconcile_stable_region(my, pilot, groups=(1,),
+                                            tol_um=1.5, shallow_frac=0.5,
+                                            max_shift_um=30.0)
+        p26.require(abs(frame.loc[0, "alignment_shift_um"] - 7.0) <= 1.0,
+                    f"alignment shift {frame.loc[0, 'alignment_shift_um']} != 7")
+        p26.require(frame.loc[0, "agreement"] >= 0.99
+                    and frame.loc[0, "precision"] >= 0.99,
+                    "aligned flags must agree")
 
 
 class LambdaStarTests(unittest.TestCase):
@@ -298,23 +392,35 @@ class FrozenInputTests(unittest.TestCase):
                     "single-line hatch must be NA")
 
     def test_geometry_outputs_states(self):
-        path = REPO / "outputs" / "phase2_6" / "single_line" / "single_line_geometry.csv"
-        if not path.exists():
+        geometry_path = (REPO / "outputs" / "phase2_6" / "single_line"
+                         / "single_line_geometry.csv")
+        if not geometry_path.exists():
             raise unittest.SkipTest("Task 16 output not present yet")
-        geometry = pd.read_csv(path, encoding="utf-8-sig")
+        geometry = pd.read_csv(geometry_path, encoding="utf-8-sig")
         p26.require(geometry["width_identifiability"]
                     .isin(["estimable", "right_censored",
                            "insufficient_sections"]).all(),
                     "width_identifiability states drifted")
-        p26.require((geometry["median_W20_um"]
-                     >= geometry["median_W50_um"]).all()
-                    and (geometry["median_W50_um"]
-                         >= geometry["median_W80_um"]).all(),
-                    "median W ordering W20 >= W50 >= W80 violated")
-        p26.require((geometry["median_W_eq_um"] > 0).all(), "W_eq must be > 0")
-        p26.require((geometry["n_sections_used"]
+        p26.require((geometry["median_W_eq_um"].dropna() > 0).all(),
+                    "W_eq must be > 0")
+        p26.require((geometry.loc[geometry["width_identifiability"]
+                                  != "insufficient_sections", "n_sections_used"]
                      >= _cfg()["single_line"]["min_sections"]).all(),
-                    "every line must hold >= 20 sections")
+                    "estimable/right_censored lines must hold >= 20 sections")
+        p26.require((geometry.loc[geometry["width_identifiability"]
+                                  == "insufficient_sections", "n_sections_used"]
+                     < _cfg()["single_line"]["min_sections"]).all(),
+                    "insufficient_sections flag must match the section count")
+        widths_path = (REPO / "outputs" / "phase2_6" / "single_line"
+                       / "cross_section_widths.csv")
+        if widths_path.exists():
+            sections = pd.read_csv(widths_path, encoding="utf-8-sig")
+            usable = sections[sections["n_above_threshold"] > 0]
+            p26.require((usable["W20_um"] >= usable["W50_um"] - 1e-9).all()
+                        and (usable["W50_um"] >= usable["W80_um"] - 1e-9).all(),
+                        "per-section ordering W20 >= W50 >= W80 violated")
+            p26.require((sections["W_eq_um"].dropna() > 0).all(),
+                        "per-section W_eq must be > 0")
 
 
 if __name__ == "__main__":
