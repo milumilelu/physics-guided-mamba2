@@ -18,6 +18,7 @@ from pathlib import Path
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 from scipy.io import loadmat  # noqa: E402  ( noqa: keep imports explicit )
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.io_cag import CagHeightReader  # noqa: E402
 from src.manual_single_line_annotation import PlaneFit, plane_depth  # noqa: E402
 
@@ -57,6 +58,11 @@ def main() -> int:
         view_col := "measurement_id")
     match = pd.read_csv(REPO / cfg["paths"]["direct_bridge"],
                         encoding="utf-8-sig")
+    _cond = match["condition"].str.split(":", expand=True).astype(int)
+    match[["pulse_duration_fs", "frequency_kHz", "pass_count",
+           "velocity_mm_s"]] = _cond
+    match["dataset_index_list_parsed"] = match["dataset_index_list"].apply(
+        lambda s: [int(x) for x in str(s).split(";")])
     manifest = pd.read_csv(REPO / cfg["paths"]["phase2_manifest"])
     radial_obs = pd.read_csv(REPO / cfg["paths"]["p25_radial_long_csv"],
                              encoding="utf-8-sig")
@@ -106,7 +112,9 @@ def main() -> int:
                 8)
             s_start, s_end = p27.line_extent(
                 s_scan, online, min_run_um=3.0, merge_gap_um=10.0)
-            dp = p27.scan_plateau_features(profiles_fine)
+            dp, _aw = p27.scan_plateau_features(
+                profiles_fine, float(vr["orientation_threshold_um"]),
+                hm.dy_um)
             stable_flags, stable_lo, stable_hi = p27.plateau_stable_run(
                 s_scan, online, dp, dp,
                 depth_frac=0.5, ref_quantile=0.90, width_band_frac=None,
@@ -125,25 +133,26 @@ def main() -> int:
             suitable = p27.profile_suitable(
                 mean_profile, edge_frac_max=g3["edge_frac_max"])
             profiles[line_id] = {"profile": mean_profile, "suitable": suitable}
-            for m in (1, 2, 3):
-                lam = m * float(row.hatch_spacing_um)
-                k = 1.0 / lam
-                candidate_rows.append({
-                    "single_line_id": line_id, "h": float(row.hatch_spacing_um),
-                    "m": m, "lambda_um": lam, "k_per_um": k,
-                    "confidence": p27.cycles_level(lam),
-                    "S_g": (p27.hann_projection(mean_profile, v_pos, k)
-                            if suitable and m == 1 else np.nan)
-                    if m == 1 else (p27.hann_projection(mean_profile, v_pos, k)
-                                    if suitable else np.nan)})
     finally:
         reader.close()
+    # candidates are h_levels × m — independent of any single line
+    candidate_rows = []
+    for h in h_levels:
+        for m in (1, 2, 3):
+            lam = m * h
+            candidate_rows.append({"h": h, "m": m, "lambda_um": lam,
+                                   "k_per_um": 1.0 / lam,
+                                   "confidence": p27.cycles_level(lam)})
     candidates = pd.DataFrame(candidate_rows)
-    candidates["S_g"] = candidates.apply(
-        lambda r_: p27.hann_projection(
-            profiles[int(r_["single_line_id"])]["profile"],
-            p27.lateral_positions(64, 0.278657), float(r_["k_per_um"]))
-        if profiles[int(r_["single_line_id"])]["suitable"] else np.nan, axis=1)
+    v_pos = p27.lateral_positions(64, 0.278657)
+    for r_ in candidates.itertuples(index=False):
+        readings = [p27.hann_projection(info["profile"], v_pos,
+                                        float(r_.k_per_um))
+                    for info in profiles.values() if info["suitable"]]
+        mask = (candidates["h"] == r_.h) & (candidates["m"] == r_.m)
+        candidates.loc[mask, "mean_S_g"] = (float(np.mean(readings))
+                                            if readings else np.nan)
+        candidates.loc[mask, "n_lines_read"] = len(readings)
     candidates.to_csv(out / "single_track_envelope.csv", index=False,
                       encoding="utf-8-sig")
     p27.log(f"envelope: {len(candidates)} candidate readings, "
@@ -151,12 +160,7 @@ def main() -> int:
             "profiles suitable")
 
     # ---- (b) 3A: exact-match selection compare + d_i guard ---------------- #
-    line_conditions = population.merge(
-        line_manifest[["single_line_id", "pulse_duration_fs", "frequency_kHz",
-                       "velocity_mm_s", "pass_count"]], on="single_line_id")
-    line_conditions = line_conditions.merge(
-        geometry[["single_line_id", "median_W50_um",
-                  "width_identifiability"]], on="single_line_id")
+    line_conditions = population.copy()  # already carries all needed columns
     state_map = {"right_censored": "W_lower_bound",
                  "insufficient_sections": "W_unavailable"}
     obs_classes = {}
@@ -186,7 +190,8 @@ def main() -> int:
         prof = profiles.get(line_id, {}).get("profile")
         if prof is None or not profiles[line_id]["suitable"]:
             continue
-        for ds in group["dataset_index"]:
+        for ds in [int(d) for row_ds in group["dataset_index_list_parsed"]
+                   for d in row_ds]:
             h_rect = float(manifest.loc[manifest["dataset_index"] == ds,
                                         "hatch_spacing_um"].iloc[0])
             c_obs = obs_class_by_ds[int(ds)]

@@ -1,0 +1,35 @@
+{
+  "model_population": {
+    "3A": "13 exact-match conditions, own envelope",
+    "3B": "81-line library (27 subsampled for c-grid)"
+  },
+  "tv_w_constant": 0.7072916666666668,
+  "tv_w_period2_loho": 0.6521602617655249,
+  "delta_tv": 0.05513140490114188,
+  "bootstrap_ci_low": 0.05446759259259237,
+  "p_boot": 0.0004997501249375312,
+  "h_consistency": {
+    "n_evaluable": 4,
+    "period2_wins": 2
+  },
+  "c_grid": [
+    0.0,
+    0.1,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8,
+    0.9
+  ],
+  "thresholds": {
+    "delta_min": 0.1,
+    "period2_max": 0.2,
+    "inadequate": 0.3
+  },
+  "G_SL27_3": "MODEL_INADEQUATE",
+  "note": "linear array model family insufficient; material nonlinearity is one candidate, not established",
+  "language": "two-line / period-doubled spatial organization; harmonic wording forbidden; MODEL_INADEQUATE does not establish material nonlinearity"
+}

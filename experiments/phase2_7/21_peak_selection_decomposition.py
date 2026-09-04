@@ -37,7 +37,7 @@ def main() -> int:
     seed = int(cfg["meta"]["random_seed"])
     out = p27.output_dir(cfg, "peak_selection")
     summary_dir = p27.output_dir(cfg, "summary")
-    hatch = pd.read_csv(p26.REPO / cfg["paths"]["lambda_over_hatch"],
+    hatch = pd.read_csv(p27.REPO / cfg["paths"]["lambda_over_hatch"],
                         encoding="utf-8-sig")
     p27.require(len(hatch) == 200, "lambda_over_hatch must hold 200 rows")
     p27.log(f"Task 21 start | quick={quick}")
@@ -79,17 +79,21 @@ def main() -> int:
 
     # ---- block-structured shuffled-h null (four-class TV, pooled center) -- #
     n_perm = int(g2["n_perm_tv"])
-    frame = hatch[["dataset_index", "hatch_spacing_um", "class_code"]]
+    manifest = pd.read_csv(p27.REPO / __import__("yaml").safe_load(
+        (Path(__file__).resolve().parent / "phase2_7_config.yaml")
+        .read_text(encoding="utf-8"))["paths"]["phase2_manifest"])
+    frame = (hatch[["dataset_index", "hatch_spacing_um", "class_code"]]
+             .merge(manifest[["dataset_index", "session_id",
+                              "base_condition_group"]],
+                    on="dataset_index"))
     weights = {h: n_h[h] / valid_n for h in h_levels}
     q_obs_h = {h: q_h[h] for h in h_levels}
     q_null_h = {h: [] for h in h_levels}
     for b in range(n_perm):
-        shuffled = p26.shuffle_h_by_block(frame, unit_columns=("session_id",
+        shuffled = p27.shuffle_h_by_block(frame, unit_columns=("session_id",
                                         "base_condition_group"),
                                         seed=seed + int(cfg["seeds"]["tv_perm"]) + b)
-        h_shuf = hatch["dataset_index"].map(
-            shuffled.set_index("dataset_index")["hatch_spacing_um"]).to_numpy(
-            dtype=float)
+        h_shuf = shuffled.to_numpy(dtype=float)
         cls_shuf = p27.assign_class(r_peak / h_shuf, valid)
         for h in h_levels:
             sel = valid & (h_shuf == h)
@@ -126,11 +130,12 @@ def main() -> int:
     rng = np.random.default_rng(seed + int(cfg["seeds"]["logistic_perm"]))
     slope_perm = np.empty(n_perm_log)
     for b in range(n_perm_log):
-        shuf = p26.shuffle_h_by_block(frame, unit_columns=("session_id",
+        shuf = p27.shuffle_h_by_block(frame, unit_columns=("session_id",
                                       "base_condition_group"),
                                       seed=seed + int(cfg["seeds"]["logistic_perm"]) + b)
-        h_perm = family_rows["dataset_index"].map(
-            shuf.set_index("dataset_index")["hatch_spacing_um"]).to_numpy(
+        # shuffle returns a Series aligned to `frame`'s index; family is a
+        # subset, so reindex by family dataset_index before fitting
+        h_perm = shuf.reindex(family_rows["dataset_index"]).to_numpy(
             dtype=float)
         slope_perm[b] = p27.logistic_slope(h_perm, is_m2)
     p_logistic = float((1 + int((slope_perm <= slope_obs).sum()))

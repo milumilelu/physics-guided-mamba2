@@ -14,6 +14,8 @@ import json
 import sys
 from pathlib import Path
 
+import yaml  # noqa: E402
+
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 from sklearn.linear_model import Ridge  # noqa: E402
@@ -108,7 +110,10 @@ def main() -> int:
     folds = pd.DataFrame(rows)
 
     # in-box 101 sensitivity (regenerated splits, same protocol)
-    in_box = p27.in_box_mask(manifest, cfg["bridge"]["box"])
+    box = yaml.safe_load((Path(__file__).resolve().parent.parent
+        / "phase2_6" / "phase2_6_config.yaml").read_text(encoding="utf-8")
+    )["bridge"]["box"]
+    in_box = p27.in_box_mask(manifest, box)
     sub = manifest[in_box]
     sub_splits = {"src_gkf_inbox": p27.p2.gkf_splits(
         sub["shared_height_source_id"], 5)}

@@ -29,6 +29,43 @@ l15 = p26.l15
 
 log = p26.log
 require = p26.require
+# re-exports from the frozen Phase 2.6 library (no copying)
+shuffle_h_by_block = p26.shuffle_h_by_block
+in_box_mask = p26.in_box_mask
+ridge_alpha_inner_gkf = p26.ridge_alpha_inner_gkf
+make_ridge = p26.make_ridge
+sample_profiles = p26.sample_profiles
+lateral_positions = p26.lateral_positions
+axis_frame = p26.axis_frame
+detect_online_flags = p26.detect_online_flags
+line_extent = p26.line_extent
+scan_plateau_features = p26.scan_plateau_features
+plateau_stable_run = p26.plateau_stable_run
+lambda_star_4_32 = p26.lambda_star_4_32
+lambda_peak_4_32 = p26.lambda_peak_4_32
+
+
+def load_config(description: str) -> tuple[dict, bool]:
+    """Read `phase2_7_config.yaml` next to this file; honor `--quick`."""
+    import argparse
+    import yaml
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument("--quick", action="store_true")
+    args, _ = parser.parse_known_args()
+    cfg = yaml.safe_load((Path(__file__).resolve().parent
+                          / "phase2_7_config.yaml").read_text(encoding="utf-8"))
+    cfg["_output_root"] = ("outputs/phase2_7_quick" if args.quick
+                           else "outputs/phase2_7")
+    cfg["_quick"] = bool(args.quick)
+    return cfg, bool(args.quick)
+
+
+def output_dir(cfg: dict, sub: str = "") -> Path:
+    path = REPO / cfg["_output_root"]
+    if sub:
+        path = path / sub
+    path.mkdir(parents=True, exist_ok=True)
+    return path
 
 CLASS_NAMES = ["INVALID", "OUT", "m1", "m2", "m3"]
 CODE_INVALID, CODE_OUT, CODE_M1, CODE_M2, CODE_M3 = 0, 1, 2, 3, 4
@@ -146,7 +183,8 @@ def field_class(field: np.ndarray, *, pixel_um: float = 0.5,
     r = np.asarray(field, dtype=float)[None, :, :]
     r = r - np.median(r)
     out, _ = p25.radial_spectrum(r, pixel_um, 24, 0.7, 160.0)
-    long_rows = [{"bin": b, "lambda_geo_um": float(out["lambda_geo_um"][b]),
+    long_rows = [{"dataset_index": 0, "bin": b,
+                  "lambda_geo_um": float(out["lambda_geo_um"][b]),
                   "energy": float(out["energy"][0, b]),
                   "n_modes": int(out["n_modes"][0, b])}
                  for b in range(24)]

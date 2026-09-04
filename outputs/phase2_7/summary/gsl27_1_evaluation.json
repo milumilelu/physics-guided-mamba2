@@ -1,0 +1,138 @@
+{
+  "type": "hatch_unique_contribution",
+  "population": "full_200_primary + in_box_101_sensitivity",
+  "delta_table": [
+    {
+      "variant": "src_gkf",
+      "target": "A2_8_16",
+      "metric": "R2",
+      "R2_full_median": 0.5050539999437547,
+      "R2_minus_h_median": -0.06603642374103269,
+      "median_delta_R2_h": 0.6509672473528761,
+      "n_folds_positive": 10,
+      "retention_h": -0.13075121422340352
+    },
+    {
+      "variant": "src_gkf",
+      "target": "angular_entropy_8_16",
+      "metric": "R2",
+      "R2_full_median": 0.5955515978750868,
+      "R2_minus_h_median": -0.04262803841465268,
+      "median_delta_R2_h": 0.6449781075749867,
+      "n_folds_positive": 10,
+      "retention_h": -0.07157740583141486
+    },
+    {
+      "variant": "src_gkf",
+      "target": "ilr_z1_z4",
+      "metric": "Q2_Aitchison",
+      "R2_full_median": 0.31305506446560427,
+      "R2_minus_h_median": 0.14779357389704195,
+      "median_delta_R2_h": 0.18101258577517343,
+      "n_folds_positive": 10,
+      "retention_h": 0.472100887903956
+    },
+    {
+      "variant": "src_gkf",
+      "target": "p_8_16",
+      "metric": "R2",
+      "R2_full_median": 0.422888881547959,
+      "R2_minus_h_median": 0.1267335432291089,
+      "median_delta_R2_h": 0.34961895113131647,
+      "n_folds_positive": 10,
+      "retention_h": 0.29968520989534764
+    },
+    {
+      "variant": "proc_gkf",
+      "target": "A2_8_16",
+      "metric": "R2",
+      "R2_full_median": 0.4947244495248655,
+      "R2_minus_h_median": -0.2067428170404806,
+      "median_delta_R2_h": 0.7336429885484586,
+      "n_folds_positive": 10,
+      "retention_h": -0.4178948852013214
+    },
+    {
+      "variant": "proc_gkf",
+      "target": "angular_entropy_8_16",
+      "metric": "R2",
+      "R2_full_median": 0.53706952566005,
+      "R2_minus_h_median": -0.4033591016970477,
+      "median_delta_R2_h": 0.7385210797283288,
+      "n_folds_positive": 10,
+      "retention_h": -0.7510370304502489
+    },
+    {
+      "variant": "proc_gkf",
+      "target": "ilr_z1_z4",
+      "metric": "Q2_Aitchison",
+      "R2_full_median": 0.34614470089122196,
+      "R2_minus_h_median": 0.20146996030960895,
+      "median_delta_R2_h": 0.20616323836020412,
+      "n_folds_positive": 8,
+      "retention_h": 0.5820397070672536
+    },
+    {
+      "variant": "proc_gkf",
+      "target": "p_8_16",
+      "metric": "R2",
+      "R2_full_median": 0.4089123442743904,
+      "R2_minus_h_median": -0.06383684083564467,
+      "median_delta_R2_h": 0.4760644133526921,
+      "n_folds_positive": 8,
+      "retention_h": -0.15611375330065497
+    },
+    {
+      "variant": "src_gkf_inbox",
+      "target": "A2_8_16",
+      "metric": "R2",
+      "R2_full_median": 0.6627431055840298,
+      "R2_minus_h_median": -0.023200435523967222,
+      "median_delta_R2_h": 0.7239693460609851,
+      "n_folds_positive": 5,
+      "retention_h": -0.03500667955424791
+    },
+    {
+      "variant": "src_gkf_inbox",
+      "target": "angular_entropy_8_16",
+      "metric": "R2",
+      "R2_full_median": 0.6475955298652876,
+      "R2_minus_h_median": -0.007810959793548955,
+      "median_delta_R2_h": 0.7332521439893622,
+      "n_folds_positive": 5,
+      "retention_h": -0.012061478860383404
+    },
+    {
+      "variant": "src_gkf_inbox",
+      "target": "ilr_z1_z4",
+      "metric": "Q2_Aitchison",
+      "R2_full_median": 0.3629219822441606,
+      "R2_minus_h_median": 0.18320037324416982,
+      "median_delta_R2_h": 0.2778090734994696,
+      "n_folds_positive": 5,
+      "retention_h": 0.5047927163610589
+    },
+    {
+      "variant": "src_gkf_inbox",
+      "target": "p_8_16",
+      "metric": "R2",
+      "R2_full_median": 0.4806642208036511,
+      "R2_minus_h_median": 0.009208883053612449,
+      "median_delta_R2_h": 0.4945272761951498,
+      "n_folds_positive": 5,
+      "retention_h": 0.019158661400292223
+    }
+  ],
+  "thresholds": {
+    "delta_min": 0.05,
+    "min_folds_positive": 4,
+    "proc_cap": {
+      "median_delta_gt": 0.0,
+      "min_folds_positive": 3
+    }
+  },
+  "src_pass": true,
+  "proc_consistency_ok": true,
+  "G_SL27_1": "SUPPORTED",
+  "reading": "Route T hatch 主导（unique contribution 成立）"
+}
