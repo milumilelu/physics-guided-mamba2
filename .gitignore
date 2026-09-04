@@ -29,6 +29,10 @@ venv/
 *.tif
 *.tiff
 !专利/**/*.png
+# Phase 2.6 gate-evidence figures are small and review-load-bearing
+!outputs/phase2_6/model_compare/*.png
+!outputs/phase2_6/scale_bridge/*.png
+# Phase 2.6 QA montages stay out (they ship inside the committed QA zips)
 
 # Office temporary files
 ~$*.docx
