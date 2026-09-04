@@ -1,0 +1,34 @@
+{
+  "gate": "G-SL4",
+  "verdict": "NOT_APPLICABLE",
+  "provenance_valid": false,
+  "scan_relative_angle_computed": false,
+  "reason": "No per-sample scan direction and no fill axis (x/y) exist for the rectangle DOE; nothing to align against.",
+  "verified_facts": [
+    "现有数据基础说明_v2 §12: rectangle areas use serpentine fill; the record states the fill style only -- no per-sample scan direction and no fill axis (x/y) are logged.",
+    "annotations/session_geometry.csv::theta_session_deg spans -0.700 .. -0.450 deg with d4_transform_session = identity: this is an IMAGE ROTATION convention, not a scan direction.",
+    "config/frozen/manual_registration_200.csv carries only theta_session_deg (same image-rotation convention); config/frozen/measurement_planes_160.csv carries no direction field at all.",
+    "Single lines: line axis ~0 deg (-0.43 .. -0.77 deg) but the start/end SIGN is unrecorded, and single-line DOE has no hatch."
+  ],
+  "descriptive_image_frame_check": {
+    "status": "DESCRIPTIVE_ONLY__NOT_EVIDENCE",
+    "statistic": "fraction of 200 samples with theta_stripe(8_16) within 10.0 deg of a multiple of 90 deg",
+    "A_obs": 0.585,
+    "n_clustered": 117,
+    "n_total": 200,
+    "null": {
+      "type": "uniform_angle_permutation_on_[0,180)",
+      "n_perm": 10000,
+      "seed": 20261704,
+      "A_null_median": 0.22,
+      "A_null_p95": 0.27,
+      "analytic_expectation": 0.2222222222222222
+    },
+    "p_value": 9.999000099990002e-05,
+    "wording_constraint": "This clustering is measured in the IMAGE FRAME only. It must never be described as scan alignment, hatch alignment, or as evidence for/against H1/H2/H3. Without a registered fill axis the scan-relative question is genuinely undecidable."
+  },
+  "conditional_arm": {
+    "enabled": false,
+    "unlock_condition": "Hand-register the fill axis per sample, rewrite 细则 §0.8, and set gates.gsl4.registered_axis_source; the conditional arm must be implemented in the same change, never appended after formal."
+  }
+}

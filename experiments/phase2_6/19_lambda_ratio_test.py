@@ -112,8 +112,8 @@ def main() -> int:
     seed = int(cfg["meta"]["random_seed"])
     ratio = cfg["ratio_test"]
     tolerance = float(ratio["d_int_tolerance"])
-    a_obs_min = float(ratio["a_obs_min"])
-    p_max = float(ratio["p_max"])
+    a_obs_min = float(cfg["gates"]["gsl2"]["a_obs_min"])
+    p_max = float(cfg["gates"]["gsl2"]["p_max"])
     n_perm = int(ratio["n_perm"]) if not quick else 200
     perm_seed = seed + int(cfg["seeds"]["permutation_offset"])
     units = tuple(ratio["shuffle_unit"])

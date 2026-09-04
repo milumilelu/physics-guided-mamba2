@@ -1,0 +1,50 @@
+{
+  "gate": "G-SL2",
+  "verdict": "SUPPORTED",
+  "primary_statistic": "lambda_peak_4_32",
+  "A_obs_peak": 0.9038461538461539,
+  "p_peak": 9.999000099990002e-05,
+  "n_valid_peak": 104,
+  "lambda_peak_valid_fraction": 0.52,
+  "sensitivity_centroid": {
+    "A_obs_centroid": 0.4083769633507853,
+    "p_centroid": 0.0211978802119788,
+    "n_valid_centroid": 191
+  },
+  "thresholds": {
+    "a_obs_min": 0.4,
+    "p_max": 0.05,
+    "d_int_tolerance": 0.25,
+    "valid_fraction_peak_min": 0.5
+  },
+  "null": {
+    "n_perm": 10000,
+    "seed": 20261704,
+    "shuffle_unit": [
+      "session_id",
+      "base_condition_group"
+    ],
+    "A_null_peak_median": 0.47115384615384615,
+    "A_null_peak_p95": 0.5576923076923077,
+    "A_null_centroid_median": 0.3507853403141361
+  },
+  "peak_coverage_shortfall": false,
+  "h1_side_informational": {
+    "note": "H1-side r_W statistics on the in-box 101 arm. Descriptive only: per 细则 §0.17 the H1 evidence order is exact-match direct > in-box predicted > out-of-box, so these model-proxy numbers carry the LOWEST priority and must not be reported as a mechanism result.",
+    "n_usable": 96,
+    "median_r_W": 1.8779620554475294,
+    "iqr_r_W": [
+      1.7235917927200246,
+      2.390931498016756
+    ],
+    "fraction_abs_r_W_minus_1_le_0.25": 0.0,
+    "spearman_lambda_star_vs_W_hat": -0.07852818992226834
+  },
+  "overlap_spearman_in_box": {
+    "spearman_eta_h_vs_p_8_16": -0.6302988651711791,
+    "spearman_eta_h_vs_A2_8_16": -0.8361818176558974,
+    "spearman_eta_h_vs_angular_entropy_8_16": 0.8610275510448594,
+    "spearman_eta_h_vs_ilr_z2": 0.5642008276110922
+  },
+  "interpretation_note": "G-SL2 tests a hatch-related PERIODIC / integer-multiple scale only. Per 细则 §14 the word 'harmonic' is banned: in the strict Fourier sense the harmonics of h are h/n, not 2h or 3h. G-SL2 must be read jointly with G-SL3 before any H1/H2/H3 final judgement (上位规划 §17)."
+}
