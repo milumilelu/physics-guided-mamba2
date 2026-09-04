@@ -43,6 +43,45 @@ require = p25.require
 WIDTH_Q_KEYS = ("W20", "W50", "W80")
 Q_BY_KEY = {"W20": 0.2, "W50": 0.5, "W80": 0.8}
 
+# frozen Ridge conventions shared by Tasks 17/18 (细则 §5/§6):
+#   - pipeline = StandardScaler -> Ridge (linear basis);
+#   - alpha = fold-internal grid logspace(-3, 3, 13) selected by inner GKF(5)
+#     mean MSE on the TRAIN fold (never the test fold).
+RIDGE_ALPHA_GRID = None  # populated lazily via make_ridge_alpha_grid()
+
+
+def make_ridge_alpha_grid() -> "np.ndarray":
+    global RIDGE_ALPHA_GRID
+    if RIDGE_ALPHA_GRID is None:
+        RIDGE_ALPHA_GRID = np.logspace(-3, 3, 13)
+    return RIDGE_ALPHA_GRID
+
+
+def make_ridge(alpha: float) -> "object":
+    from sklearn.linear_model import Ridge
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import StandardScaler
+    return Pipeline([("scale", StandardScaler()),
+                     ("ridge", Ridge(alpha=float(alpha)))])
+
+
+def ridge_alpha_inner_gkf(X_train, y_train, groups_train, *,
+                          n_splits: int = 5) -> float:
+    """Fold-internal alpha selection by inner GKF(5) mean MSE (frozen §5)."""
+    grid = make_ridge_alpha_grid()
+    inner = p2.gkf_splits(pd.Series(groups_train), n_splits)
+    p2.check_gkf_contract(pd.Series(groups_train), inner)
+    scores = []
+    for alpha in grid:
+        fold_mse = []
+        for tr, te in inner:
+            model = make_ridge(alpha).fit(np.asarray(X_train)[tr],
+                                          np.asarray(y_train)[tr])
+            pred = model.predict(np.asarray(X_train)[te])
+            fold_mse.append(float(np.mean((np.asarray(y_train)[te] - pred) ** 2)))
+        scores.append(float(np.mean(fold_mse)))
+    return float(grid[int(np.argmin(scores))])
+
 
 def load_config(description: str) -> tuple[dict, bool]:
     """Read `phase2_6_config.yaml` next to this file; honor `--quick`."""

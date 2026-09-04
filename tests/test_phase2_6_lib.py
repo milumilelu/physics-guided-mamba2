@@ -424,5 +424,107 @@ class FrozenInputTests(unittest.TestCase):
                         "per-section W_eq must be > 0")
 
 
+class Task19Task20Tests(unittest.TestCase):
+    """T14 / T16 / T18 / T22 -- anchor on Task 19-20 outputs via SkipTest."""
+
+    @staticmethod
+    def _phase2_6() -> Path:
+        return REPO / "outputs" / "phase2_6"
+
+    def test_ratio_table_exclusions(self):
+        """T14: h=NA rows never reach r_h; out_of_box never reaches primary r_W."""
+        over_hatch = self._phase2_6() / "scale_bridge" / "lambda_over_hatch.csv"
+        over_width = self._phase2_6() / "scale_bridge" / "lambda_over_width.csv"
+        if not (over_hatch.exists() and over_width.exists()):
+            raise unittest.SkipTest("Task 19 output not present yet")
+        hatch_table = pd.read_csv(over_hatch, encoding="utf-8-sig")
+        p26.require(len(hatch_table) == 200,
+                    f"r_h table rows {len(hatch_table)} != 200")
+        p26.require(bool(hatch_table["hatch_spacing_um"].notna().all()),
+                    "h=NA rows must not appear in the r_h table (single lines "
+                    "are hatchless by construction)")
+        p26.require(bool(hatch_table["hatch_spacing_um"].gt(0).all()),
+                    "hatch must be positive wherever r_h is defined")
+        width_table = pd.read_csv(over_width, encoding="utf-8-sig")
+        primary = width_table[width_table["arm"] == "primary_in_box"]
+        p26.require(len(primary) > 0, "primary in-box r_W arm is empty")
+        p26.require(not (primary["bridge_coverage"] == "out_of_box").any(),
+                    "out_of_box samples leaked into the primary r_W table")
+
+    def test_orientation_na_gate(self):
+        """T16: provenance_valid=false forbids any scan/hatch-relative angle."""
+        p26.require(bool(_cfg()["gates"]["gsl4"]["provenance_valid"]) is False,
+                    "gates.gsl4.provenance_valid must stay false until a fill "
+                    "axis is hand-registered and 细则 §0.8 is rewritten")
+        alignment = (self._phase2_6() / "orientation"
+                     / "stripe_scan_alignment.csv")
+        if not alignment.exists():
+            raise unittest.SkipTest("Task 20 output not present yet")
+        frame = pd.read_csv(alignment, encoding="utf-8-sig")
+        forbidden = ("scan_relative", "hatch_relative", "delta_theta",
+                     "dtheta", "scan_minus", "hatch_minus")
+        offenders = [column for column in frame.columns
+                     if any(token in column.lower() for token in forbidden)]
+        p26.require(not offenders,
+                    f"scan/hatch-relative angle columns emitted: {offenders}")
+        p26.require("theta_stripe_8_16_deg" in frame.columns,
+                    "image-frame theta_stripe(8_16) column missing")
+
+    def test_no_pass_step_analysis(self):
+        """T18 (negative): Phase 2.6 must hold no N4->5 step/pseudo-pass output."""
+        root = self._phase2_6()
+        if not root.exists():
+            raise unittest.SkipTest("outputs/phase2_6 not present yet")
+        forbidden_tokens = ("n4_to_5", "n4to5", "pass_step", "pseudo_pass",
+                            "step_analysis", "delta_z_pass")
+        offenders = []
+        for path in root.rglob("*"):
+            if not path.is_file():
+                continue
+            lowered = path.name.lower()
+            if any(token in lowered for token in forbidden_tokens):
+                offenders.append(str(path.relative_to(root)))
+        p26.require(not offenders,
+                    f"N4->5 step analysis products found: {offenders}")
+
+    def test_blind_montage_spec(self):
+        """T22: montages carry no 8/16 um band reference; vs-band figure gated.
+
+        Only *values* are checked: the config comment legitimately documents the
+        blindness rule (and therefore mentions 8/16), so comments are stripped
+        first. Numbers are matched on word boundaries so that, e.g. "18.0"
+        cannot masquerade as "8.0".
+        """
+        import re
+
+        config_text = (REPO / "experiments" / "phase2_6"
+                       / "phase2_6_config.yaml").read_text(encoding="utf-8")
+        montage_block = config_text.split("qa_montage:")[1].split(
+            "lambda_star:")[0]
+        # strip YAML comments (the rule comment itself mentions 8/16 by design)
+        montage_values = "\n".join(line.split("#", 1)[0]
+                                   for line in montage_block.splitlines())
+        p26.require(not re.search(r"\b8\b|\b16\b", montage_values),
+                    "qa_montage config values reference an 8/16 um band "
+                    "(blindness violation)")
+
+        script_text = (REPO / "experiments" / "phase2_6"
+                       / "16_extract_single_line_geometry.py").read_text(
+            encoding="utf-8")
+        p26.require(not re.search(r"\b8\.0\b|\b16\.0\b", script_text),
+                    "Task 16 script carries an 8.0/16.0 um band literal")
+        p26.require(not re.search(r"\bBAND\b", script_text),
+                    "Task 16 script defines a morphology BAND constant")
+        labels = (self._phase2_6() / "single_line" / "geometry_qa_labels.csv")
+        vs_band = (self._phase2_6() / "model_compare"
+                   / "W_line_distribution_vs_band.csv")
+        if vs_band.exists():
+            p26.require(labels.exists(),
+                        "vs-band figure exists without any QA labels")
+            p26.require(len(pd.read_csv(labels, encoding="utf-8-sig")) == 120,
+                        "vs-band science figure may only be produced after the "
+                        "human QA labels are complete (120/120)")
+
+
 if __name__ == "__main__":
     unittest.main()

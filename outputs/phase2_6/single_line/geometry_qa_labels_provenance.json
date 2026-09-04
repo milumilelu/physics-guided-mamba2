@@ -1,0 +1,14 @@
+{
+  "annotator": [
+    "GPT"
+  ],
+  "n_labels": 120,
+  "label_counts": {
+    "uncertain": 78,
+    "reject_geometry": 24,
+    "usable": 18
+  },
+  "annotator_note": "annotator self-identified as GPT (AI-assisted labeling); blinding held (package carried no band information); recorded faithfully per provenance rules",
+  "merged_at_utc": "2026-09-04T05:53:07Z",
+  "source_zip": "outputs/phase2_6/单线QA标注包_20260904_已标注.zip"
+}
