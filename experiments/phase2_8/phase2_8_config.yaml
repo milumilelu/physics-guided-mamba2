@@ -61,3 +61,47 @@ task24:
 
 seeds:
   diagnostic_pairs: 20261304   # meta + 400
+
+# ------------------------------------------------------------------ #
+# Task 25 (2.8B) -- measured kernel -> multi-track bridge
+# ------------------------------------------------------------------ #
+task25:
+  population: exact_match          # primary: measured g(x) + exact match
+  holdout_unit: kernel_group       # (tau,f,N,v,line_id); all rows of one kernel held out together
+  selection_protocol: LOGO_kernel  # leave-one-kernel-condition-out (v2.1 F4)
+  sign_convention: removal_positive
+  paths:
+    line_cag: "氧化锆/120组直线.cag"
+    line_view_manifest: annotations/single_line_view_manifest.csv
+    single_line_geometry: outputs/phase2_6/single_line/single_line_geometry.csv
+    single_line_manifest: outputs/phase2_6/single_line/single_line_manifest.csv
+    geometry_qa_labels: outputs/phase2_6/single_line/geometry_qa_labels.csv
+    lambda_over_hatch: outputs/phase2_6/scale_bridge/lambda_over_hatch.csv
+    direct_bridge: outputs/phase2_6/scale_bridge/direct_bridge_exact_match.csv
+    radial_long_csv: outputs/phase2_5/spectral_composition/radial_spectrum_long.csv
+  profile:
+    lateral_samples: 64
+    dy_um: 0.278657
+    edge_frac_max: 0.15
+    section_step_um: 2.0
+  field_pipeline: {pixel_um: 0.5, roi_um: 80.0, bins: 24, window_um: [4.0, 32.0]}
+  phase_grid: 32                   # quick: 8
+  levels:
+    L0:  kernel_only               # g(x) replicated single line -> r = lambda_g / h
+    L1:  {a_n: 1}
+    L2:  {family: D_sat(1-exp(-s/D_sat)), grid_um: {lo: 1, hi: 64, n: 13}}
+    L3a: {c_grid: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]}
+    L3b: {gamma_per_um: {lo: -0.5, hi: 0.5, n: 21}}
+  physical_guard: {tol_um: 1.0e-9, rule: exclude_candidate_no_clip}
+  metrics:
+    primary: tv_cond_out_of_group      # mean over rows of (1 - q_i(y_i))
+    legacy_reference: tv_pooled_5class # 0.20/0.30 pooled-TV legacy reference
+    secondary: tv_spectral_24bin
+  g28b:
+    b1: {delta_min: 0.05, bootstrap: {B: 2000, ci: 0.95, unit: kernel_group,
+         paired: true, quick_B: 200}, bonferroni_ci: 0.9833,
+         multiplicity: same_model_family_exploration}
+    b2: {strong: 0.20, partial: 0.30, label: pooled_tv_legacy_reference}
+  descriptors:
+    transfer_n_lines: 20
+    window_um: [4.0, 32.0]
