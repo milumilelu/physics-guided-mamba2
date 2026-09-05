@@ -19,14 +19,12 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
-import itertools
 import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import yaml
-from sklearn.model_selection import GroupKFold, GroupShuffleSplit
 
 REPO = Path(__file__).resolve().parents[2]
 if str(REPO) not in sys.path:
@@ -285,54 +283,21 @@ def process_near_morph_level(d_proc, d_morph, q: float = 0.10) -> tuple[float, f
 # grouped CV splits and contracts (细则 §7.3: per-split-type rules)
 # --------------------------------------------------------------------------- #
 
-def gkf_splits(groups, n_splits: int) -> list[tuple[np.ndarray, np.ndarray]]:
-    groups = np.asarray(groups)
-    return [(np.asarray(tr), np.asarray(te)) for tr, te in
-            GroupKFold(n_splits=n_splits).split(np.zeros(len(groups)),
-                                                groups=groups)]
+# --------------------------------------------------------------------------- #
+# grouped CV splits + contracts -- canonical implementations now live in
+# src/cv.py (WP1 migration; parity-tested in tests/test_src_cv.py).  Frozen
+# split semantics (Phase 2.8 v2.1 F1): src_gkf = GroupKFold on
+# shared_height_source_id, proc_gkf = GroupKFold on cv_process_group; both
+# deterministic.  Thin re-exports keep every frozen call site untouched.
+# --------------------------------------------------------------------------- #
 
-
-def gss_splits(groups, n_splits: int, test_size: float,
-               seed: int) -> list[tuple[np.ndarray, np.ndarray]]:
-    groups = np.asarray(groups)
-    splitter = GroupShuffleSplit(n_splits=n_splits, test_size=test_size,
-                                 random_state=seed)
-    return [(np.asarray(tr), np.asarray(te)) for tr, te in
-            splitter.split(np.zeros(len(groups)), groups=groups)]
-
-
-def _group_sets(groups: np.ndarray, splits) -> list[tuple[set, set]]:
-    return [(set(groups[tr].tolist()), set(groups[te].tolist()))
-            for tr, te in splits]
-
-
-def check_gkf_contract(groups: np.ndarray, splits) -> None:
-    """GroupKFold: per-split train/test disjoint; test groups pairwise
-    disjoint across folds; union of test groups == all groups."""
-    groups = np.asarray(groups)
-    gs = _group_sets(groups, splits)
-    test_sets = [te for _, te in gs]
-    for a, b in itertools.combinations(range(len(test_sets)), 2):
-        require(not (test_sets[a] & test_sets[b]),
-                "gkf: test groups overlap across folds")
-    require(set().union(*test_sets) == set(groups.tolist()),
-            "gkf: test union != all groups")
-    for tr_g, te_g in gs:
-        require(not (tr_g & te_g), "gkf: train/test group overlap")
-
-
-def check_gss_contract(groups: np.ndarray, splits) -> pd.Series:
-    """GroupShuffleSplit: only per-split train/test disjointness is required.
-    Test groups MAY repeat across splits and need not cover all groups; the
-    per-group test membership count is reported instead."""
-    groups = np.asarray(groups)
-    counts = pd.Series(0, index=sorted(set(groups.tolist())), dtype=int)
-    for tr, te in splits:
-        tr_g = set(groups[tr].tolist())
-        te_g = set(groups[te].tolist())
-        require(not (tr_g & te_g), "gss: train/test group overlap in a split")
-        counts.loc[sorted(te_g)] += 1
-    return counts
+from src.cv import (  # noqa: E402,F401
+    _group_sets,
+    check_gkf_contract,
+    check_gss_contract,
+    gkf_splits,
+    gss_splits,
+)
 
 
 # --------------------------------------------------------------------------- #

@@ -47,40 +47,16 @@ Q_BY_KEY = {"W20": 0.2, "W50": 0.5, "W80": 0.8}
 #   - pipeline = StandardScaler -> Ridge (linear basis);
 #   - alpha = fold-internal grid logspace(-3, 3, 13) selected by inner GKF(5)
 #     mean MSE on the TRAIN fold (never the test fold).
-RIDGE_ALPHA_GRID = None  # populated lazily via make_ridge_alpha_grid()
-
-
-def make_ridge_alpha_grid() -> "np.ndarray":
-    global RIDGE_ALPHA_GRID
-    if RIDGE_ALPHA_GRID is None:
-        RIDGE_ALPHA_GRID = np.logspace(-3, 3, 13)
-    return RIDGE_ALPHA_GRID
-
-
-def make_ridge(alpha: float) -> "object":
-    from sklearn.linear_model import Ridge
-    from sklearn.pipeline import Pipeline
-    from sklearn.preprocessing import StandardScaler
-    return Pipeline([("scale", StandardScaler()),
-                     ("ridge", Ridge(alpha=float(alpha)))])
-
-
-def ridge_alpha_inner_gkf(X_train, y_train, groups_train, *,
-                          n_splits: int = 5) -> float:
-    """Fold-internal alpha selection by inner GKF(5) mean MSE (frozen §5)."""
-    grid = make_ridge_alpha_grid()
-    inner = p2.gkf_splits(pd.Series(groups_train), n_splits)
-    p2.check_gkf_contract(pd.Series(groups_train), inner)
-    scores = []
-    for alpha in grid:
-        fold_mse = []
-        for tr, te in inner:
-            model = make_ridge(alpha).fit(np.asarray(X_train)[tr],
-                                          np.asarray(y_train)[tr])
-            pred = model.predict(np.asarray(X_train)[te])
-            fold_mse.append(float(np.mean((np.asarray(y_train)[te] - pred) ** 2)))
-        scores.append(float(np.mean(fold_mse)))
-    return float(grid[int(np.argmin(scores))])
+# WP1 canonical migration (parity-tested, tests/test_src_cv.py): the frozen
+# Ridge alpha protocol now lives in src/cv.py under the explicit `_v1` name;
+# the frozen legacy names are thin re-exports (Phase 2.8 v2.1 section 4.2
+# migration step 5).  New target-native alpha selection for Phase 2.8 is
+# src.cv.select_alpha_inner and must NOT be wired into frozen phases.
+from src.cv import (  # noqa: E402,F401
+    make_ridge,
+    make_ridge_alpha_grid,
+    ridge_alpha_inner_gkf_v1 as ridge_alpha_inner_gkf,
+)
 
 
 def load_config(description: str) -> tuple[dict, bool]:
