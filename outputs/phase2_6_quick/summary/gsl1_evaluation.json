@@ -1,0 +1,37 @@
+{
+  "population": "estimable & qa_label != reject_geometry",
+  "n_gate": 81,
+  "n_estimable_all": {
+    "estimable": 84,
+    "right_censored": 0,
+    "insufficient_sections": 36
+  },
+  "n_right_censored_all": 0,
+  "n_insufficient_all": 36,
+  "raw_arm": {
+    "pooled_section_median_W50_um": 5.776160178215543,
+    "line_median_W50_um": 5.720564801337228,
+    "pooled_section_weq_median_um": 5.856990278698476,
+    "line_median_W50_rep_um": 5.7885445801327,
+    "band_um": [
+      8.0,
+      16.0
+    ],
+    "band_semantics": "[8, 16) half-open",
+    "line_in_band_fraction_raw": 0.012345679012345678,
+    "line_in_band_fraction_repaired": 0.012345679012345678,
+    "raw_repaired_divergent_note": false
+  },
+  "criteria": {
+    "c1_pooled_section_median_in_band": false,
+    "c1_pooled_section_median_um": 5.776160178215543,
+    "c2_line_median_in_band_fraction": 0.012345679012345678,
+    "c2_min_line_fraction": 0.5,
+    "c3_pooled_section_weq_median_in_band": false,
+    "c3_pooled_section_weq_median_um": 5.856990278698476
+  },
+  "criteria_met": 0,
+  "G_SL1": "NOT_SUPPORTED",
+  "ridge_full_alpha": 31.622776601683793,
+  "censored_by_process_note": "censored sections enter no gate statistic"
+}

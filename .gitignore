@@ -47,3 +47,4 @@ desktop.ini
 outputs/phase2/multiscale_targets/band_fields.npz
 outputs/phase2_5/spectral_composition/radial_spectrum_matrix.npz
 outputs/phase2_5_quick/
+_regression_scratch/
