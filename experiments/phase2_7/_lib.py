@@ -51,11 +51,17 @@ def load_config(description: str) -> tuple[dict, bool]:
     import yaml
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument("--quick", action="store_true")
+    parser.add_argument("--output-root", default=None,
+                        help="redirect task outputs (scratch reruns only; "
+                             "WP1 golden-regression layer, v2.1 F8: frozen "
+                             "artifacts are read-only)")
     args, _ = parser.parse_known_args()
     cfg = yaml.safe_load((Path(__file__).resolve().parent
                           / "phase2_7_config.yaml").read_text(encoding="utf-8"))
     cfg["_output_root"] = ("outputs/phase2_7_quick" if args.quick
                            else "outputs/phase2_7")
+    if args.output_root:
+        cfg["_output_root"] = args.output_root
     cfg["_quick"] = bool(args.quick)
     return cfg, bool(args.quick)
 
