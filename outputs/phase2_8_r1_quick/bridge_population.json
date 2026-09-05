@@ -1,0 +1,32 @@
+{
+  "n_candidate_exact_match_conditions": 19,
+  "n_candidate_rows": 13,
+  "n_usable_rows": 7,
+  "n_usable_kernel_groups": 7,
+  "excluded": [
+    {
+      "dataset_index": 154,
+      "reason": "observed_class_invalid"
+    },
+    {
+      "dataset_index": 143,
+      "reason": "observed_class_invalid"
+    },
+    {
+      "dataset_index": 178,
+      "reason": "observed_class_invalid"
+    },
+    {
+      "dataset_index": 150,
+      "reason": "observed_class_invalid"
+    },
+    {
+      "dataset_index": 170,
+      "reason": "observed_class_invalid"
+    },
+    {
+      "dataset_index": 72,
+      "reason": "observed_class_invalid"
+    }
+  ]
+}

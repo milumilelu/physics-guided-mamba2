@@ -1,0 +1,368 @@
+{
+  "revision": "2.8r1",
+  "n_phases": 16,
+  "n_rows": 7,
+  "n_groups": 7,
+  "selection": "median of training kernel-group mean TV; smallest numeric parameter on exact ties",
+  "guard": "z >= min(base,0) - 0.01 um at all pixels; invalid held-out rows retained as invalid class",
+  "tv_cond_out_of_group": {
+    "L0": 0.8571428571428571,
+    "L1": 0.3392857142857143,
+    "L2": 0.38392857142857145,
+    "L3a": 0.3392857142857143,
+    "L3b": 0.42857142857142855
+  },
+  "invalid_heldout_rows": {
+    "L0": 0,
+    "L1": 0,
+    "L2": 0,
+    "L3a": 0,
+    "L3b": 1
+  },
+  "G28_B1": {
+    "levels": {
+      "L2": {
+        "delta_tv_cond": -0.044642857142857144,
+        "ci95_lower": -0.13392857142857142,
+        "ci95_upper": 0.0,
+        "ci9833_bonferroni_lower": -0.17857142857142858,
+        "ci9833_bonferroni_upper": 0.0,
+        "n_groups": 7,
+        "n_invalid_heldout_rows": 0,
+        "statistical_threshold_met": false,
+        "MODEL_CLASS_IMPROVEMENT": "not_achieved"
+      },
+      "L3a": {
+        "delta_tv_cond": 0.0,
+        "ci95_lower": 0.0,
+        "ci95_upper": 0.0,
+        "ci9833_bonferroni_lower": 0.0,
+        "ci9833_bonferroni_upper": 0.0,
+        "n_groups": 7,
+        "n_invalid_heldout_rows": 0,
+        "statistical_threshold_met": false,
+        "MODEL_CLASS_IMPROVEMENT": "not_achieved"
+      },
+      "L3b": {
+        "delta_tv_cond": -0.08928571428571429,
+        "ci95_lower": -0.375,
+        "ci95_upper": 0.10714285714285714,
+        "ci9833_bonferroni_lower": -0.4642857142857143,
+        "ci9833_bonferroni_upper": 0.14285714285714285,
+        "n_groups": 7,
+        "n_invalid_heldout_rows": 1,
+        "statistical_threshold_met": false,
+        "MODEL_CLASS_IMPROVEMENT": "physical_invalid"
+      }
+    }
+  },
+  "pooled_tv_legacy_diagnostic": {
+    "L0": 0.7142857142857142,
+    "L1": 0.2857142857142857,
+    "L2": 0.2857142857142857,
+    "L3a": 0.2857142857142857,
+    "L3b": 0.2857142857142857
+  },
+  "selection_ties": [
+    {
+      "level": "L2",
+      "held_group": "1000:40:2:25#L89",
+      "chosen": 45.25483399593905,
+      "tied_parameters": [
+        45.25483399593905,
+        64.0
+      ],
+      "n_tied": 2,
+      "boundary": false
+    },
+    {
+      "level": "L2",
+      "held_group": "1000:40:4:15#L56",
+      "chosen": 45.25483399593905,
+      "tied_parameters": [
+        45.25483399593905,
+        64.0
+      ],
+      "n_tied": 2,
+      "boundary": false
+    },
+    {
+      "level": "L2",
+      "held_group": "223:5:5:20#L105",
+      "chosen": 45.25483399593905,
+      "tied_parameters": [
+        45.25483399593905,
+        64.0
+      ],
+      "n_tied": 2,
+      "boundary": false
+    },
+    {
+      "level": "L2",
+      "held_group": "4000:10:3:20#L70",
+      "chosen": 45.25483399593905,
+      "tied_parameters": [
+        45.25483399593905,
+        64.0
+      ],
+      "n_tied": 2,
+      "boundary": false
+    },
+    {
+      "level": "L2",
+      "held_group": "500:10:2:5#L65",
+      "chosen": 45.25483399593905,
+      "tied_parameters": [
+        45.25483399593905,
+        64.0
+      ],
+      "n_tied": 2,
+      "boundary": false
+    },
+    {
+      "level": "L2",
+      "held_group": "500:20:2:15#L2",
+      "chosen": 11.31370849898476,
+      "tied_parameters": [
+        11.31370849898476,
+        16.0,
+        22.627416997969522,
+        32.00000000000001,
+        45.25483399593905,
+        64.0
+      ],
+      "n_tied": 6,
+      "boundary": false
+    },
+    {
+      "level": "L2",
+      "held_group": "500:5:1:25#L112",
+      "chosen": 45.25483399593905,
+      "tied_parameters": [
+        45.25483399593905,
+        64.0
+      ],
+      "n_tied": 2,
+      "boundary": false
+    },
+    {
+      "level": "L3a",
+      "held_group": "1000:40:2:25#L89",
+      "chosen": 0.0,
+      "tied_parameters": [
+        0.0
+      ],
+      "n_tied": 1,
+      "boundary": true
+    },
+    {
+      "level": "L3a",
+      "held_group": "1000:40:4:15#L56",
+      "chosen": 0.0,
+      "tied_parameters": [
+        0.0
+      ],
+      "n_tied": 1,
+      "boundary": true
+    },
+    {
+      "level": "L3a",
+      "held_group": "223:5:5:20#L105",
+      "chosen": 0.0,
+      "tied_parameters": [
+        0.0
+      ],
+      "n_tied": 1,
+      "boundary": true
+    },
+    {
+      "level": "L3a",
+      "held_group": "4000:10:3:20#L70",
+      "chosen": 0.0,
+      "tied_parameters": [
+        0.0
+      ],
+      "n_tied": 1,
+      "boundary": true
+    },
+    {
+      "level": "L3a",
+      "held_group": "500:10:2:5#L65",
+      "chosen": 0.0,
+      "tied_parameters": [
+        0.0
+      ],
+      "n_tied": 1,
+      "boundary": true
+    },
+    {
+      "level": "L3a",
+      "held_group": "500:20:2:15#L2",
+      "chosen": 0.0,
+      "tied_parameters": [
+        0.0
+      ],
+      "n_tied": 1,
+      "boundary": true
+    },
+    {
+      "level": "L3a",
+      "held_group": "500:5:1:25#L112",
+      "chosen": 0.0,
+      "tied_parameters": [
+        0.0
+      ],
+      "n_tied": 1,
+      "boundary": true
+    },
+    {
+      "level": "L3b",
+      "held_group": "1000:40:2:25#L89",
+      "chosen": -0.35,
+      "tied_parameters": [
+        -0.35,
+        -0.3,
+        -0.25,
+        -0.19999999999999996,
+        -0.14999999999999997,
+        -0.09999999999999998,
+        -0.04999999999999999,
+        0.20000000000000007,
+        0.25,
+        0.30000000000000004,
+        0.3500000000000001,
+        0.4,
+        0.45000000000000007,
+        0.5
+      ],
+      "n_tied": 14,
+      "boundary": false
+    },
+    {
+      "level": "L3b",
+      "held_group": "1000:40:4:15#L56",
+      "chosen": -0.35,
+      "tied_parameters": [
+        -0.35,
+        -0.3,
+        -0.25,
+        -0.19999999999999996,
+        -0.14999999999999997,
+        -0.09999999999999998,
+        -0.04999999999999999,
+        0.20000000000000007,
+        0.25,
+        0.30000000000000004,
+        0.3500000000000001,
+        0.4,
+        0.45000000000000007,
+        0.5
+      ],
+      "n_tied": 14,
+      "boundary": false
+    },
+    {
+      "level": "L3b",
+      "held_group": "223:5:5:20#L105",
+      "chosen": -0.35,
+      "tied_parameters": [
+        -0.35,
+        -0.3,
+        -0.25,
+        -0.19999999999999996,
+        0.25,
+        0.30000000000000004,
+        0.3500000000000001,
+        0.4,
+        0.45000000000000007,
+        0.5
+      ],
+      "n_tied": 10,
+      "boundary": false
+    },
+    {
+      "level": "L3b",
+      "held_group": "4000:10:3:20#L70",
+      "chosen": -0.35,
+      "tied_parameters": [
+        -0.35,
+        -0.3,
+        -0.25,
+        -0.19999999999999996,
+        0.25,
+        0.30000000000000004,
+        0.3500000000000001,
+        0.4,
+        0.45000000000000007,
+        0.5
+      ],
+      "n_tied": 10,
+      "boundary": false
+    },
+    {
+      "level": "L3b",
+      "held_group": "500:10:2:5#L65",
+      "chosen": -0.35,
+      "tied_parameters": [
+        -0.35,
+        -0.3,
+        -0.25,
+        -0.19999999999999996,
+        0.25,
+        0.30000000000000004,
+        0.3500000000000001,
+        0.4,
+        0.45000000000000007,
+        0.5
+      ],
+      "n_tied": 10,
+      "boundary": false
+    },
+    {
+      "level": "L3b",
+      "held_group": "500:20:2:15#L2",
+      "chosen": -0.5,
+      "tied_parameters": [
+        -0.5,
+        -0.45,
+        -0.4,
+        -0.35,
+        -0.3,
+        -0.25,
+        -0.19999999999999996,
+        0.20000000000000007,
+        0.25,
+        0.30000000000000004,
+        0.3500000000000001,
+        0.4,
+        0.45000000000000007,
+        0.5
+      ],
+      "n_tied": 14,
+      "boundary": true
+    },
+    {
+      "level": "L3b",
+      "held_group": "500:5:1:25#L112",
+      "chosen": -0.35,
+      "tied_parameters": [
+        -0.35,
+        -0.3,
+        -0.25,
+        -0.19999999999999996,
+        -0.14999999999999997,
+        -0.09999999999999998,
+        -0.04999999999999999,
+        0.25,
+        0.30000000000000004,
+        0.3500000000000001,
+        0.4,
+        0.45000000000000007,
+        0.5
+      ],
+      "n_tied": 13,
+      "boundary": false
+    }
+  ],
+  "interpretation": "Exploratory model-family comparison. Physical-invalid or tied boundary parameters cannot establish a mechanism."
+}

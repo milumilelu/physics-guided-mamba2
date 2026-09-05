@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "n_fold_rows": 360,
+  "max_q2_delta_vs_historical": 0.0,
+  "oof": {
+    "n_component_rows": 19232,
+    "unique": true,
+    "max_q2_reconstruction_error": 1.1258355359089478e-15
+  },
+  "n_bridge_rows": 35,
+  "n_invalid_retained": 1,
+  "real_counterexample_rejected": true,
+  "phase_sensitivity_complete": true
+}

@@ -1,0 +1,11 @@
+{
+  "revision": "2.8r1",
+  "config_sha256": "3f4dea28e698745853fd602e42aee33860e8cb6d4a663ebb3cc28da65f8a89dc",
+  "protocol_sha256": "62453dad19a3a5f8fe7d2f4ce0bd0311007898830d7713aed93d9be7428d473e",
+  "quick": false,
+  "phase_grids": [
+    16,
+    32,
+    64
+  ]
+}
