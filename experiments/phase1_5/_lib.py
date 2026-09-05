@@ -16,6 +16,7 @@ exactly: R = H - per-sample valid-median, computed from height_raw.
 from __future__ import annotations
 
 import argparse
+import sys
 import time
 from pathlib import Path
 
@@ -26,6 +27,13 @@ from scipy.fft import dctn, idctn
 from scipy.ndimage import gaussian_filter
 
 REPO = Path(__file__).resolve().parents[2]
+if str(REPO) not in sys.path:
+    sys.path.insert(0, str(REPO))
+
+# WP1 canonical migration (parity-tested, tests/test_src_data.py): the
+# frozen-input loader now lives in src/data.py; the frozen name is kept as a
+# thin re-export (Phase 2.8 v2.1 §4.2 migration protocol step 5).
+from src.data import load_frozen  # noqa: E402,F401
 
 
 def log(message: str = "") -> None:
@@ -61,36 +69,6 @@ def output_dir(cfg: dict) -> Path:
 
 def to_2d(mat: np.ndarray) -> np.ndarray:
     return mat.reshape(mat.shape[0], -1)
-
-
-def load_frozen(cfg: dict) -> dict:
-    """Load Phase 1 manifest + NPZ and rebuild residuals exactly as Phase 1."""
-    man = pd.read_csv(REPO / cfg["paths"]["exploration_manifest"])
-    require(len(man) == 200, f"manifest rows {len(man)} != 200")
-    require(not man.duplicated(["session_id", "sample_id"]).any(),
-            "(session_id, sample_id) not unique")
-    require(man["shared_height_source_id"].nunique() == 160,
-            "unique shared sources != 160")
-    require({"median_depth_um", "residual_Sq_um", "session_role",
-             "design_group"} <= set(man.columns),
-            "manifest lacks Phase 1 columns; run Phase 1 first")
-
-    data = np.load(REPO / cfg["paths"]["dataset_npz"])
-    H = data["height_raw"].astype(np.float64)
-    V = data["valid_mask"].astype(bool)
-    require(H.shape == (200, 160, 160), "NPZ shape mismatch")
-    require((man["session_id"].to_numpy() == data["session_id"].astype(str)).all()
-            and (man["sample_id"].to_numpy(np.int64)
-                 == data["sample_id"].astype(np.int64)).all(),
-            "NPZ row order != manifest order")
-    bad = int(np.count_nonzero(~np.isfinite(H[V])))
-    require(bad == 0, f"{bad} non-finite valid pixels")
-    Hnan = np.where(V, H, np.nan)
-    med = np.nanmedian(Hnan, axis=(1, 2))
-    R = Hnan - med[:, None, None]
-    log(f"  frozen inputs OK: 200 ROIs, 160 clusters, "
-        f"valid_fraction min = {V.reshape(200, -1).mean(1).min():.4f}")
-    return {"man": man, "H": H, "V": V, "R": R, "Hnan": Hnan}
 
 
 # --------------------------------------------------------------------------- #
