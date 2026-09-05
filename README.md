@@ -13,8 +13,8 @@ Phase 2    工艺→形貌的 grouped-CV 可预测性（Route P/T 判别）
 Phase 2.5  谱组成 + 方向 PSD + 机制桥 + 误差图集
 Phase 2.6  单线扫描尺度溯源（W50 / m 分解 / direct bridge）
 Phase 2.7  单轨谱包络 × hatch 阵列尺度选择（消融 / m 分解 / forward model）
-Phase 2.8  信息分解 + 单轨 kernel → 多轨桥（规划中）
-Phase 3    预测建模（未开始——先完成结构收敛 + confirmation 实验设计）
+Phase 2.8  层级信息通道可预测性 + measured kernel → 多轨桥（formal 完成——G28-A VALID；G28-B1 未达成，L3b 为唯一正向信号）
+Phase 3    预测建模（先做 repeatability matrix 第一批实验，见 experiments/phase2_8/repeatability_matrix_design.md）
 ```
 
 ## 当前数据
@@ -27,13 +27,16 @@ Phase 3    预测建模（未开始——先完成结构收敛 + confirmation �
 
 矩形主数据共 **200 个 ROI / 实验记录**（120 formal + 60 pass_main + 20 pass_supplement），对应 **160 个唯一 height-source**（`shared_height_source_id`，即部分 measurement 含多个 ROI）与 **134 个 `cv_process_group`**。统计独立性由分组变量单独定义，不以"independent measurement"表述。
 
-## 核心结论（截至 Phase 2.7r1）
+## 核心结论（截至 Phase 2.8 formal）
 
 - **Route T（方向纹理）**：hatch spacing 单变量几乎承载全部预测能力（ΔR²_h = 0.651/0.645，proc 同向）
 - **Route P（谱组成）**：多因素共同调节（ΔR²_h = 0.181/0.350，去 h 后仍有独立贡献）
 - **单轨宽度不在 8–16 µm 带内**（pooled W50 = 5.78 µm）
 - **λ_peak/h 聚集于 {1,2,3}**（A_obs 0.904，TV 置换 p=0.0001）；m=2 份额逐 h 描述递减，但 block permutation 后 h-dependence 不显著（p=0.4103，descriptive only）
 - **简单线性叠加模型不足以重现峰选择**（G27-3 MODEL_INADEQUATE）
+- **Phase 2.8A 统一协议谱表**（Q²，G28-A VALID）：方向组织 O_θ 0.64–0.66（Δ_h 0.64，h 近乎充分）≫ 尺度组成 P_λ 0.31（Δ_h 0.18）≫ 幅度 A 0.16；**深度 D 可预测 0.55 但几乎不由 h 承载**（−h 仍 0.50，τ/f/N/v 共同控制）；h 主导严格限于 8–16 µm 基频带（16–32 带 ~0.14）
+- **Phase 2.8A realization diagnostic**：同工艺重复对的 Fourier-phase 距离处随机对第 32 百分位——波峰落点不受工艺控制（描述性）
+- **Phase 2.8B**（n=7 usable，硬限制）：TV_cond L1 0.344 / L3b 0.286 / L3a 0.571；B1 三比较均未达成（L3b Δ=+0.058 达门槛但 CI 下界=0）；**负 γ cross-term（相邻轨去除竞争）是唯一正向信号**，进 Phase 3 预注册候选；pooled TV 的 "strong" 判级在逐条件指标下失真（L3a 例证），pooled 自此仅作 2.7 连续性参照
 
 ## 已知风险与限制
 
@@ -51,10 +54,10 @@ Python 3.12（`.venv`），依赖见 `requirements.txt`。**复现必须使用 `
 ```text
 annotations/   人工标注（四边 + 单线盲标）
 config/        数据映射、平面与 ROI 参数（含 frozen/）
-experiments/   phase1 → phase2.7 研究管线（各自 _lib + scripts + 细则）
+experiments/   phase1 → phase2.8 研究管线（phase2.8 起公共实现走 src/）
 outputs/       各 phase 冻结产物（manifest / gate_eval / 科学数据）
-src/           共享库（CAG 解码、锥坑修复、重采样、数据契约）
-scripts/       顶层执行脚本（15/22/23/32/33/34）
+src/           共享库（数据/CV/谱/几何/统计/正演/provenance/confirmation——八模块）
+scripts/       顶层执行脚本（15/22/23/24/25/32/33/34/40）
 tests/         全 phase 单测（unittest discover）
 氧化锆/        原始数据（CAG / 设计表）
 专利/          专利材料

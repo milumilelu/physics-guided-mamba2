@@ -430,3 +430,14 @@ Task 24/25 均为分钟级计算；WP1 完成后 formal 可一日内完成。
 
 - 2.8A 研究：**宏观深度 → 幅度 → 尺度组成 → 方向组织 → 空间 realization** 这几个层级信息通道的可预测性如何逐级变化（cross-validated normalized predictive skill，不宣称信息量）。
 - 2.8B 研究：**measured single-track kernel + array geometry + minimal nonlinear interaction** 究竟能解释多少矩形加工中的尺度选择。
+
+---
+
+## 附录 A. 勘误与实现注记（2026-09-05，formal 完成后追加；不改冻结正文）
+
+> 本附录只登记执行中发现的、需对冻结文本做出的**实现级细化**；全部数字与判定见 `outputs/phase2_8/summary/phase2_8_gate_eval.md`。
+
+1. **F6 physical guard 语义细化**：冻结文本的绝对判据（训练模拟出现 z < −tol 即剔除，tol=1e-9 µm）数学上不可行——实测 profile 携带 ~0.1 µm 的表面噪声负谷（任何候选都会被排除），且 F(s) < s 对 s < 0 严格成立。冻结为**校正量判据**：非线性校正不得在未烧蚀像素（s ≤ 0）制造超过物理容差的沉积，即 `min_{p: s(p)≤0} [z(p) − s(p)] ≥ −tol`，**tol = 0.01 µm**（10 nm：远小于任何去除特征、远大于浮点噪声）。在 formal 结果产生之前冻结并登记。
+2. **kernel profile NaN 净化**：横向全段视场外位置（无去除测量）在合成前固定为 0 深度——与 `synth_field` 的 left/right=0 同一无材料约定；否则 NaN 会经 `np.interp` 传入场。
+3. **golden 回归目标语义**：`outputs/phase2_7/envelope/forward_model_simulation.csv` 为冻结目录中的旧版遗留，现行 Task 23 代码不产出；回归目标以现行冻结脚本的实际产物为准（7/7 EXACT）。
+4. **数据发现（承接 gate_eval）**：phase-1 manifest 的 D/A 统计列早于 v1 场配准（200/200 行均匀 rel ~3e-5 漂移，corr=1.0）；2.8A 通道 D/A 改由冻结场重算。建议 Phase 3 前统一重建 manifest 统计列。
