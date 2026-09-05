@@ -1,0 +1,294 @@
+{
+ "type": "phase_2_8B_kernel_bridge",
+ "protocol": "v2.1 section 3 (frozen 2026-09-04)",
+ "population": {
+  "n_candidate_exact_match_conditions": 19,
+  "n_candidate_rows": 13,
+  "n_usable_rows": 7,
+  "n_usable_kernel_groups": 7,
+  "excluded": [
+   {
+    "dataset_index": 154,
+    "reason": "observed_class_invalid"
+   },
+   {
+    "dataset_index": 143,
+    "reason": "observed_class_invalid"
+   },
+   {
+    "dataset_index": 178,
+    "reason": "observed_class_invalid"
+   },
+   {
+    "dataset_index": 150,
+    "reason": "observed_class_invalid"
+   },
+   {
+    "dataset_index": 170,
+    "reason": "observed_class_invalid"
+   },
+   {
+    "dataset_index": 72,
+    "reason": "observed_class_invalid"
+   }
+  ],
+  "holdout_unit": "kernel_group=(tau,f,N,v,line identity)",
+  "selection_protocol": "LOGO_kernel (global params; training kernel groups only)",
+  "physical_guard": {
+   "tol_um": 0.01,
+   "rule": "exclude_candidate_no_clip",
+   "semantics": "correction guard: exclude iff min_{s<=0}[z - s_L1] < -tol, i.e. the nonlinearity may not create deposition at non-ablated pixels (F6 implementation refinement, frozen before formal results; an absolute total-field guard is mathematically vacuous because measured profiles carry ~0.1 um noise dips)",
+   "log": {
+    "L2": [
+     {
+      "kernel_group": "1000:40:2:25#L89",
+      "excluded_candidates": [
+       1.0
+      ]
+     },
+     {
+      "kernel_group": "1000:40:4:15#L56",
+      "excluded_candidates": [
+       1.0
+      ]
+     },
+     {
+      "kernel_group": "223:5:5:20#L105",
+      "excluded_candidates": [
+       1.0
+      ]
+     },
+     {
+      "kernel_group": "500:10:2:5#L65",
+      "excluded_candidates": [
+       1.0
+      ]
+     },
+     {
+      "kernel_group": "500:20:2:15#L2",
+      "excluded_candidates": [
+       1.0
+      ]
+     },
+     {
+      "kernel_group": "500:5:1:25#L112",
+      "excluded_candidates": [
+       1.0
+      ]
+     }
+    ],
+    "L3a": [
+     {
+      "kernel_group": "1000:40:2:25#L89",
+      "excluded_candidates": [
+       0.6,
+       0.7,
+       0.8,
+       0.9
+      ]
+     },
+     {
+      "kernel_group": "1000:40:4:15#L56",
+      "excluded_candidates": [
+       0.6,
+       0.7,
+       0.8,
+       0.9
+      ]
+     },
+     {
+      "kernel_group": "223:5:5:20#L105",
+      "excluded_candidates": [
+       0.6,
+       0.7,
+       0.8,
+       0.9
+      ]
+     },
+     {
+      "kernel_group": "500:10:2:5#L65",
+      "excluded_candidates": [
+       0.6,
+       0.7,
+       0.8,
+       0.9
+      ]
+     },
+     {
+      "kernel_group": "500:20:2:15#L2",
+      "excluded_candidates": [
+       0.6,
+       0.7,
+       0.8,
+       0.9
+      ]
+     },
+     {
+      "kernel_group": "500:5:1:25#L112",
+      "excluded_candidates": [
+       0.6,
+       0.7,
+       0.8,
+       0.9
+      ]
+     }
+    ],
+    "L3b": []
+   }
+  }
+ },
+ "tv_cond_out_of_group": {
+  "L0": 0.8571428571428571,
+  "L1": 0.34375,
+  "L2": 0.35267857142857145,
+  "L3a": 0.5714285714285714,
+  "L3b": 0.2857142857142857
+ },
+ "per_group_tv_cond": {
+  "L0": {
+   "1000:40:2:25#L89": 1.0,
+   "1000:40:4:15#L56": 0.0,
+   "223:5:5:20#L105": 1.0,
+   "4000:10:3:20#L70": 1.0,
+   "500:10:2:5#L65": 1.0,
+   "500:20:2:15#L2": 1.0,
+   "500:5:1:25#L112": 1.0
+  },
+  "L1": {
+   "1000:40:2:25#L89": 1.0,
+   "1000:40:4:15#L56": 1.0,
+   "223:5:5:20#L105": 0.0,
+   "4000:10:3:20#L70": 0.0,
+   "500:10:2:5#L65": 0.0,
+   "500:20:2:15#L2": 0.1875,
+   "500:5:1:25#L112": 0.21875
+  },
+  "L2": {
+   "1000:40:2:25#L89": 1.0,
+   "1000:40:4:15#L56": 1.0,
+   "223:5:5:20#L105": 0.0,
+   "4000:10:3:20#L70": 0.0,
+   "500:10:2:5#L65": 0.0,
+   "500:20:2:15#L2": 0.25,
+   "500:5:1:25#L112": 0.21875
+  },
+  "L3a": {
+   "1000:40:2:25#L89": 1.0,
+   "1000:40:4:15#L56": 1.0,
+   "223:5:5:20#L105": 0.0,
+   "4000:10:3:20#L70": 0.0,
+   "500:10:2:5#L65": 0.0,
+   "500:20:2:15#L2": 1.0,
+   "500:5:1:25#L112": 1.0
+  },
+  "L3b": {
+   "1000:40:2:25#L89": 1.0,
+   "1000:40:4:15#L56": 1.0,
+   "223:5:5:20#L105": 0.0,
+   "4000:10:3:20#L70": 0.0,
+   "500:10:2:5#L65": 0.0,
+   "500:20:2:15#L2": 0.0,
+   "500:5:1:25#L112": 0.0
+  }
+ },
+ "G28_B1": {
+  "delta_min": 0.05,
+  "levels": {
+   "L2": {
+    "delta_tv_cond": -0.008928571428571428,
+    "ci95_lower": -0.026785714285714284,
+    "ci95_upper": 0.0,
+    "ci9833_bonferroni_lower": -0.03571428571428571,
+    "ci9833_bonferroni_upper": 0.0,
+    "n_groups": 7,
+    "MODEL_CLASS_IMPROVEMENT": "not_achieved"
+   },
+   "L3a": {
+    "delta_tv_cond": -0.22767857142857142,
+    "ci95_lower": -0.5625,
+    "ci95_upper": 0.0,
+    "ci9833_bonferroni_lower": -0.5714285714285714,
+    "ci9833_bonferroni_upper": 0.0,
+    "n_groups": 7,
+    "MODEL_CLASS_IMPROVEMENT": "not_achieved"
+   },
+   "L3b": {
+    "delta_tv_cond": 0.05803571428571429,
+    "ci95_lower": 0.0,
+    "ci95_upper": 0.1253348214285696,
+    "ci9833_bonferroni_lower": 0.0,
+    "ci9833_bonferroni_upper": 0.14732142857142858,
+    "n_groups": 7,
+    "MODEL_CLASS_IMPROVEMENT": "not_achieved"
+   }
+  },
+  "multiplicity": "same_model_family_exploration",
+  "note": "three comparisons are one model-family exploration; CI not independent confirmatory coverage; Bonferroni 98.33% reported"
+ },
+ "G28_B2": {
+  "label": "pooled_tv_legacy_reference",
+  "levels": {
+   "L0": {
+    "tv_pooled": 0.7142857142857142,
+    "grade": "MODEL_INADEQUATE_legacy_reference"
+   },
+   "L1": {
+    "tv_pooled": 0.2857142857142857,
+    "grade": "partial_legacy_reference"
+   },
+   "L2": {
+    "tv_pooled": 0.2857142857142857,
+    "grade": "partial_legacy_reference"
+   },
+   "L3a": {
+    "tv_pooled": 0.0,
+    "grade": "strong_reproduction_legacy_reference"
+   },
+   "L3b": {
+    "tv_pooled": 0.2857142857142857,
+    "grade": "partial_legacy_reference"
+   }
+  }
+ },
+ "monotonicity_tv_cond": {
+  "L1": 0.34375,
+  "L2": 0.35267857142857145,
+  "L3a": 0.5714285714285714,
+  "L3b": 0.2857142857142857
+ },
+ "descriptive": {
+  "n": 7,
+  "spearman_O_h_vs_observed_class": 0.0,
+  "spearman_r_pred_vs_r_observed": -0.11785113019775793,
+  "note": "descriptive associations on the exact-match subset only; no CV claims (v2.1 section 2.5)"
+ },
+ "parameters_chosen": {
+  "L2": {
+   "1000:40:2:25#L89": 45.25483399593905,
+   "1000:40:4:15#L56": 45.25483399593905,
+   "223:5:5:20#L105": 45.25483399593905,
+   "4000:10:3:20#L70": 45.25483399593905,
+   "500:10:2:5#L65": 45.25483399593905,
+   "500:20:2:15#L2": 45.25483399593905,
+   "500:5:1:25#L112": 45.25483399593905
+  },
+  "L3a": {
+   "1000:40:2:25#L89": 0.0,
+   "1000:40:4:15#L56": 0.0,
+   "223:5:5:20#L105": 0.0,
+   "4000:10:3:20#L70": 0.0,
+   "500:10:2:5#L65": 0.0,
+   "500:20:2:15#L2": 0.2,
+   "500:5:1:25#L112": 0.2
+  },
+  "L3b": {
+   "1000:40:2:25#L89": -0.5,
+   "1000:40:4:15#L56": -0.5,
+   "223:5:5:20#L105": -0.5,
+   "4000:10:3:20#L70": -0.5,
+   "500:10:2:5#L65": -0.5,
+   "500:20:2:15#L2": -0.5,
+   "500:5:1:25#L112": -0.5
+  }
+ }
+}
