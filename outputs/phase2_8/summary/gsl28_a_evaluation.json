@@ -1,0 +1,256 @@
+{
+ "type": "phase_2_8A_predictability_spectrum",
+ "protocol": "v2.1 section 2.2 (frozen 2026-09-04)",
+ "frozen_inputs": {
+  "population": 200,
+  "folds": "src_gkf=GroupKFold(shared_height_source_id); proc_gkf=GroupKFold(cv_process_group)"
+ },
+ "G28_A": "VALID",
+ "G28_A_conditions": {
+  "1_same_population": {
+   "n_common_intersection": 200,
+   "n_by_target": {
+    "D": 200,
+    "A": 200,
+    "Pl": 200,
+    "Ot_A2": 200,
+    "Ot_ent": 200
+   }
+  },
+  "2_folds_identical_artifact": {
+   "sha256": "31a9d980a90f23a703250cd3498463c4775c1e83750e647551b43d93478b379e",
+   "path": "outputs\\phase2_8\\folds\\fold_assignments.csv"
+  },
+  "3_fold_internal_preprocessing": true,
+  "4_target_native_alpha": true,
+  "5_dummy_baseline_zero": {
+   "max_abs_skill": 0.0
+  },
+  "6_three_models_complete": true,
+  "7_raw_repaired_sensitivity": {
+   "status": "N/A_registered",
+   "reason": "rectangle dataset has exactly one registered height field (cone repair is a single-line observation-operator concern; see outputs/cone_repair_impact/); raw/repaired target variants do not exist",
+   "verification": {
+    "n_checked": 200,
+    "max_abs_diff_frozen_vs_raw_um": 3.814611034158588e-06,
+    "tolerance_um": 0.0001
+   }
+  },
+  "8_coverage": {
+   "median_depth_um": 200,
+   "residual_Sq_um": 200,
+   "ilr_z1": 200,
+   "A2_8_16": 200,
+   "angular_entropy_8_16": 200,
+   "A2_16_32": 200
+  },
+  "9_no_historic_scores": "all numbers recomputed in this run; see predictability_spectrum_folds.csv"
+ },
+ "skill_definition": "Q2 = 1 - SSE/SS(train-mean null); cross-validated normalized predictive skill, NOT information content (section 2.4)",
+ "spectrum": [
+  {
+   "target": "A",
+   "variant": "proc_gkf",
+   "skill_full": 0.15670773844161656,
+   "skill_h_only": 0.0009147169038730141,
+   "skill_minus_h": 0.1492453026534245,
+   "delta_h_median": 0.01667617666551824,
+   "n_folds_positive_delta": 3
+  },
+  {
+   "target": "A",
+   "variant": "src_gkf",
+   "skill_full": 0.160495937348061,
+   "skill_h_only": 0.001141167869953219,
+   "skill_minus_h": 0.1423742782242734,
+   "delta_h_median": 0.018121659123787603,
+   "n_folds_positive_delta": 3
+  },
+  {
+   "target": "A",
+   "variant": "src_gkf_inbox",
+   "skill_full": 0.04375688271681011,
+   "skill_h_only": -0.0015564642714176458,
+   "skill_minus_h": 0.0808183494241973,
+   "delta_h_median": -0.014497908900760081,
+   "n_folds_positive_delta": 0
+  },
+  {
+   "target": "D",
+   "variant": "proc_gkf",
+   "skill_full": 0.5773697665762406,
+   "skill_h_only": 0.037679358564521426,
+   "skill_minus_h": 0.47241099476782555,
+   "delta_h_median": 0.10759656565742981,
+   "n_folds_positive_delta": 4
+  },
+  {
+   "target": "D",
+   "variant": "src_gkf",
+   "skill_full": 0.5515685530812657,
+   "skill_h_only": 0.04363427561439881,
+   "skill_minus_h": 0.5007105707957495,
+   "delta_h_median": 0.08980917354477747,
+   "n_folds_positive_delta": 5
+  },
+  {
+   "target": "D",
+   "variant": "src_gkf_inbox",
+   "skill_full": 0.7105247779411467,
+   "skill_h_only": 0.07579192336839147,
+   "skill_minus_h": 0.5739308663832065,
+   "delta_h_median": 0.108595924981151,
+   "n_folds_positive_delta": 5
+  },
+  {
+   "target": "Ot_A2",
+   "variant": "proc_gkf",
+   "skill_full": 0.5515234307230563,
+   "skill_h_only": 0.604017544161094,
+   "skill_minus_h": -0.0022644565871683398,
+   "delta_h_median": 0.6226140031384388,
+   "n_folds_positive_delta": 5
+  },
+  {
+   "target": "Ot_A2",
+   "variant": "src_gkf",
+   "skill_full": 0.641425679911622,
+   "skill_h_only": 0.6150926883025883,
+   "skill_minus_h": 0.0050576007118317,
+   "delta_h_median": 0.6364846009641393,
+   "n_folds_positive_delta": 5
+  },
+  {
+   "target": "Ot_A2",
+   "variant": "src_gkf_inbox",
+   "skill_full": 0.6632913244812517,
+   "skill_h_only": 0.7044636970676054,
+   "skill_minus_h": -0.0029492714083083627,
+   "delta_h_median": 0.6666753516488553,
+   "n_folds_positive_delta": 5
+  },
+  {
+   "target": "Ot_A2_16_32",
+   "variant": "src_gkf",
+   "skill_full": 0.142907040635617,
+   "skill_h_only": 0.16783456428004018,
+   "skill_minus_h": 0.002344443905551441,
+   "delta_h_median": 0.14056259673006555,
+   "n_folds_positive_delta": 5
+  },
+  {
+   "target": "Ot_ent",
+   "variant": "proc_gkf",
+   "skill_full": 0.6449446532640573,
+   "skill_h_only": 0.5730638657762053,
+   "skill_minus_h": 0.014047281240879506,
+   "delta_h_median": 0.6310804710510327,
+   "n_folds_positive_delta": 5
+  },
+  {
+   "target": "Ot_ent",
+   "variant": "src_gkf",
+   "skill_full": 0.6623014674517541,
+   "skill_h_only": 0.5820385643160475,
+   "skill_minus_h": 0.014784579839985601,
+   "delta_h_median": 0.6437993484918441,
+   "n_folds_positive_delta": 5
+  },
+  {
+   "target": "Ot_ent",
+   "variant": "src_gkf_inbox",
+   "skill_full": 0.6495613742049169,
+   "skill_h_only": 0.6838801641343581,
+   "skill_minus_h": -0.001965811355936209,
+   "delta_h_median": 0.6520527069649489,
+   "n_folds_positive_delta": 5
+  },
+  {
+   "target": "Ot_ent_16_32",
+   "variant": "src_gkf",
+   "skill_full": 0.14370802412743688,
+   "skill_h_only": 0.14422244242616877,
+   "skill_minus_h": -0.002192403052321934,
+   "delta_h_median": 0.14291574975741406,
+   "n_folds_positive_delta": 5
+  },
+  {
+   "target": "Ot_joint",
+   "variant": "src_gkf",
+   "skill_full": 0.6614075057238205,
+   "skill_h_only": 0.5984198018305389,
+   "skill_minus_h": 0.011646232670398882,
+   "delta_h_median": 0.6453990636496785,
+   "n_folds_positive_delta": 5
+  },
+  {
+   "target": "Pl",
+   "variant": "proc_gkf",
+   "skill_full": 0.33921883550334,
+   "skill_h_only": 0.13999392647196807,
+   "skill_minus_h": 0.19055118173537466,
+   "delta_h_median": 0.19859252985351805,
+   "n_folds_positive_delta": 4
+  },
+  {
+   "target": "Pl",
+   "variant": "src_gkf",
+   "skill_full": 0.3082626913088109,
+   "skill_h_only": 0.14524463679998068,
+   "skill_minus_h": 0.1452754132763393,
+   "delta_h_median": 0.1749014734675186,
+   "n_folds_positive_delta": 5
+  },
+  {
+   "target": "Pl",
+   "variant": "src_gkf_inbox",
+   "skill_full": 0.3629219822441606,
+   "skill_h_only": 0.1921056765085548,
+   "skill_minus_h": 0.15113375914427674,
+   "delta_h_median": 0.2738709961813228,
+   "n_folds_positive_delta": 5
+  }
+ ],
+ "realization_diagnostic": {
+  "same_condition_key": {
+   "n": 11,
+   "mean_d_phi": 0.9872696283438618,
+   "median_d_phi": 0.9869987553309337
+  },
+  "exact_repeat_u": {
+   "n": 1,
+   "mean_d_phi": 0.9816967632575673,
+   "median_d_phi": 0.9816967632575673
+  },
+  "random_ordinary": {
+   "n": 1983,
+   "mean_d_phi": 0.9825958322752223,
+   "median_d_phi": 0.9835832374918974
+  },
+  "repeat_percentile_vs_ordinary": [
+   {
+    "pair": [
+     48,
+     49
+    ],
+    "d_phi": 0.9816967632575673,
+    "percentile_among_ordinary": 32.4256177508825
+   }
+  ],
+  "config": {
+   "eps": 1e-12,
+   "max_shift_px": 4,
+   "trim_px": 4,
+   "n_random_pairs": 1983
+  }
+ },
+ "DA_channel_reconciliation": {
+  "status": "manifest_stats_predate_v1_field_registration",
+  "decision": "D/A recomputed from frozen fields (same stack as the spectral channels); manifest columns kept for audit",
+  "max_abs_diff_sq": 4.956263246447268e-05,
+  "max_rel_diff_sq": 0.00021906154149109228,
+  "corr_sq": 0.999999999869355,
+  "max_abs_diff_depth": 4.9907493591128116e-05,
+  "n_rows_differing": 200
+ }
+}
