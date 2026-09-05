@@ -20,19 +20,65 @@ REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(REPO))
 
-import _lib as p27  # noqa: E402
-from src.io_cag import CagHeightReader  # noqa: E402
-from src.manual_single_line_annotation import PlaneFit, plane_depth  # noqa: E402
+# 2.7r2: load the phase2_7 library by explicit file location -- a bare
+# `import _lib` is sys.path-order dependent and can be shadowed by another
+# phase's _lib when this script is imported in-process (e.g. unit tests).
+import importlib.util as _ilu  # noqa: E402
+
+_spec_t23 = _ilu.spec_from_file_location(
+    "phase2_7_lib_t23", Path(__file__).resolve().parent / "_lib.py")
+p27 = _ilu.module_from_spec(_spec_t23)
+_spec_t23.loader.exec_module(p27)
+from src import data as sdata  # noqa: E402
 
 EXPECTED = [
     "outputs/phase2_7/envelope/single_track_envelope.csv",
     "outputs/phase2_7/envelope/envelope_selection_compare.csv",
     "outputs/phase2_7/envelope/forward_model_diagnostic.csv",
-    "outputs/phase2_7/envelope/forward_model_simulation.csv",
     "outputs/phase2_7/envelope/bootstrap_delta_tv.csv",
     "outputs/phase2_7/envelope/envelope_selection_compare.csv",
+    "outputs/phase2_7/envelope/phase_grid_sensitivity.csv",
     "outputs/phase2_7/summary/gsl27_3_evaluation.json",
 ]
+# 2.7r2: forward_model_simulation.csv removed -- the frozen file was a stale
+# r0 leftover (27 profiles, 16 phases) the r1 code never wrote; the live
+# simulation record is forward_model_diagnostic.csv.
+
+
+def weighted_loho_tv(q_obs: dict, q_m: dict, c_grid: list, n_h_all: dict,
+                     h_levels: list) -> tuple[float, dict]:
+    """LOHO evaluation with the frozen WEIGHTED statistic
+    TV_w = sum_h (n_h/N) * TV_h(q_obs[h], q_M[(h, c*_held)]).
+
+    The per-held c* selection statistic (unweighted sum over train h) is
+    unchanged from r1.  2.7r2: the EVALUATION aggregation is weighted --
+    r1 returned the unweighted macro mean over h, so the main delta and the
+    bootstrap delta were different statistics."""
+    c_assign = {}
+    tv_w = 0.0
+    for held in h_levels:
+        train = [h for h in h_levels if h != held]
+        c_star = min(c_grid, key=lambda c: sum(
+            p27.tv(q_obs[h], q_m[(h, c)]) for h in train))
+        c_assign[held] = c_star
+        tv_w += (n_h_all[held] / 200) * p27.tv(q_obs[held],
+                                               q_m[(held, c_star)])
+    return float(tv_w), c_assign
+
+
+def doe_unit_labels(manifest) -> "pd.Series":
+    """Frozen bootstrap unit = (session_id, base_condition_group) per row
+    (2.7r2; r1 used session only)."""
+    key = (manifest["session_id"].astype(str) + "~~"
+           + manifest["base_condition_group"].astype(str))
+    return pd.factorize(key.to_numpy())[0]
+
+
+def doe_stratum_units(manifest: "pd.DataFrame", h: float) -> dict:
+    """Units per h x session stratum (resampling pool for the bootstrap)."""
+    sub = manifest.loc[manifest["hatch_spacing_um"] == h]
+    return {s: grp["_doe_unit"].unique()
+            for s, grp in sub.groupby("session_id", sort=False)}
 
 
 def main() -> int:
@@ -56,74 +102,22 @@ def main() -> int:
     peak_valid_table = pd.read_csv(REPO / cfg["paths"]["lambda_over_hatch"],
                                    encoding="utf-8-sig").set_index("dataset_index")
 
-    # population: estimable ∧ ≠reject (81)
-    frame = (geometry.merge(labels[["single_line_id", "qa_label"]],
-                            on="single_line_id")
-             .merge(line_manifest[["single_line_id", "pulse_duration_fs",
-                                   "frequency_kHz", "velocity_mm_s",
-                                   "pass_count"]], on="single_line_id"))
-    population = frame[(frame["width_identifiability"] == "estimable")
-                       & (frame["qa_label"] != "reject_geometry")].copy()
-    p27.require(len(population) == 81,
-                f"primary population must be 81, got {len(population)}")
+    # 2.7r2: extraction moved to the canonical shared builder (src.data);
+    # revisions: section selection uses plateau_stable_run MEMBERSHIP FLAGS
+    # (bridged shallow positions no longer re-enter the mean profile) and
+    # out-of-FOV lateral positions are fixed at 0 depth (no-material
+    # convention; NaN previously propagated into the synthesized fields).
+    lib = sdata.build_line_profile_library(
+        {k: cfg["paths"][k] for k in ("line_cag", "line_view_manifest",
+                                      "single_line_geometry",
+                                      "single_line_manifest",
+                                      "geometry_qa_labels")},
+        lateral_samples=64, dy_um=0.278657, section_step_um=2.0,
+        edge_frac_max=float(g3["edge_frac_max"]))
+    profiles = lib["profiles"]
+    population = lib["population"]
     h_levels = sorted(manifest["hatch_spacing_um"].unique().tolist())
     p27.log(f"Task 23 start | quick={quick} | population={len(population)}")
-
-    # ---- (a) extract all 81 single-track profiles -------------------------- #
-    profiles = {}
-    reader = CagHeightReader(REPO / cfg["paths"]["line_cag"])
-    try:
-        for row in population.itertuples(index=False):
-            line_id = int(row.single_line_id)
-            hm = reader.read_height_map(line_id)
-            vr = view.loc[line_id]
-            fit = PlaneFit(float(vr["plane_a"]), float(vr["plane_b"]),
-                           float(vr["plane_c"]), float(vr["plane_rmse_um"]),
-                           float(vr["sigma_ref_um"]), -1)
-            depth = plane_depth(hm.z, hm.valid_mask, hm.dx_um, hm.dy_um, fit)
-            theta = float(vr["theta_line_deg"])
-            anchor = (float(vr["orientation_center_x_um"]),
-                      float(vr["orientation_center_y_um"]))
-            t_hat, _ = p27.axis_frame(theta)
-            lo, hi = -np.inf, np.inf
-            for p_, d_, half in ((anchor[0], t_hat[0], hm.width_um / 2),
-                                 (anchor[1], t_hat[1], hm.height_um / 2)):
-                s1, s2 = (-half - p_) / d_, (half - p_) / d_
-                if s1 > s2:
-                    s1, s2 = s2, s1
-                lo, hi = max(lo, s1), min(hi, s2)
-            s_scan = np.arange(lo + 1, hi, 1.0)
-            v_pos = p27.lateral_positions(64, hm.dy_um)
-            profs_fine, _ = p27.sample_profiles(
-                depth, hm.valid_mask, hm, theta, anchor, s_scan, v_pos)
-            online = p27.detect_online_flags(
-                profs_fine, float(vr["orientation_threshold_um"]), 8)
-            s_start, s_end = p27.line_extent(
-                s_scan, online, min_run_um=3.0, merge_gap_um=10.0)
-            dp, _aw = p27.scan_plateau_features(
-                profs_fine, float(vr["orientation_threshold_um"]), hm.dy_um)
-            stable_flags, stable_lo, stable_hi = p27.plateau_stable_run(
-                s_scan, online, dp, dp,
-                depth_frac=0.5, ref_quantile=0.90, width_band_frac=None,
-                gap_merge_um=10.0, min_stable_len_um=60.0, min_stable_frac=0.5)
-            sel_s = s_scan[(s_scan >= stable_lo) & (s_scan <= stable_hi)]
-            kept, last = [], -np.inf
-            for s_val in sel_s:
-                if s_val - last >= 2.0 - 1e-9:
-                    kept.append(s_val)
-                    last = s_val
-            s_secs = np.array(kept, dtype=float)
-            profs_sec, _ = p27.sample_profiles(
-                depth, hm.valid_mask, hm, theta, anchor, s_secs, v_pos)
-            mean_profile = np.nanmean(profs_sec, axis=0)
-            suitable = p27.profile_suitable(
-                mean_profile, edge_frac_max=g3["edge_frac_max"])
-            profiles[line_id] = {"profile": mean_profile,
-                                 "suitable": suitable}
-    finally:
-        reader.close()
-    n_suitable = sum(1 for v in profiles.values() if v["suitable"])
-    p27.log(f"profiles: {len(profiles)} extracted, {n_suitable} suitable")
 
     # ---- envelope candidates (h_levels × m) -------------------------------- #
     v_pos = p27.lateral_positions(64, 0.278657)
@@ -185,7 +179,7 @@ def main() -> int:
                 np.array([vp]))[0])) if vp else 0
             d_rows.append({"dataset_index": int(ds), "h": h_hatch,
                            "c_obs": c_obs, "S_g_at_h": s_h,
-                           "S_g_at_2h": s_2h,
+                           "S_g_at_2h": s_2h, "line_id": line_id,
                            "measurable_2h":
                                p27.cycles_level(2 * h_hatch) != "UNMEASURABLE"})
     compare = pd.DataFrame(d_rows)
@@ -255,19 +249,13 @@ def main() -> int:
                    for h in h_levels)
 
     def loho(q_obs: dict) -> tuple[float, float, dict]:
-        held_tvs = []
-        c_assign = {}
-        for held in h_levels:
-            train = [h for h in h_levels if h != held]
-            c_star = min(c_grid, key=lambda c: sum(
-                p27.tv(q_obs[h], q_M[(h, c)]) for h in train))
-            held_tvs.append(p27.tv(q_obs[held], q_M[(held, c_star)]))
-            c_assign[held] = c_star
-        return float(np.mean(held_tvs)), float(np.mean(held_tvs)), c_assign
+        tv_w, c_assign = weighted_loho_tv(q_obs, q_M, c_grid, n_h_all,
+                                          h_levels)
+        return tv_w, tv_w, c_assign
 
     tv_const = tv_w_for(0.0, q_obs_h5)
     tv_alt_mean, _, c_assign_full = loho(q_obs_h5)
-    tv_alt = tv_alt_mean
+    tv_alt = tv_alt_mean  # 2.7r2: now the weighted TV_w (same statistic as tv_const)
     delta_tv = tv_const - tv_alt
     p27.log(f"3B: TV_w(const)={tv_const:.4f} | TV_w(LOHO alt)={tv_alt:.4f} "
             f"| ΔTV={delta_tv:.4f}")
@@ -283,24 +271,26 @@ def main() -> int:
     # ---- DOE-unit bootstrap with per-replicate LOHO ------------------------- #
     B = int(g3["bootstrap"]["B"])
     boot_seed = seed + int(cfg["seeds"]["bootstrap"])
-    ds_by_h = {h: manifest.loc[manifest["hatch_spacing_um"] == h,
-                               "dataset_index"].to_numpy()
-               for h in h_levels}
-    session_of = manifest.set_index("dataset_index")["session_id"]
+    # 2.7r2 fix: bootstrap unit = (session_id, base_condition_group) per the
+    # frozen contract (r1 used session only), resampled within h x session
+    # strata so the h composition of each replicate is preserved exactly.
+    manifest = manifest.copy()
+    manifest["_doe_unit"] = doe_unit_labels(manifest)
     delta_boot = np.empty(B)
     rng = np.random.default_rng(boot_seed)
     for b in range(B):
         q_boot = {}
         for h in h_levels:
-            ds_h = ds_by_h[h]
-            sessions = session_of.loc[ds_h].to_numpy()
-            unit_labels = pd.factorize(sessions)[0]
-            unique_units = np.unique(unit_labels)
-            chosen = rng.choice(unique_units, size=len(unique_units),
-                                replace=True)
-            take = np.concatenate(
-                [np.where(unit_labels == u)[0] for u in chosen])
-            ds_take = ds_h[take]
+            take_parts = []
+            for units_in in doe_stratum_units(manifest, h).values():
+                chosen = rng.choice(units_in, size=len(units_in),
+                                    replace=True)
+                for u in chosen:
+                    take_parts.append(
+                        manifest.index[manifest["_doe_unit"] == u]
+                        .to_numpy())
+            ds_take = manifest.loc[np.concatenate(take_parts),
+                                   "dataset_index"].to_numpy()
             classes_h = np.array([
                 (int(p27.assign_class(
                     np.array([peak_valid_table.loc[ds, "lambda_peak_4_32_um"]
@@ -325,23 +315,86 @@ def main() -> int:
     pd.DataFrame({"delta_tv": delta_boot}).to_csv(
         out / "bootstrap_delta_tv.csv", index=False)
 
-    # ---- 3A d_i values (frozen formula) ------------------------------------- #
+    # ---- 3A d_i (2.7r2: own-envelope measurement -> measurement) ------------ #
+    # Each exact-match condition's OWN measured profile synthesizes q_{C,i}
+    # (c=0) and q_{P2,i} (global c* = mode of the LOHO per-held c*, tie ->
+    # smallest -- the 2.7 细则 §0.6 c_guard convention), so d_i compares two
+    # MEASUREMENTS of the same condition instead of borrowing the 81-line
+    # population q_M (r1 behaviour).  Condition-level aggregation (mean over
+    # the condition's rows) under the frozen measurability gate
+    # (cycles_level(2h) != UNMEASURABLE); rows with an invalid observed
+    # class cannot contribute (no c_obs) and are counted separately.
+    c_vals = [c_assign_full[h] for h in h_levels]
+    c_global = float(min(sorted(set(c_vals)),
+                         key=lambda c: (-c_vals.count(c), c)))
+
+    def own_profile_q(prof: np.ndarray, h: float, c: float) -> np.ndarray:
+        codes = []
+        for phi in np.arange(n_phases_final, dtype=float) * (
+                (h if c == 0.0 else 2 * h) / n_phases_final):
+            field = p27.synth_field(prof, v_pos, h, phi, c,
+                                    pixel_um=g3["pixel_um"],
+                                    roi_um=g3["roi_um"])
+            codes.append(p27.field_class(field, h=h)[0])
+        return p27.q_distribution(np.array(codes))
+
     d_i_values = []
-    for cond, group in compare.groupby(["h"]):
-        pass
-    # aggregate: for each row in compare (one per sample), d_i = q_P2,i(c_i) − q_C,i(c_i)
-    for row in compare.itertuples(index=False):
-        h = float(row.h)
-        c_obs = int(row.c_obs)
-        if c_obs == p27.CODE_INVALID:
+    own_skipped_invalid = 0
+    for (h_key, line_key), grp in compare.groupby(["h", "line_id"]):
+        if not bool(grp["measurable_2h"].all()):
             continue
-        q_C = q_M[(h, 0.0)]
-        c_star_fold = c_assign_full.get(h, c_grid[0])
-        q_P2 = q_M[(h, float(c_star_fold))]
-        d_i = q_P2[c_obs] - q_C[c_obs]
-        d_i_values.append(d_i)
+        info = profiles.get(int(line_key))
+        if info is None or not info["suitable"]:
+            continue
+        valid_rows = grp[grp["c_obs"] != p27.CODE_INVALID]
+        own_skipped_invalid += int((grp["c_obs"] == p27.CODE_INVALID).sum())
+        if not len(valid_rows):
+            continue
+        h = float(h_key)
+        q_C = own_profile_q(info["profile"], h, 0.0)
+        q_P2 = own_profile_q(info["profile"], h, c_global)
+        row_ds = [float(q_P2[int(r.c_obs)] - q_C[int(r.c_obs)])
+                  for r in valid_rows.itertuples(index=False)]
+        d_i_values.append(float(np.mean(row_ds)))
     n_eval = len(d_i_values)
     n_contradict = sum(1 for d in d_i_values if d < 0)
+
+    # ---- phase-grid sensitivity (frozen 16/32/64) ---------------------------- #
+    # Registered implementation choice: sensitivity of the FINAL arms
+    # (constant c=0; period-2 at the global c*) to the phase
+    # marginalization.  Classes are computed ONCE on the 64-phase grid; the
+    # 32- and 16-phase grids are nested subsets (phi_j = j*h/16 = (2j)*h/32
+    # = (4j)*h/64) and are aggregated by stride.
+    phase_sens = []
+    if not quick:
+        cls_by = {}
+        for h in h_levels:
+            for c in (0.0, c_global):
+                cls_by[(h, c)] = simulate_classes(h, c, 64)
+        for n_ph in (16, 32, 64):
+            sel = np.arange(0, 64, 64 // n_ph)
+            tv_c = tv_p = 0.0
+            for h in h_levels:
+                q0 = p27.q_distribution(np.concatenate(
+                    [cls_by[(h, 0.0)][i * n_lib:(i + 1) * n_lib]
+                     for i in sel]))
+                qg = p27.q_distribution(np.concatenate(
+                    [cls_by[(h, c_global)][i * n_lib:(i + 1) * n_lib]
+                     for i in sel]))
+                tv_c += (n_h_all[h] / 200) * p27.tv(q_obs_h5[h], q0)
+                tv_p += (n_h_all[h] / 200) * p27.tv(q_obs_h5[h], qg)
+            phase_sens.append({"n_phases": n_ph, "tv_w_constant": tv_c,
+                               "tv_w_period2_cglobal": tv_p,
+                               "delta_tv": tv_c - tv_p})
+        sim_diag = pd.DataFrame(sim_diag_rows)
+        sim_diag.to_csv(out / "forward_model_diagnostic.csv", index=False,
+                        encoding="utf-8-sig")
+        pd.DataFrame(phase_sens).to_csv(
+            out / "phase_grid_sensitivity.csv", index=False,
+            encoding="utf-8-sig")
+        p27.log("phase-grid sensitivity: " + "; ".join(
+            f"{r['n_phases']}ph dTV={r['delta_tv']:.4f}"
+            for r in phase_sens))
 
     # ---- verdict (frozen order) --------------------------------------------- #
     tv_thresh = g3["tv"]
@@ -365,18 +418,42 @@ def main() -> int:
         verdict = "PARTIAL"
 
     evaluation = {
-        "population": {"3A": "13 exact-match conditions (own envelope)",
+        "revision": "2.7r2",
+        "r2_fixes": [
+            "LOHO evaluation statistic unified to the frozen weighted "
+            "TV_w = sum_h (n_h/N) TV_h (r1 returned the macro mean, so the "
+            "main delta and the bootstrap were different statistics)",
+            "bootstrap unit = (session_id, base_condition_group), "
+            "resampled within h x session strata (r1 used session only)",
+            "3A d_i = own-envelope measurement->measurement (own profile "
+            "synthesizes q_C and q_P2; r1 borrowed the 81-line population "
+            "q_M)",
+            "profile extraction: plateau membership FLAGS (no bridged "
+            "shallow re-entry) + out-of-FOV lateral positions fixed at 0 "
+            "depth",
+            "phase-grid sensitivity 16/32/64 executed (final arms)",
+            "stale forward_model_simulation.csv (r0 leftover) removed",
+        ],
+        "population": {"3A": "13 exact-match conditions (own envelope, "
+                             "2.7r2 own-envelope d_i)",
                        "3B": f"{n_lib}-line library × "
                              f"{n_phases_final} phases"},
+        "c_global_mode_of_loho": c_global,
         "tv_w_constant": tv_const,
         "tv_w_period2_loho": tv_alt,
         "delta_tv": delta_tv,
         "bootstrap_ci_low": ci_low,
         "p_boot": p_boot,
+        "bootstrap_unit": "(session_id, base_condition_group); strata "
+                          "h x session",
+        "phase_grid_sensitivity": phase_sens,
         "h_consistency": {"n_evaluable": n_evaluable, "period2_wins": wins,
                           "h_eval_list": h_eval_list},
         "d_guard": {"n_eval": n_eval, "n_contradictions": n_contradict,
-                    "frac": (n_contradict / n_eval if n_eval else np.nan)},
+                    "frac": (n_contradict / n_eval if n_eval else np.nan),
+                    "definition": "own-envelope condition-level d_i "
+                                  "(2.7r2); invalid-observed rows skipped: "
+                                  + str(own_skipped_invalid)},
         "thresholds": g3["tv"],
         "G_SL27_3": verdict,
         "note": ("linear array model family insufficient; material "

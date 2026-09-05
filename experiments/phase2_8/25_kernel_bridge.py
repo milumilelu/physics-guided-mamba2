@@ -47,14 +47,13 @@ HERE = Path(__file__).resolve().parent
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 
+from src import data as sdata  # noqa: E402
 from src import geometry as sgeo  # noqa: E402
 from src import provenance as prov  # noqa: E402
 from src.forward_models import (array_transfer, field_class,  # noqa: E402
                                 overlap_descriptor,
                                 pairwise_interaction_field, saturate,
                                 synth_field)
-from src.io_cag import CagHeightReader  # noqa: E402
-from src.manual_single_line_annotation import PlaneFit, plane_depth  # noqa: E402
 
 EXPECTED = [
     "kernel_bridge_levels.csv",
@@ -73,94 +72,21 @@ def log(msg: str = "") -> None:
 # --------------------------------------------------------------------------- #
 
 def build_kernel_library(cfg: dict) -> dict[int, dict]:
+    """2.7r2 consistency: delegate to the canonical shared builder
+    (src.data.build_line_profile_library) so Phase 2.8B kernels carry the
+    same plateau-membership FLAGS extraction and out-of-FOV 0-depth
+    sanitization as Phase 2.7r2."""
     t = cfg["task25"]
-    g = t["profile"]
-    geometry = pd.read_csv(REPO / t["paths"]["single_line_geometry"],
-                           encoding="utf-8-sig")
-    labels = pd.read_csv(REPO / t["paths"]["geometry_qa_labels"],
-                         encoding="utf-8-sig")
-    line_manifest = pd.read_csv(REPO / t["paths"]["single_line_manifest"],
-                                encoding="utf-8-sig")
-    view = pd.read_csv(REPO / t["paths"]["line_view_manifest"],
-                       encoding="utf-8-sig").set_index("measurement_id")
-    frame = (geometry.merge(labels[["single_line_id", "qa_label"]],
-                            on="single_line_id")
-             .merge(line_manifest[["single_line_id", "pulse_duration_fs",
-                                   "frequency_kHz", "velocity_mm_s",
-                                   "pass_count"]], on="single_line_id"))
-    population = frame[(frame["width_identifiability"] == "estimable")
-                       & (frame["qa_label"] != "reject_geometry")].copy()
-    prov.require(len(population) == 81,
-                 f"kernel population must be 81, got {len(population)}")
-
-    reader = CagHeightReader(REPO / t["paths"]["line_cag"])
-    profiles: dict[int, dict] = {}
-    try:
-        for row in population.itertuples(index=False):
-            line_id = int(row.single_line_id)
-            hm = reader.read_height_map(line_id)
-            vr = view.loc[line_id]
-            fit = PlaneFit(float(vr["plane_a"]), float(vr["plane_b"]),
-                           float(vr["plane_c"]), float(vr["plane_rmse_um"]),
-                           float(vr["sigma_ref_um"]), -1)
-            depth = plane_depth(hm.z, hm.valid_mask, hm.dx_um, hm.dy_um, fit)
-            theta = float(vr["theta_line_deg"])
-            anchor = (float(vr["orientation_center_x_um"]),
-                      float(vr["orientation_center_y_um"]))
-            t_hat, _ = sgeo.axis_frame(theta)
-            lo, hi = -np.inf, np.inf
-            for p_, d_, half in ((anchor[0], t_hat[0], hm.width_um / 2),
-                                 (anchor[1], t_hat[1], hm.height_um / 2)):
-                s1, s2 = (-half - p_) / d_, (half - p_) / d_
-                if s1 > s2:
-                    s1, s2 = s2, s1
-                lo, hi = max(lo, s1), min(hi, s2)
-            s_scan = np.arange(lo + 1, hi, 1.0)
-            v_pos = sgeo.lateral_positions(int(g["lateral_samples"]),
-                                           float(g["dy_um"]))
-            profs_fine, _ = sgeo.sample_profiles(
-                depth, hm.valid_mask, hm, theta, anchor, s_scan, v_pos)
-            online = sgeo.detect_online_flags(
-                profs_fine, float(vr["orientation_threshold_um"]), 8)
-            s_start, s_end = sgeo.line_extent(
-                s_scan, online, min_run_um=3.0, merge_gap_um=10.0)
-            dp, _aw = sgeo.scan_plateau_features(
-                profs_fine, float(vr["orientation_threshold_um"]), hm.dy_um)
-            stable_flags, stable_lo, stable_hi = sgeo.plateau_stable_run(
-                s_scan, online, dp, dp,
-                depth_frac=0.5, ref_quantile=0.90, width_band_frac=None,
-                gap_merge_um=10.0, min_stable_len_um=60.0, min_stable_frac=0.5)
-            sel_s = s_scan[(s_scan >= stable_lo) & (s_scan <= stable_hi)]
-            kept, last = [], -np.inf
-            for s_val in sel_s:
-                if s_val - last >= float(g["section_step_um"]) - 1e-9:
-                    kept.append(s_val)
-                    last = s_val
-            profs_sec, _ = sgeo.sample_profiles(
-                depth, hm.valid_mask, hm, theta, anchor,
-                np.array(kept, dtype=float), v_pos)
-            mean_profile = np.nanmean(profs_sec, axis=0)
-            # Forward-synthesis sanitization (frozen): lateral positions that
-            # are out-of-FOV in EVERY section carry no removal measurement;
-            # synth interpolation would propagate NaN into the field, so they
-            # are fixed at 0 depth -- the same no-material convention as
-            # synth_field's left/right=0 extension.
-            mean_profile = np.where(np.isfinite(mean_profile),
-                                    mean_profile, 0.0)
-            profiles[line_id] = {
-                "profile": mean_profile,
-                "x": sgeo.lateral_positions(len(mean_profile),
-                                            float(g["dy_um"])),
-                "suitable": sgeo.profile_suitable(
-                    mean_profile, edge_frac_max=float(g["edge_frac_max"])),
-                "tau": float(row.pulse_duration_fs),
-                "f": float(row.frequency_kHz),
-                "v": float(row.velocity_mm_s),
-                "N": float(row.pass_count),
-            }
-    finally:
-        reader.close()
-    return profiles
+    lib = sdata.build_line_profile_library(
+        {k: t["paths"][k] for k in ("line_cag", "line_view_manifest",
+                                    "single_line_geometry",
+                                    "single_line_manifest",
+                                    "geometry_qa_labels")},
+        lateral_samples=int(t["profile"]["lateral_samples"]),
+        dy_um=float(t["profile"]["dy_um"]),
+        section_step_um=float(t["profile"]["section_step_um"]),
+        edge_frac_max=float(t["profile"]["edge_frac_max"]))
+    return lib["profiles"]
 
 
 # --------------------------------------------------------------------------- #
