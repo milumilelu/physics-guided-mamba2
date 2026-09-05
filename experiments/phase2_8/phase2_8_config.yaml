@@ -92,7 +92,7 @@ task25:
     L2:  {family: D_sat(1-exp(-s/D_sat)), grid_um: {lo: 1, hi: 64, n: 13}}
     L3a: {c_grid: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]}
     L3b: {gamma_per_um: {lo: -0.5, hi: 0.5, n: 21}}
-  physical_guard: {tol_um: 1.0e-9, rule: exclude_candidate_no_clip}
+  physical_guard: {tol_um: 1.0e-2, rule: exclude_candidate_no_clip}  # correction-deposition guard, um
   metrics:
     primary: tv_cond_out_of_group      # mean over rows of (1 - q_i(y_i))
     legacy_reference: tv_pooled_5class # 0.20/0.30 pooled-TV legacy reference

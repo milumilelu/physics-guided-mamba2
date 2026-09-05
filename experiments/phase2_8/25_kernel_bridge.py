@@ -140,6 +140,13 @@ def build_kernel_library(cfg: dict) -> dict[int, dict]:
                 depth, hm.valid_mask, hm, theta, anchor,
                 np.array(kept, dtype=float), v_pos)
             mean_profile = np.nanmean(profs_sec, axis=0)
+            # Forward-synthesis sanitization (frozen): lateral positions that
+            # are out-of-FOV in EVERY section carry no removal measurement;
+            # synth interpolation would propagate NaN into the field, so they
+            # are fixed at 0 depth -- the same no-material convention as
+            # synth_field's left/right=0 extension.
+            mean_profile = np.where(np.isfinite(mean_profile),
+                                    mean_profile, 0.0)
             profiles[line_id] = {
                 "profile": mean_profile,
                 "x": sgeo.lateral_positions(len(mean_profile),
@@ -346,24 +353,39 @@ def main() -> int:
 
     # ---- LOGO_kernel parameter selection ------------------------------------
     # Single pass per (group, candidate): accumulate the training-TV mean AND
-    # the physical-guard minimum in the same sweep (gamma candidates whose
-    # training simulations dip below -tol are excluded, never clipped).
+    # the physical-guard check in the same sweep.  Guard semantics (F6
+    # implementation refinement, frozen before any formal result): the L1
+    # field itself carries surface-noise negative dips, so guards on the
+    # TOTAL field's minimum are vacuous or reject every candidate
+    # (F(s) < s strictly for s < 0).  The physical rule therefore applies to
+    # the NONLINEAR CORRECTION at NON-ABLATED pixels:
+    #     exclude candidate  iff  min_{p: s(p) <= 0} [ z(p) - s(p) ] < -tol
+    # i.e. the nonlinearity may not create deposition (negative removal)
+    # where the linear superposition ablates nothing.  tol = 0.01 um is a
+    # physical scale (10 nm: far below any removal feature, far above float
+    # noise).  Excluded candidates are logged; never clipped.
     chosen: dict[str, dict[int, float]] = {"L2": {}, "L3a": {}, "L3b": {}}
     guard_log: dict[str, list] = {"L2": [], "L3a": [], "L3b": []}
     for g_name in groups:
         train_rows = rows[rows["kernel_group"] != g_name].reset_index(drop=True)
+        base_fields: dict[tuple, np.ndarray] = {}
+        for _, row in train_rows.iterrows():
+            kw0 = library[int(row.line_id)]
+            h0 = float(row.h_um)
+            for phi in row_phases(h0):
+                base_fields[(int(row.dataset_index), phi)] = synth_field(
+                    kw0["profile"], kw0["x"], h0, phi, 0.0)
         for level, grid in grids.items():
             scores, excluded = [], []
             for cand in grid:
-                tv_vals, min_z = [], np.inf
+                tv_vals, min_corr = [], np.inf
                 for _, row in train_rows.iterrows():
                     kw = library[int(row.line_id)]
                     h = float(row.h_um)
                     codes = []
                     for phi in row_phases(h):
+                        base = base_fields[(int(row.dataset_index), phi)]
                         if level == "L2":
-                            base = synth_field(kw["profile"], kw["x"], h,
-                                               phi, 0.0)
                             z = saturate(base, cand)
                         elif level == "L3a":
                             z = synth_field(kw["profile"], kw["x"], h,
@@ -371,11 +393,14 @@ def main() -> int:
                         else:
                             z = pairwise_interaction_field(
                                 kw["profile"], kw["x"], h, phi, cand)
-                        min_z = min(min_z, float(z.min()))
+                        nabl = base <= 0.0
+                        if nabl.any():
+                            min_corr = min(min_corr, float(
+                                (z - base)[nabl].min()))
                         codes.append(field_class(z, h=h, pixel_um=pixel_um)[0])
                     q = q_from_codes(codes)
                     tv_vals.append(1.0 - float(q[int(row.observed)]))
-                if min_z < -tol:
+                if min_corr < -tol:
                     excluded.append(cand)
                     continue
                 scores.append((float(np.mean(tv_vals)), cand))
@@ -525,7 +550,19 @@ def main() -> int:
             "holdout_unit": "kernel_group=(tau,f,N,v,line identity)",
             "selection_protocol": "LOGO_kernel (global params; training "
                                   "kernel groups only)",
-            "physical_guard": {"tol_um": tol, "rule": "exclude_candidate_no_clip",
+            "physical_guard": {"tol_um": tol,
+                               "rule": "exclude_candidate_no_clip",
+                               "semantics": "correction guard: exclude iff "
+                                            "min_{s<=0}[z - s_L1] < -tol, "
+                                            "i.e. the nonlinearity may not "
+                                            "create deposition at "
+                                            "non-ablated pixels (F6 "
+                                            "implementation refinement, "
+                                            "frozen before formal results; "
+                                            "an absolute total-field guard "
+                                            "is mathematically vacuous "
+                                            "because measured profiles "
+                                            "carry ~0.1 um noise dips)",
                                "log": guard_log},
         },
         "tv_cond_out_of_group": tv_cond_all,
