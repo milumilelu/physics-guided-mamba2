@@ -67,11 +67,21 @@ def output_dir(cfg: dict, sub: str = "") -> Path:
     path.mkdir(parents=True, exist_ok=True)
     return path
 
-CLASS_NAMES = ["INVALID", "OUT", "m1", "m2", "m3"]
-CODE_INVALID, CODE_OUT, CODE_M1, CODE_M2, CODE_M3 = 0, 1, 2, 3, 4
-# frozen mutually exclusive intervals (任务说明 v2.1 blocker①)
-INTERVALS = {1: (0.75, 1.25), 2: (1.75, 2.25), 3: (2.75, 3.25)}
-
+# five-class assignment constants + functions: canonical implementation in
+# src/geometry.py (WP1 migration, parity-tested); frozen names kept as
+# thin re-exports (Phase 2.8 v2.1 section 4.2 migration step 5).
+from src.geometry import (  # noqa: E402,F401
+    CLASS_NAMES,
+    CODE_INVALID,
+    CODE_M1,
+    CODE_M2,
+    CODE_M3,
+    CODE_OUT,
+    INTERVALS,
+    assign_class,
+    profile_suitable,
+    q_distribution,
+)
 
 def assign_class(r: np.ndarray, valid: np.ndarray) -> np.ndarray:
     """Five-class codes: 0=INVALID (not peak-valid or non-finite r), 1=OUT,
@@ -139,20 +149,6 @@ def cycles_level(lam: float, fov_um: float = 17.834048) -> str:
     if n_cycles >= 1.2:
         return "LOW"
     return "UNMEASURABLE"
-
-
-def profile_suitable(profile: np.ndarray, *, edge_frac_max: float = 0.15
-                     ) -> bool:
-    """Profile edges must return to background (≤ edge_frac_max × D_max)."""
-    g = np.asarray(profile, dtype=float)
-    finite = np.isfinite(g)
-    if not finite.any():
-        return False
-    d_max = float(np.nanmax(g))
-    if d_max <= 0:
-        return False
-    edge = float(np.nanmax(np.abs(np.r_[g[:3], g[-3:]])))
-    return edge <= edge_frac_max * d_max
 
 
 def synth_field(profile: np.ndarray, x_profile: np.ndarray, h: float,

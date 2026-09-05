@@ -1,0 +1,667 @@
+"""Canonical single-line geometry and peak-class assignment.
+
+Migrated verbatim (WP1 canonical migration; parity-tested in
+``tests/test_src_geometry.py``) from the frozen libraries:
+
+* line-axis frame, axis sampling, extent/stable-region machinery, section
+  features, line aggregates, lambda*/lambda-peak descriptors, bridge
+  helpers, plateau selection, pilot reconciliation  <- phase2_6 ``_lib``;
+* five-class peak assignment (``assign_class`` / ``q_distribution``) and
+  the profile edge-suitability predicate  <- phase2_7 ``_lib``.
+
+Class codes (frozen, mutually exclusive closed intervals -- no tie logic):
+0=INVALID, 1=OUT, 2=m1, 3=m2, 4=m3 on r = lambda_peak / h.
+
+Binding spec: Phase 2.8 v2.1 section 4.1 (`src/geometry.py` row).
+"""
+
+from __future__ import annotations
+
+import numpy as np
+import pandas as pd
+from scipy import ndimage
+
+from src.provenance import log, require  # noqa: F401
+
+__all__ = [
+    "CLASS_NAMES", "CODE_INVALID", "CODE_OUT", "CODE_M1", "CODE_M2",
+    "CODE_M3", "INTERVALS", "WIDTH_Q_KEYS", "Q_BY_KEY",
+    "axis_frame", "_pixel_indices", "sample_profiles", "lateral_positions",
+    "detect_online_flags", "line_extent", "stable_region", "section_positions",
+    "_run_boundaries", "section_features", "_slope", "_ridge",
+    "aggregate_line", "lambda_star_4_32", "lambda_peak_4_32", "in_box_mask",
+    "condition_key", "shuffle_h_by_block", "scan_plateau_features",
+    "FragmentedStableRegion", "plateau_stable_run", "reconcile_stable_region",
+    "assign_class", "q_distribution", "profile_suitable",
+]
+
+
+CLASS_NAMES = ["INVALID", "OUT", "m1", "m2", "m3"]
+CODE_INVALID, CODE_OUT, CODE_M1, CODE_M2, CODE_M3 = 0, 1, 2, 3, 4
+# frozen mutually exclusive intervals (任务说明 v2.1 blocker①)
+INTERVALS = {1: (0.75, 1.25), 2: (1.75, 2.25), 3: (2.75, 3.25)}
+
+# frozen threshold-width family (Phase 2.6 §4.2, verbatim from p26 _lib top)
+WIDTH_Q_KEYS = ("W20", "W50", "W80")
+Q_BY_KEY = {"W20": 0.2, "W50": 0.5, "W80": 0.8}
+
+
+# --------------------------------------------------------------------------- #
+# Line-axis frame and profile sampling (§0.20: direct axis sampling)
+# --------------------------------------------------------------------------- #
+def axis_frame(theta_deg: float) -> tuple[np.ndarray, np.ndarray]:
+    """Unit tangent (along the line) and unit normal (lateral) in centered coords."""
+    theta = np.deg2rad(float(theta_deg))
+    t_hat = np.array([np.cos(theta), np.sin(theta)])
+    n_hat = np.array([-np.sin(theta), np.cos(theta)])
+    return t_hat, n_hat
+
+
+def _pixel_indices(hm, centered_x: np.ndarray, centered_y: np.ndarray
+                   ) -> tuple[np.ndarray, np.ndarray]:
+    """Centered physical coords -> fractional pixel indices (same frame as
+    `src.resampling.resample_to_canonical`)."""
+    x_absolute = centered_x + hm.width_um / 2.0
+    y_absolute = centered_y + hm.height_um / 2.0
+    columns = (x_absolute - hm.x_um[0]) / hm.dx_um
+    rows = (y_absolute - hm.y_um[0]) / hm.dy_um
+    return rows, columns
+
+
+def sample_profiles(depth: np.ndarray, valid: np.ndarray, hm,
+                    theta_deg: float, anchor: tuple[float, float],
+                    s_positions: np.ndarray, v_positions: np.ndarray,
+                    *, order: int = 1, mask_weight_min: float = 0.99
+                    ) -> tuple[np.ndarray, np.ndarray]:
+    """Sample perpendicular profiles along the frozen axis, mask-aware.
+
+    Returns `(profiles, weights)` with shape `(n_s, n_v)`; out-of-FOV samples
+    are NaN (they count as FOV censoring, never as real background).
+    """
+    t_hat, n_hat = axis_frame(theta_deg)
+    s_grid, v_grid = np.meshgrid(np.asarray(s_positions, dtype=float),
+                                 np.asarray(v_positions, dtype=float),
+                                 indexing="ij")
+    centered_x = anchor[0] + s_grid * t_hat[0] + v_grid * n_hat[0]
+    centered_y = anchor[1] + s_grid * t_hat[1] + v_grid * n_hat[1]
+    rows, columns = _pixel_indices(hm, centered_x, centered_y)
+    numerator = ndimage.map_coordinates(
+        np.where(valid, np.nan_to_num(depth, nan=0.0), 0.0),
+        [rows, columns], order=order, mode="constant", cval=0.0,
+        prefilter=order > 1)
+    weight = ndimage.map_coordinates(
+        valid.astype(float), [rows, columns], order=order,
+        mode="constant", cval=0.0, prefilter=order > 1)
+    profiles = np.full(weight.shape, np.nan, dtype=float)
+    hit = weight >= mask_weight_min
+    profiles[hit] = numerator[hit] / weight[hit]
+    return profiles, weight
+
+
+def lateral_positions(n_v: int, dy_um: float) -> np.ndarray:
+    """Centered lateral sample positions matching the raw row centers."""
+    return (np.arange(n_v, dtype=float) - (n_v - 1) / 2.0) * dy_um
+
+
+# --------------------------------------------------------------------------- #
+# Line detection / extent / stable region (§4.1)
+# --------------------------------------------------------------------------- #
+def detect_online_flags(profiles: np.ndarray, threshold_um: float,
+                        min_profile_points: int) -> np.ndarray:
+    """A position is on-line when >= min_profile_points valid pixels exceed
+    the groove threshold (pilot rule D > k * sigma_ref)."""
+    above = np.isfinite(profiles) & (profiles > threshold_um)
+    return above.sum(axis=1) >= min_profile_points
+
+
+def line_extent(s_scan: np.ndarray, online: np.ndarray, *,
+                min_run_um: float, merge_gap_um: float) -> tuple[float, float]:
+    """Longest merged on-line run; isolated detections are discarded."""
+    step = float(np.min(np.diff(s_scan))) if s_scan.size > 1 else 1.0
+    min_run = max(1, int(round(min_run_um / step)))
+    runs: list[tuple[int, int]] = []
+    start = None
+    for index, flag in enumerate(online):
+        if flag and start is None:
+            start = index
+        if (not flag or index == online.size - 1) and start is not None:
+            end = index if flag else index - 1
+            runs.append((start, end))
+            start = None
+    if not runs:
+        raise ValueError("no on-line positions detected")
+    merged: list[list[int]] = []
+    for run in runs:
+        if merged and (s_scan[run[0]] - s_scan[merged[-1][1]]) <= merge_gap_um:
+            merged[-1][1] = run[1]
+        else:
+            merged.append(list(run))
+    longest = max(merged, key=lambda r: s_scan[r[1]] - s_scan[r[0]])
+    if s_scan[longest[1]] - s_scan[longest[0]] < min_run_um:
+        raise ValueError("longest on-line run shorter than min_run_um")
+    return float(s_scan[longest[0]]), float(s_scan[longest[1]])
+
+
+def stable_region(s_start: float, s_end: float, *, pad_low: float,
+                  pad_high: float) -> tuple[float, float]:
+    """Central (1 - pad_low - pad_high) fraction of the detected extent."""
+    length = s_end - s_start
+    return s_start + pad_low * length, s_end - pad_high * length
+
+
+def section_positions(stable: tuple[float, float], step_um: float
+                      ) -> np.ndarray:
+    """2-um-spaced section centers inside the stable region."""
+    lo, hi = stable
+    count = int(np.floor((hi - lo) / step_um)) + 1
+    positions = lo + step_um * np.arange(count, dtype=float)
+    return positions[(positions >= lo) & (positions <= hi)]
+
+
+# --------------------------------------------------------------------------- #
+# Threshold widths / equivalent-area / descriptors (§4.2, frozen)
+# --------------------------------------------------------------------------- #
+def _run_boundaries(values: np.ndarray, positions: np.ndarray, run: tuple[int, int],
+                    q: float, dv: float) -> tuple[float, float, bool, bool]:
+    """Sub-pixel boundaries of one above-q run; censored = touches a profile
+    end (index 0 / n-1) or is bounded by an out-of-FOV sample."""
+    i, j = run
+    n = values.size
+    left_censored = (i == 0) or not np.isfinite(values[i - 1])
+    right_censored = (j == n - 1) or not np.isfinite(values[j + 1])
+    if left_censored:
+        v_left = positions[i] - dv / 2.0
+    else:
+        v_left = positions[i] - (values[i] - q) * dv / (values[i] - values[i - 1])
+    if right_censored:
+        v_right = positions[j] + dv / 2.0
+    else:
+        v_right = positions[j] + (q - values[j]) * dv / (values[j + 1] - values[j])
+    return v_left, v_right, left_censored or (i == 0), right_censored or (j == n - 1)
+
+
+def section_features(profile: np.ndarray, v_positions: np.ndarray,
+                     thresholds_q: tuple[float, ...], *,
+                     affected_delta_um: float) -> dict:
+    """All frozen §4.2 features for one perpendicular profile.
+
+    `profile` may contain NaN (out-of-FOV).  d_n = D / D_max with z_bg = 0.
+    """
+    dv = float(np.mean(np.diff(v_positions)))
+    positions = v_positions
+    finite = np.isfinite(profile)
+    out = {"n_valid_samples": int(finite.sum()), "D_max_um": np.nan}
+    if not finite.any():
+        out.update({key: np.nan for key in (
+            "D_max_um", "W20_um", "W50_um", "W80_um", "n_runs_W20", "n_runs_W50",
+            "n_runs_W80", "total_width_W20_um", "total_width_W50_um",
+            "total_width_W80_um", "censored_W20", "censored_W50", "censored_W80",
+            "A_remove_um2", "W_eq_um", "W_affected_um", "left_slope",
+            "right_slope", "edge_asymmetry", "ridge_left_um", "ridge_right_um",
+            "ridge_separation_um", "profile_skewness", "n_above_threshold")})
+        return out
+    values = np.where(finite, profile, np.nan)
+    d_max = float(np.nanmax(values))
+    out["D_max_um"] = d_max
+    out["n_above_threshold"] = int(np.nansum(values > 0.0))
+    positive = np.where(finite, np.maximum(profile, 0.0), 0.0)
+    out["A_remove_um2"] = float(np.nansum(positive) * dv)
+    out["W_eq_um"] = (out["A_remove_um2"] / d_max) if d_max > 0 else np.nan
+    if d_max <= 0:
+        for key in ("W20_um", "W50_um", "W80_um", "n_runs_W20", "n_runs_W50",
+                    "n_runs_W80", "total_width_W20_um", "total_width_W50_um",
+                    "total_width_W80_um", "censored_W20", "censored_W50",
+                    "censored_W80", "W_affected_um", "left_slope", "right_slope",
+                    "edge_asymmetry", "ridge_left_um", "ridge_right_um",
+                    "ridge_separation_um", "profile_skewness"):
+            out[key] = np.nan
+        return out
+    d_n = values / d_max
+    for key, q in Q_BY_KEY.items():
+        above = np.isfinite(d_n) & (d_n >= q)
+        if not above.any():
+            out[f"{key}_um"] = np.nan
+            out[f"n_runs_{key}"] = 0
+            out[f"total_width_{key}_um"] = 0.0
+            out[f"censored_{key}"] = False
+            continue
+        edges = np.flatnonzero(np.diff(np.concatenate(([0], above.view(np.int8), [0]))))
+        starts, stops = edges[0::2], edges[1::2]
+        runs = [(int(a), int(b - 1)) for a, b in zip(starts, stops)]
+        widths, censor_flags = [], []
+        for run in runs:
+            v_left, v_right, cen_l, cen_r = _run_boundaries(
+                d_n, v_positions, run, q, dv)
+            widths.append(v_right - v_left)
+            censor_flags.append(bool(cen_l or cen_r))
+        best = int(np.argmax(widths))
+        out[f"{key}_um"] = float(widths[best])
+        out[f"n_runs_{key}"] = len(runs)
+        out[f"total_width_{key}_um"] = float(np.sum(widths))
+        out[f"censored_{key}"] = bool(censor_flags[best])
+    # affected width (secondary): longest run of |D| > delta beyond the groove
+    delta = affected_delta_um
+    signed = np.isfinite(values) & (np.abs(values) > delta)
+    if signed.any():
+        edges = np.flatnonzero(np.diff(np.concatenate(([0], signed.view(np.int8), [0]))))
+        starts, stops = edges[0::2], edges[1::2]
+        spans = [(positions[b - 1] - positions[a]) for a, b in zip(starts, stops)]
+        out["W_affected_um"] = float(np.max(spans)) + dv
+    else:
+        out["W_affected_um"] = 0.0
+    # groove-wall slopes around D_max, edge asymmetry, ridges
+    k = int(np.nanargmax(values))
+    best = None
+    above50 = np.isfinite(d_n) & (d_n >= 0.5)
+    if above50.any():
+        edges = np.flatnonzero(np.diff(np.concatenate(([0], above50.view(np.int8), [0]))))
+        starts, stops = edges[0::2], edges[1::2]
+        runs = [(int(a), int(b - 1)) for a, b in zip(starts, stops)]
+        best = max(runs, key=lambda r: r[1] - r[0])
+    if best is not None and best[0] <= k <= best[1]:
+        left_idx, right_idx = best
+        out["edge_asymmetry"] = float(
+            ((positions[right_idx] - positions[k]) - (positions[k] - positions[left_idx]))
+            / max(positions[right_idx] - positions[left_idx], 1e-12))
+        left_seg = slice(left_idx, k + 1)
+        right_seg = slice(k, right_idx + 1)
+        out["left_slope"] = _slope(positions[left_seg], values[left_seg])
+        out["right_slope"] = _slope(positions[right_seg], values[right_seg])
+        out["ridge_left_um"] = _ridge(values, positions, slice(0, left_idx))
+        out["ridge_right_um"] = _ridge(values, positions, slice(right_idx + 1, values.size))
+        ridge_sep = np.nan
+        left_part = values[:left_idx]
+        right_part = values[right_idx + 1:]
+        left_trough = (float(-np.nanmin(left_part))
+                       if left_part.size and np.isfinite(left_part).any() else 0.0)
+        right_trough = (float(-np.nanmin(right_part))
+                        if right_part.size and np.isfinite(right_part).any() else 0.0)
+        if left_trough > 0 and right_trough > 0:
+            l_arg = int(np.nanargmin(left_part))
+            r_arg = right_idx + 1 + int(np.nanargmin(right_part))
+            ridge_sep = abs(float(positions[r_arg]) - float(positions[l_arg]))
+        out["ridge_separation_um"] = ridge_sep
+    else:
+        out["edge_asymmetry"] = np.nan
+        out["left_slope"] = np.nan
+        out["right_slope"] = np.nan
+        out["ridge_left_um"] = _ridge(values, positions, slice(0, k))
+        out["ridge_right_um"] = _ridge(values, positions, slice(k + 1, values.size))
+        out["ridge_separation_um"] = np.nan
+    finite_vals = values[finite]
+    centered = finite_vals - finite_vals.mean()
+    std = float(centered.std())
+    out["profile_skewness"] = float(np.mean(centered**3) / std**3) if std > 0 else 0.0
+    return out
+
+
+def _slope(x: np.ndarray, y: np.ndarray) -> float:
+    mask = np.isfinite(y)
+    if mask.sum() < 2:
+        return np.nan
+    x, y = x[mask], y[mask]
+    if np.ptp(x) <= 0:
+        return np.nan
+    return float(np.polyfit(x, y, 1)[0])
+
+
+def _ridge(values: np.ndarray, positions: np.ndarray, seg: slice) -> float:
+    part = values[seg]
+    if part.size == 0 or not np.isfinite(part).any():
+        return 0.0
+    return float(max(0.0, -np.nanmin(part)))
+
+
+def aggregate_line(sections: pd.DataFrame, *, min_sections: int,
+                   censored_frac_limit: float) -> dict:
+    """Frozen line-level aggregates + width_identifiability (§4.3)."""
+    used = sections[sections["n_above_threshold"] > 0].reset_index(drop=True)
+    row: dict[str, float | str] = {
+        "n_sections_total": int(len(sections)),
+        "n_sections_used": int(len(used)),
+    }
+    for key in WIDTH_Q_KEYS:
+        column = f"{key}_um"
+        uncensored = used[~used[f"censored_{key}"].astype(bool)][column].dropna()
+        all_values = used[column].dropna()
+        row[f"median_{key}_um"] = float(uncensored.median()) if len(uncensored) else np.nan
+        row[f"iqr_{key}_um"] = (float(uncensored.quantile(0.75) - uncensored.quantile(0.25))
+                                if len(uncensored) else np.nan)
+        row[f"p10_{key}_um"] = float(uncensored.quantile(0.10)) if len(uncensored) else np.nan
+        row[f"p90_{key}_um"] = float(uncensored.quantile(0.90)) if len(uncensored) else np.nan
+        row[f"censored_frac_{key}"] = (float(used[f"censored_{key}"].astype(bool).mean())
+                                       if len(used) else np.nan)
+        row[f"n_uncensored_sections_{key}"] = int(len(uncensored))
+    median_w50 = row["median_W50_um"]
+    iqr_w50 = row["iqr_W50_um"]
+    row["CV_W50"] = (iqr_w50 / median_w50) if (np.isfinite(median_w50)
+                                               and median_w50 > 0 and np.isfinite(iqr_w50)) else np.nan
+    row["median_W_eq_um"] = float(used["W_eq_um"].dropna().median()) if len(used) else np.nan
+    row["median_max_depth_um"] = float(used["D_max_um"].dropna().median()) if len(used) else np.nan
+    if row["n_sections_used"] < min_sections:
+        row["width_identifiability"] = "insufficient_sections"
+    elif (np.isfinite(row["censored_frac_W50"])
+          and row["censored_frac_W50"] > censored_frac_limit):
+        row["width_identifiability"] = "right_censored"
+    else:
+        row["width_identifiability"] = "estimable"
+    return row
+
+
+# --------------------------------------------------------------------------- #
+# Phase 2.5-side new descriptors (§0.2 / §0.18)
+# --------------------------------------------------------------------------- #
+def lambda_star_4_32(radial_long: pd.DataFrame, *, window_um: tuple[float, float],
+                     guard: float) -> pd.DataFrame:
+    """Energy-weighted geometric-mean wavelength inside [window), with NA guard.
+
+    Input: `radial_spectrum_long.csv` (dataset_index, lambda_geo_um, energy,...).
+    Output columns: lambda_star_4_32_um, lambda_star_valid, band_energy_fraction.
+    """
+    rows = []
+    for index, frame in radial_long.groupby("dataset_index"):
+        energy = frame["energy"].to_numpy(dtype=float)
+        lam = frame["lambda_geo_um"].to_numpy(dtype=float)
+        inside = (lam >= window_um[0]) & (lam < window_um[1])
+        total = float(energy.sum())
+        band = float(energy[inside].sum())
+        fraction = band / total if total > 0 else 0.0
+        valid = bool(inside.any() and total > 0 and fraction >= guard)
+        value = (float(np.exp(np.sum(energy[inside] * np.log(lam[inside])) / band))
+                 if valid else np.nan)
+        rows.append({"dataset_index": int(index),
+                     "band_energy_fraction_4_32": fraction,
+                     "lambda_star_valid": valid,
+                     "lambda_star_4_32_um": value})
+    return pd.DataFrame(rows)
+
+
+def lambda_peak_4_32(radial_long: pd.DataFrame, *, window_um: tuple[float, float],
+                     n_modes_min: int, share_min: float) -> pd.DataFrame:
+    """Restricted spectral peak with validity gates (H2 primary, §0.18).
+
+    Bins with n_modes < n_modes_min are dropped from the peak search; the peak
+    bin must additionally hold >= share_min of the window energy.
+    """
+    rows = []
+    for index, frame in radial_long.groupby("dataset_index"):
+        frame = frame.assign(
+            lam=frame["lambda_geo_um"].to_numpy(dtype=float),
+            e=frame["energy"].to_numpy(dtype=float),
+            modes=frame["n_modes"].to_numpy(dtype=float))
+        inside = (frame["lam"] >= window_um[0]) & (frame["lam"] < window_um[1])
+        candidate = frame[inside & (frame["modes"] >= n_modes_min)]
+        window_energy = float(frame.loc[inside, "e"].sum())
+        if not len(candidate) or window_energy <= 0:
+            rows.append({"dataset_index": int(index), "lambda_peak_valid": False,
+                         "lambda_peak_4_32_um": np.nan,
+                         "peak_energy_share_in_window": 0.0})
+            continue
+        top = candidate.loc[candidate["e"].idxmax()]
+        share = float(top["e"]) / window_energy
+        valid = bool(share >= share_min)
+        rows.append({"dataset_index": int(index), "lambda_peak_valid": valid,
+                     "lambda_peak_4_32_um": float(top["lam"]) if valid else np.nan,
+                     "peak_energy_share_in_window": share})
+    return pd.DataFrame(rows)
+
+
+# --------------------------------------------------------------------------- #
+# Bridge helpers (§0.1 / §0.17 / §0.19)
+# --------------------------------------------------------------------------- #
+def in_box_mask(manifest: pd.DataFrame, box: dict) -> pd.Series:
+    """Closed-interval box membership on (tau, f, v, N) (frozen 101/200)."""
+    return (manifest["pulse_duration_fs"].between(*box["tau_fs"])
+            & manifest["frequency_kHz"].between(*box["f_khz"])
+            & manifest["velocity_mm_s"].between(*box["v_mm_s"])
+            & manifest["pass_count"].between(*box["pass"]))
+
+
+def condition_key(manifest: pd.DataFrame) -> pd.Series:
+    return (manifest["pulse_duration_fs"].astype(str) + ":"
+            + manifest["frequency_kHz"].astype(str) + ":"
+            + manifest["pass_count"].astype(str) + ":"
+            + manifest["velocity_mm_s"].astype(str))
+
+
+def shuffle_h_by_block(manifest: pd.DataFrame, *, unit_columns: tuple[str, ...],
+                       seed: int) -> pd.Series:
+    """Permute the hatch assignment at the DOE assignment unit level (§0.19).
+
+    Units are unique `unit_columns` tuples; hatch is constant within a unit
+    (verified on the frozen manifest); permutation happens independently inside
+    each session block so block sizes and within-unit sharing are preserved.
+    """
+    require((manifest.groupby(list(unit_columns))["hatch_spacing_um"]
+             .nunique() == 1).all(),
+            "HARD ASSERTION FAILED: hatch must be constant within a shuffle unit")
+    rng = np.random.default_rng(seed)
+    shuffled = manifest["hatch_spacing_um"].astype(float).copy()
+    for _, block in manifest.groupby("session_id", sort=False):
+        grouped = block.groupby(list(unit_columns), sort=False)
+        unit_labels = list(grouped.groups.values())
+        values = np.array([block.loc[labels[0], "hatch_spacing_um"]
+                           for labels in unit_labels], dtype=float)
+        order = rng.permutation(values.size)
+        for labels, position in zip(unit_labels, order):
+            shuffled.loc[labels] = values[position]
+    return shuffled
+
+
+def scan_plateau_features(profiles: np.ndarray, threshold_um: float,
+                          dv: float) -> tuple[np.ndarray, np.ndarray]:
+    """Per-position plateau descriptors at the fine scan step.
+
+    `depth_p95` = P95 of the positive removal depth (the pilot longitudinal
+    descriptor; tracks the local deepest valid pixel, hence cone-core
+    sensitive); `abs_width` = longest above-threshold run x dv (pilot-style
+    absolute-threshold width).  Both are used ONLY to choose the stable
+    region (§0.15 rev2 refinement) -- the reported widths remain the frozen
+    relative d_n family.
+    """
+    n = profiles.shape[0]
+    depth_p95 = np.zeros(n, dtype=float)
+    abs_width = np.zeros(n, dtype=float)
+    for i in range(n):
+        prof = profiles[i]
+        finite = np.isfinite(prof)
+        if not finite.any():
+            continue
+        positive = np.where(finite & (prof > 0), prof, np.nan)
+        depth_p95[i] = (float(np.nanpercentile(positive, 95))
+                        if np.isfinite(positive).any() else 0.0)
+        above = finite & (prof > threshold_um)
+        if not above.any():
+            continue
+        edges = np.flatnonzero(np.diff(np.concatenate(
+            ([0], above.view(np.int8), [0]))))
+        starts, stops = edges[0::2], edges[1::2]
+        run_spans = [b - a + 1 for a, b in zip(starts, stops)]
+        abs_width[i] = float(max(run_spans) * dv)
+    return depth_p95, abs_width
+
+
+class FragmentedStableRegion(ValueError):
+    """The chosen plateau run is a pathological fragment of the on-line span
+    (e.g. a discrete-mode double-crater line); the line needs human QA
+    instead of a silent automatic region."""
+
+
+def plateau_stable_run(s_scan: np.ndarray, online: np.ndarray,
+                       depth_p95: np.ndarray, abs_width: np.ndarray, *,
+                       depth_frac: float, ref_quantile: float,
+                       width_band_frac: float, gap_merge_um: float,
+                       min_stable_len_um: float = 60.0,
+                       min_stable_frac: float = 0.5
+                       ) -> tuple[np.ndarray, float, float]:
+    """Longest contiguous qualifying run: on-line with plateau-level depth.
+
+    Depth reference = P`ref_quantile` of depth_p95 over on-line positions
+    (median is pulled down by entry/exit ramps); positions below
+    `depth_frac` x reference are shallow partial-ablation ramps.  The
+    optional width band (`width_band_frac`, revoked in the frozen config for
+    brittleness at scale but kept switchable) would additionally cut
+    deep-but-narrow shoulder segments.  Legitimate interior depth
+    oscillation passes by design.  Gaps up to `gap_merge_um` are bridged;
+    larger violations block the merge.  A chosen run shorter than
+    max(`min_stable_len_um`, `min_stable_frac` x on-line span) raises
+    `FragmentedStableRegion` (human QA path) instead of silently selecting a
+    pathological fragment.  Returns (membership flags, run_start, run_end).
+    """
+    require(online.any(), "no on-line positions for plateau selection")
+    reference = float(np.quantile(depth_p95[online], ref_quantile))
+    qualify = online & (depth_p95 >= depth_frac * reference)
+    if width_band_frac is not None:
+        qualify = qualify & (abs_width >= width_band_frac
+                             * float(np.median(abs_width[online])))
+    if not qualify.any():
+        raise ValueError("no position passes the plateau bands")
+    runs: list[tuple[int, int]] = []
+    start = None
+    for index, flag in enumerate(qualify):
+        if flag and start is None:
+            start = index
+        if (not flag or index == qualify.size - 1) and start is not None:
+            end = index if flag else index - 1
+            runs.append((start, end))
+            start = None
+    merged: list[list[int]] = []
+    for run in runs:
+        if merged and (s_scan[run[0]] - s_scan[merged[-1][1]]) <= gap_merge_um:
+            merged[-1][1] = run[1]
+        else:
+            merged.append(list(run))
+    longest = max(merged, key=lambda r: s_scan[r[1]] - s_scan[r[0]])
+    lo, hi = float(s_scan[longest[0]]), float(s_scan[longest[1]])
+    online_span = float(s_scan[online].max() - s_scan[online].min()) if online.any() else 0.0
+    guard = max(min_stable_len_um, min_stable_frac * online_span)
+    if hi - lo < guard:
+        raise FragmentedStableRegion(
+            f"plateau run {hi - lo:.1f} um < guard {guard:.1f} um "
+            f"(on-line span {online_span:.1f} um); needs human QA")
+    # membership = qualifying positions inside the chosen run ONLY: bridged
+    # shallow dips stay inside the interval but never host sections, so
+    # shallow partial-ablation retention is zero by construction (§0.15)
+    return qualify & (s_scan >= lo) & (s_scan <= hi), lo, hi
+
+
+# --------------------------------------------------------------------------- #
+# Pilot reconciliation (§0.15)
+# --------------------------------------------------------------------------- #
+def reconcile_stable_region(my_frame: pd.DataFrame, pilot: pd.DataFrame, *,
+                            groups: tuple[int, ...], tol_um: float,
+                            shallow_frac: float, hard_depth_ratio: float,
+                            max_shift_um: float = 30.0) -> pd.DataFrame:
+    """Stable-region reconciliation against the pilot flags (§0.15 rev2).
+
+    Matching is aligned first by cross-correlation over +/-`max_shift_um`
+    (the three origin conventions -- sampling anchor, detected-extent center,
+    pilot center -- are not interchangeable; the estimated shift is reported
+    per group).  The pilot flags encode a per-line, pipeline-driven cut that
+    is NOT locally reconstructible, so the gated quantity is SEVERITY-GRADED:
+    a retained pilot-excluded point is a HARD invasion only when it is true
+    partial ablation (depth_p95 < `hard_depth_ratio` x the kept-reference
+    P90); band-edge points between the selection band (0.5 x P90 over online)
+    and the stricter kept-reference band are inventory only.  Precision /
+    recall / agreement are informational divergence inventory.
+
+    `my_frame` needs (加工顺序, s_center_um, stable_flag, depth_p95) rows at
+    1-um scan step; pilot rows are matched within `tol_um` on
+    center-relative s.
+    """
+    records = []
+    for group in groups:
+        mine = my_frame[my_frame["加工顺序"] == group]
+        theirs = pilot[pilot["加工顺序"] == group].copy()
+        if not len(mine) or not len(theirs):
+            continue
+        theirs["s_pilot"] = theirs["s_um"].astype(float)
+        mine = mine.assign(s_center_um=mine["s_center_um"].astype(float))
+        pilot_s = theirs["s_pilot"].to_numpy(dtype=float)
+        pilot_kept = theirs["included_in_stable_region"].astype(bool).to_numpy()
+        my_s = mine["s_center_um"].to_numpy(dtype=float)
+        my_kept = mine["stable_flag"].astype(bool).to_numpy()
+        my_depth = mine["depth_p95"].to_numpy(dtype=float)
+        best = None
+        for shift in np.arange(-max_shift_um, max_shift_um + 1e-9, 1.0):
+            mapped = my_s - shift
+            right = np.searchsorted(pilot_s, mapped)
+            left = np.clip(right - 1, 0, pilot_s.size - 1)
+            choose = np.where(
+                np.abs(pilot_s[right.clip(0, pilot_s.size - 1)] - mapped)
+                <= np.abs(pilot_s[left] - mapped), right.clip(0, pilot_s.size - 1), left)
+            hit = np.abs(pilot_s[choose] - mapped) <= tol_um
+            if not hit.any():
+                continue
+            agreement = float((my_kept[hit] == pilot_kept[choose[hit]]).mean())
+            if best is None or agreement > best[0]:
+                best = (agreement, float(shift), choose.copy(), hit.copy())
+        if best is None:
+            continue
+        _, shift, choose, hit = best
+        m_kept = my_kept[hit]
+        t_kept = pilot_kept[choose[hit]]
+        depth = my_depth[hit]
+        kept_depth = depth[m_kept]
+        reference = (float(np.quantile(kept_depth, 0.90))
+                     if kept_depth.size else np.nan)
+        shallow_excluded = (~t_kept) & (depth < shallow_frac * reference)
+        shallow_invaded = m_kept & shallow_excluded
+        n_shallow = int(shallow_excluded.sum())
+        n_invaded = int(shallow_invaded.sum())
+        if n_invaded and reference > 0:
+            ratios = depth[shallow_invaded] / reference
+            min_ratio = float(ratios.min())
+            n_hard = int((ratios < hard_depth_ratio).sum())
+        else:
+            min_ratio, n_hard = np.nan, 0
+        both = m_kept & t_kept
+        records.append({
+            "加工顺序": group,
+            "alignment_shift_um": shift,
+            "n_matched": int(hit.sum()),
+            "n_unmatched_pilot": int(pilot_s.size - len(np.unique(choose[hit]))),
+            "n_shallow_excluded": n_shallow,
+            "n_shallow_invaded": n_invaded,
+            "invaded_min_depth_ratio": min_ratio,
+            "n_hard_invaded": n_hard,
+            "shallow_invasion_frac": (float(n_invaded / n_shallow)
+                                      if n_shallow else 0.0),
+            "precision": float(both.sum() / m_kept.sum()) if m_kept.any() else np.nan,
+            "recall": float(both.sum() / t_kept.sum()) if t_kept.any() else np.nan,
+            "agreement": float((m_kept == t_kept).mean()),
+        })
+    return pd.DataFrame(records)
+
+
+def assign_class(r: np.ndarray, valid: np.ndarray) -> np.ndarray:
+    """Five-class codes: 0=INVALID (not peak-valid or non-finite r), 1=OUT,
+    2..4 = m1..m3.  Mutually exclusive closed intervals -- no tie logic."""
+    r = np.asarray(r, dtype=float)
+    out = np.full(r.shape, CODE_OUT, dtype=int)
+    valid = np.asarray(valid, dtype=bool) & np.isfinite(r)
+    out[~valid] = CODE_INVALID
+    for code, m in ((CODE_M1, 1), (CODE_M2, 2), (CODE_M3, 3)):
+        lo, hi = INTERVALS[m]
+        out[valid & (r >= lo) & (r <= hi)] = code
+    return out
+
+
+def q_distribution(classes: np.ndarray, codes=CLASS_NAMES) -> np.ndarray:
+    """Five-class probability vector over `codes` order."""
+    classes = np.asarray(classes, dtype=int)
+    return np.array([(classes == code).mean() for code in range(5)])
+
+
+def profile_suitable(profile: np.ndarray, *, edge_frac_max: float = 0.15
+                     ) -> bool:
+    """Profile edges must return to background (≤ edge_frac_max × D_max)."""
+    g = np.asarray(profile, dtype=float)
+    finite = np.isfinite(g)
+    if not finite.any():
+        return False
+    d_max = float(np.nanmax(g))
+    if d_max <= 0:
+        return False
+    edge = float(np.nanmax(np.abs(np.r_[g[:3], g[-3:]])))
+    return edge <= edge_frac_max * d_max
