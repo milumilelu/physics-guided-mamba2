@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import itertools
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -28,6 +29,8 @@ import yaml
 from sklearn.model_selection import GroupKFold, GroupShuffleSplit
 
 REPO = Path(__file__).resolve().parents[2]
+if str(REPO) not in sys.path:
+    sys.path.insert(0, str(REPO))
 
 _spec = importlib.util.spec_from_file_location(
     "phase1_5_lib",
@@ -80,25 +83,21 @@ def output_dir(cfg: dict, sub: str = "") -> Path:
 
 
 # --------------------------------------------------------------------------- #
-# derived process coordinates
+# derived process coordinates -- canonical implementations now live in
+# src/provenance.py (WP1 migration; parity-tested in
+# tests/test_src_provenance.py).  The frozen legacy names are kept as thin
+# re-exports so build_manifest and its tests are untouched
+# (Phase 2.8 v2.1 §4.2 migration protocol step 5).  Power provenance:
+# P_obj = 5.3333 W is the canonical post-objective measurement; the `_proxy`
+# function names are legacy aliases kept for the Phase 2-2.7 chain.
 # --------------------------------------------------------------------------- #
 
-def pulse_energy_proxy_uJ(power_w: float, f_khz) -> np.ndarray:
-    return 1000.0 * float(power_w) / np.asarray(f_khz, dtype=float)
-
-
-def scan_spacing_um(v_mm_s, f_khz) -> np.ndarray:
-    return np.asarray(v_mm_s, dtype=float) / np.asarray(f_khz, dtype=float)
-
-
-def areal_pulse_density(n_pass, f_khz, v_mm_s, h_um) -> np.ndarray:
-    return 1e6 * np.asarray(n_pass, dtype=float) * np.asarray(f_khz, dtype=float) \
-        / (np.asarray(v_mm_s, dtype=float) * np.asarray(h_um, dtype=float))
-
-
-def areal_dose_proxy_j_mm2(power_w: float, n_pass, v_mm_s, h_um) -> np.ndarray:
-    return 1000.0 * float(power_w) * np.asarray(n_pass, dtype=float) \
-        / (np.asarray(v_mm_s, dtype=float) * np.asarray(h_um, dtype=float))
+from src.provenance import (  # noqa: E402
+    areal_dose_J_per_mm2 as areal_dose_proxy_j_mm2,
+    areal_pulse_density,
+    pulse_energy_uJ as pulse_energy_proxy_uJ,
+    scan_spacing_um,
+)
 
 
 def _g(x) -> str:

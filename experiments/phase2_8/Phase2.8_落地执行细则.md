@@ -57,7 +57,9 @@ A 通道 parity：`sqrt(mean(R²))`（valid mask 上）与 manifest `residual_Sq
 | 序 | 模块 | 迁入函数（来源） | 测试文件 |
 |---|---|---|---|
 | 1 | `src/data.py` | l15 `load_frozen`；包一层 `src.io_npz/io_cag` reader 门面 | `tests/test_src_data.py` |
-| 2 | `src/provenance.py` | p2 `pulse_energy_proxy_uJ/scan_spacing_um/areal_pulse_density/areal_dose_proxy_j_mm2`（legacy 派生）+ `log/require/load_config/output_dir`（各 `_lib` 同名合并）+ **新** `POWER_REGISTRY`、`canonical_power_columns(man)` | `tests/test_src_provenance.py` |
+| 2 | `src/provenance.py` | p2 `pulse_energy_proxy_uJ/scan_spacing_um/areal_pulse_density/areal_dose_proxy_j_mm2`（legacy 派生）+ `log/require` + **新** `POWER_REGISTRY`、`canonical_power_columns(man)`、`assert_canonical_power_parity(man)` | `tests/test_src_provenance.py` |
+
+执行修订（2026-09-05 登记）：① 实际迁移顺序 provenance **先于** data（`load_frozen` 依赖 `require/log`，依赖序要求）；② `load_config/output_dir` **保持 phase-local**——各 phase 的 CLI 适配器语义不同（l15 用 `--config`+strict parse，p27 用 `--quick`+parse_known_args；output_root 约定也不同），统一会改动冻结脚本的 CLI 行为，不属共享科学实现，不迁移；③ 迁移中对 `_lib` 文件补 `sys.path`（REPO）插入以保证直接 import 场景可用。
 | 3 | `src/cv.py` | p2 `gkf_splits/gss_splits/_group_sets/check_gkf_contract/check_gss_contract`；p26 `make_ridge_alpha_grid/make_ridge/ridge_alpha_inner_gkf`（语义冻结为 `_v1`）+ **新** `select_alpha_inner(X, y, groups, *, scorer, n_splits=5, grid=None)`（scorer ∈ {mse, multi_mse, aitchison_ilr_q2}） | `tests/test_src_cv.py` |
 | 4 | `src/composition.py` | p25 `five_part_composition/frozen_band_fractions/apply_zero_replacement/ilr_matrix(ILR_A)/ilr_transform/ilr_inverse/aitchison_distance` | `tests/test_src_composition.py` |
 | 5 | `src/spectrum.py` | p25 `radial_spectrum/spectrum_descriptors/directional_band_metrics`；l15 `dct_lambda_grid` | `tests/test_src_spectrum.py` |
