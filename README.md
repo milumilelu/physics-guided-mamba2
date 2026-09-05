@@ -25,19 +25,19 @@ Phase 3    预测建模（未开始——先完成结构收敛 + confirmation �
 | 单线扫描 | 120 | 285×17.8 µm @ 0.278657 µm/px，四因素 DOE |
 | 72 组单脉冲 | 72 | 无设计表，排除 |
 
-矩形 ROI 来自 160 个独立 measurement（120 formal + 60 pass + 20 supplement）。
+矩形主数据共 **200 个 ROI / 实验记录**（120 formal + 60 pass_main + 20 pass_supplement），对应 **160 个唯一 height-source**（`shared_height_source_id`，即部分 measurement 含多个 ROI）与 **134 个 `cv_process_group`**。统计独立性由分组变量单独定义，不以"independent measurement"表述。
 
 ## 核心结论（截至 Phase 2.7r1）
 
 - **Route T（方向纹理）**：hatch spacing 单变量几乎承载全部预测能力（ΔR²_h = 0.651/0.645，proc 同向）
 - **Route P（谱组成）**：多因素共同调节（ΔR²_h = 0.181/0.350，去 h 后仍有独立贡献）
 - **单轨宽度不在 8–16 µm 带内**（pooled W50 = 5.78 µm）
-- **λ_peak/h 聚集于 {1,2,3}**（A_obs 0.904，p=0.0001），P(m=2|h) 随 h 单调递减
+- **λ_peak/h 聚集于 {1,2,3}**（A_obs 0.904，TV 置换 p=0.0001）；m=2 份额逐 h 描述递减，但 block permutation 后 h-dependence 不显著（p=0.4103，descriptive only）
 - **简单线性叠加模型不足以重现峰选择**（G27-3 MODEL_INADEQUATE）
 
 ## 已知风险与限制
 
-- 功率 provenance：P = 5.3333 W 无独立测量记录 → `pulse_energy_proxy` 保持 proxy
+- 功率（已登记项，非风险）：P_obj = 5.3333 W 为**物镜后独立实测平均功率**（post-objective average power，测量物理可信），已升级 canonical 物理输入并登记于 `src/provenance.py`（`POWER_REGISTRY`）；仪器型号/日期元数据 unavailable。Phase 2–2.7 的 `pulse_energy_proxy_uJ` / `areal_dose_proxy_J_per_mm2` 旧列保留供复现，Phase 2.8 起用 canonical 列（`pulse_energy_uJ` / `areal_dose_J_per_mm2`）。注意 P 恒定 ⇒ f 与 E_p 完全耦合（frequency / pulse-energy coupled effect）
 - 方向 provenance：无逐样本 scan/hatch 方向 → G-SL4 / G27-4 均为 NOT_APPLICABLE
 - 单线 QA 由 AI 辅助标注（GPT），如需论文核心机制证据应补双人独立盲标
 - Discovery/Confirmation 未分离：当前 200 样本同时用于探索与报告
