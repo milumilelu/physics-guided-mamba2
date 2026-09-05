@@ -58,13 +58,18 @@ class GoldenAnchors(unittest.TestCase):
         self.assertEqual(hd["flag"], "NO")
 
     def test_g27_3_envelope_array_model(self):
+        # 2.7r2 values (weighted-LOHO recalibration; external review found
+        # the r1 main statistic was a macro mean while the bootstrap was
+        # weighted).  r1 values, superseded: tv_w_constant 0.4245949074074074,
+        # tv_w_period2_loho 0.35469112596305574, delta_tv 0.06990378144435166.
         doc = _load("gsl27_3_evaluation.json")
+        self.assertEqual(doc["revision"], "2.7r2")
         self.assertEqual(doc["G_SL27_3"], "MODEL_INADEQUATE")
-        self.assertEqual(doc["tv_w_constant"], 0.4245949074074074)
-        self.assertEqual(doc["tv_w_period2_loho"], 0.35469112596305574)
-        self.assertEqual(doc["delta_tv"], 0.06990378144435166)
-        self.assertEqual(doc["bootstrap_ci_low"], 0.028577491181657866)
-        self.assertEqual(doc["p_boot"], 0.001999000499750125)
+        self.assertEqual(doc["tv_w_constant"], 0.6151350308641975)
+        self.assertEqual(doc["tv_w_period2_loho"], 0.5290432098765432)
+        self.assertEqual(doc["delta_tv"], 0.08609182098765433)
+        self.assertEqual(doc["bootstrap_ci_low"], 0.018792438271604928)
+        self.assertEqual(doc["p_boot"], 0.004997501249375313)
 
 
 if __name__ == "__main__":

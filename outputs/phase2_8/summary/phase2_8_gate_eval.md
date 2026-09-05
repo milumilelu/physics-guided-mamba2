@@ -37,7 +37,7 @@ exact-repeat 对（dataset 48/49，唯一同 u 对）d_φ=0.982，处 random-ord
 
 ## 2. Task 25（2.8B）— G28-B1 三比较均未达成；G28-B2 双轴分化显著
 
-Population：**19 候选条件 → 13 条件有线匹配（=2.7r1 3A 的 13）→ 7 可用行 / 7 kernel groups**（6 行因 λ_peak 不可观测合法剔除，逐行登记；无 profile_unsuitable——81/81 线 profile suitable）。子集观察类别 = 5×m1 + 2×m2，全部 h∈{6,8,10}。n=7 是登记在案的硬限制。
+Population：**19 候选条件 → 13 条件有线匹配（=2.7r1 3A 的 13）→ 7 可用行 / 7 kernel groups**（kernel 库由 2.7r2 修正后的共享提取路径重建——`src.data.build_line_profile_library`：plateau membership FLAGS + 视场外 0 深度；本表数字为 r2-kernel 重算值，与 r1-kernel 首算的差异仅 L2 微移 0.353→0.357，其余各级不变）（6 行因 λ_peak 不可观测合法剔除，逐行登记；无 profile_unsuitable——81/81 线 profile suitable）。子集观察类别 = 5×m1 + 2×m2，全部 h∈{6,8,10}。n=7 是登记在案的硬限制。
 
 ### 2.1 主指标 TV_cond（out-of-group，逐 condition-matched）
 
@@ -45,9 +45,9 @@ Population：**19 候选条件 → 13 条件有线匹配（=2.7r1 3A 的 13）�
 |---|---|---|---|---|
 | L0 kernel-only | 0.857 | — | — | — |
 | L1 linear | 0.344 | — | — | — |
-| L2 饱和 | 0.353 | −0.009 | [−0.027, 0.000] | not achieved |
+| L2 饱和 | 0.357 | −0.013 | [−0.040, 0.000] | not achieved |
 | L3a alternating | 0.571 | −0.228 | [−0.563, 0.000] | not achieved |
-| **L3b pairwise** | **0.286** | **+0.058** | **[0.000, 0.125]** | **not achieved**（CI 下界 = 0，未严格 > 0；Bonferroni 98.33% 下界亦 0） |
+| **L3b pairwise** | **0.286** | **+0.058** | **[0.000, 0.138]** | **not achieved**（CI 下界 = 0，未严格 > 0；Bonferroni 98.33% 下界亦 0） |
 
 参数（LOGO_kernel，训练组 only）：L2 D_sat\* = 45.25 µm（全部组——近似线性，与 L2≈L1 一致）；L3a c\* ∈ {0（5 组）, 0.2（2 组）}；L3b γ\* = −0.5 µm⁻¹（全部组，网格负端点）。guard（校正量判据，tol=0.01 µm）：L2 逐组剔 1 个（小 D_sat）、L3a 逐组剔 4 个（大 c）、L3b 无剔除；候选永不 clip。
 
@@ -67,7 +67,7 @@ Population：**19 候选条件 → 13 条件有线匹配（=2.7r1 3A 的 13）�
 
 ### 2.3 描述性（不进 Gate）
 
-Spearman(O(h), observed class) = 0.00；Spearman(r_pred, r_observed) = −0.12（n=7，无关联证据）；L1→L2→L3b 单调性 = 0.344 → 0.353 → 0.286（L3b 单调改善，L2 平）。
+Spearman(O(h), observed class) = 0.00；Spearman(r_pred, r_observed) = −0.12（n=7，无关联证据）；L1→L2→L3b 单调性 = 0.344 → 0.357 → 0.286（L3b 单调改善，L2 平）。
 
 ---
 

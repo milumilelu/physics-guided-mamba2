@@ -33,7 +33,7 @@ Phase 3    预测建模（先做 repeatability matrix 第一批实验，见 expe
 - **Route P（谱组成）**：多因素共同调节（ΔR²_h = 0.181/0.350，去 h 后仍有独立贡献）
 - **单轨宽度不在 8–16 µm 带内**（pooled W50 = 5.78 µm）
 - **λ_peak/h 聚集于 {1,2,3}**（A_obs 0.904，TV 置换 p=0.0001）；m=2 份额逐 h 描述递减，但 block permutation 后 h-dependence 不显著（p=0.4103，descriptive only）
-- **简单线性叠加模型不足以重现峰选择**（G27-3 MODEL_INADEQUATE）
+- **简单线性叠加模型不足以重现峰选择**（G27-3 MODEL_INADEQUATE，2.7r2 统计契约修正后封账：TV_w 0.615/0.529 双双 >0.30；own-envelope 直接证据 2/3 反向）
 - **Phase 2.8A 统一协议谱表**（Q²，G28-A VALID）：方向组织 O_θ 0.64–0.66（Δ_h 0.64，h 近乎充分）≫ 尺度组成 P_λ 0.31（Δ_h 0.18）≫ 幅度 A 0.16；**深度 D 可预测 0.55 但几乎不由 h 承载**（−h 仍 0.50，τ/f/N/v 共同控制）；h 主导严格限于 8–16 µm 基频带（16–32 带 ~0.14）
 - **Phase 2.8A realization diagnostic**：同工艺重复对的 Fourier-phase 距离处随机对第 32 百分位——波峰落点不受工艺控制（描述性）
 - **Phase 2.8B**（n=7 usable，硬限制）：TV_cond L1 0.344 / L3b 0.286 / L3a 0.571；B1 三比较均未达成（L3b Δ=+0.058 达门槛但 CI 下界=0）；**负 γ cross-term（相邻轨去除竞争）是唯一正向信号**，进 Phase 3 预注册候选；pooled TV 的 "strong" 判级在逐条件指标下失真（L3a 例证），pooled 自此仅作 2.7 连续性参照
