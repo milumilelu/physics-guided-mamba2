@@ -115,78 +115,17 @@ from src.spectrum import (  # noqa: E402,F401
 # exact sign-flip enumeration (Task 13)
 # --------------------------------------------------------------------------- #
 
-def sign_matrix(m: int) -> np.ndarray:
-    """All 2^m sign configurations as an (2^m, m) float matrix (+1/-1)."""
-    bits = np.arange(m)
-    return 1.0 - 2.0 * ((np.arange(2 ** m)[:, None] >> bits) & 1)
-
-
-def exact_signflip_test(dz: np.ndarray) -> dict:
-    """Global mean-norm statistic with EXACT enumeration.
-
-    p_exact = #{T_null >= T_obs} / 2^m — no Monte-Carlo +1 correction; the
-    observed all-+1 configuration is part of the enumeration space, so
-    p >= 1/2^m automatically (细则 §0.16). Also returns coordinate-wise
-    two-sided exact p for each column mean.
-    """
-    dz = np.asarray(dz, dtype=float)
-    m = dz.shape[0]
-    require(m <= 20, f"exact enumeration with m={m} is infeasible")
-    S = sign_matrix(m).astype(float)
-    means = (S @ dz) / m
-    T = np.linalg.norm(means, axis=1)
-    T_obs = float(np.linalg.norm(dz.mean(axis=0)))
-    p_global = float(np.count_nonzero(T >= T_obs)) / 2 ** m
-    coord = []
-    for j in range(dz.shape[1]):
-        obs = abs(float(dz[:, j].mean()))
-        p_j = float(np.count_nonzero(np.abs(means[:, j]) >= obs)) / 2 ** m
-        coord.append({"coordinate": j, "mean_dz": float(dz[:, j].mean()),
-                      "p_exact_two_sided": p_j})
-    return {"T_obs": T_obs, "p_exact_global": p_global,
-            "n_configurations": 2 ** m, "coordinates": coord}
-
-
-def require_no_n4_to_5(steps) -> None:
-    """N4->5 is session-confounded (v2 §10.2): analysing that STEP is
-    forbidden. steps = iterable of (from_pass, to_pass) tuples."""
-    for s_from, s_to in steps:
-        require((int(s_from), int(s_to)) != (4, 5),
-                "N4->5 step is session-confounded and must not be analysed")
-
-
-# --------------------------------------------------------------------------- #
-# Moran I with kNN binary graph (Task 14B)
-# --------------------------------------------------------------------------- #
-
-def knn_row_standardized_graph(X: np.ndarray, k: int) -> np.ndarray:
-    D = np.sqrt(((X[:, None, :] - X[None, :, :]) ** 2).sum(-1))
-    np.fill_diagonal(D, np.inf)
-    idx = np.argpartition(D, k - 1, axis=1)[:, :k]
-    W = np.zeros((len(X), len(X)))
-    rows = np.repeat(np.arange(len(X)), k)
-    W[rows, idx.ravel()] = 1.0
-    W = np.maximum(W, W.T)                      # symmetric kNN graph
-    return W / np.maximum(W.sum(axis=1, keepdims=True), 1e-300)
-
-
-def moran_i(z: np.ndarray, W: np.ndarray) -> float:
-    zc = np.asarray(z, dtype=float) - np.mean(z)
-    return float((zc @ W @ zc) / max(zc @ zc, 1e-300))
-
-
-def moran_permutation_p(z: np.ndarray, W: np.ndarray, n_perm: int,
-                        seed: int) -> tuple[float, float]:
-    """Monte-Carlo permutation (NOT exact enumeration): keep the
-    (1+b)/(1+n_perm) correction here, unlike Task 13's exact test."""
-    rng = np.random.default_rng(seed)
-    i_obs = moran_i(z, W)
-    b = 0
-    for _ in range(n_perm):
-        if moran_i(rng.permutation(z), W) >= i_obs:
-            b += 1
-    return i_obs, (1 + b) / (1 + n_perm)
-
+# WP1 canonical migration (parity-tested, tests/test_src_statistics.py):
+# sign-flip / Moran statistics now live in src/statistics.py; frozen names
+# kept as thin re-exports (Phase 2.8 v2.1 section 4.2 migration step 5).
+from src.statistics import (  # noqa: E402,F401
+    exact_signflip_test,
+    knn_row_standardized_graph,
+    moran_i,
+    moran_permutation_p,
+    require_no_n4_to_5,
+    sign_matrix,
+)
 
 # --------------------------------------------------------------------------- #
 # grouped-CV machinery re-exported from the frozen Phase 2 library

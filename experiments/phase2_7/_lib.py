@@ -102,30 +102,10 @@ def q_distribution(classes: np.ndarray, codes=CLASS_NAMES) -> np.ndarray:
     return np.array([(classes == code).mean() for code in range(5)])
 
 
-def tv(q_a: np.ndarray, q_b: np.ndarray) -> float:
-    return float(0.5 * np.abs(np.asarray(q_a, dtype=float)
-                              - np.asarray(q_b, dtype=float)).sum())
-
-
-def tv_perm_p(q_obs_h: dict, q_null_h: dict, weights: dict, *,
-              n_perm: int) -> dict:
-    """v2.1 frozen permutation p: pooled null center per h, weighted TV.
-
-    q_obs_h / q_null_h: {h: five-class vector}; q_null_h holds per-perm
-    distributions keyed 0..n_perm-1.  Weights w_h = n_h/N (observed).
-    """
-    h_levels = sorted(q_obs_h)
-    q_bar = {h: np.mean([q_null_h[h][b] for b in range(n_perm)], axis=0)
-             for h in h_levels}
-    t_obs = sum(weights[h] * tv(q_obs_h[h], q_bar[h]) for h in h_levels)
-    t_b = np.empty(n_perm)
-    for b in range(n_perm):
-        t_b[b] = sum(weights[h] * tv(q_null_h[h][b], q_bar[h])
-                     for h in h_levels)
-    p_value = float((1 + int((t_b >= t_obs).sum())) / (1 + n_perm))
-    return {"t_obs": float(t_obs), "p_value": p_value,
-            "t_null_median": float(np.median(t_b)),
-            "q_bar": q_bar}
+# TV / permutation-p / logistic slope: canonical implementation in
+# src/statistics.py (WP1 migration, parity-tested); frozen names kept as
+# thin re-exports (Phase 2.8 v2.1 section 4.2 migration step 5).
+from src.statistics import logistic_slope, tv, tv_perm_p  # noqa: E402,F401
 
 
 def hann_projection(profile: np.ndarray, x: np.ndarray, k: float) -> float:
@@ -203,14 +183,6 @@ def q2_aitchison_ilr(z_test: np.ndarray, z_pred: np.ndarray,
     if denom <= 0:
         return np.nan
     return float(1.0 - ((z_test - z_pred) ** 2).sum() / denom)
-
-
-def logistic_slope(h: np.ndarray, is_m2: np.ndarray) -> float:
-    from sklearn.linear_model import LogisticRegression
-    model = LogisticRegression(penalty=None, max_iter=1000)
-    model.fit(np.asarray(h, dtype=float).reshape(-1, 1),
-              np.asarray(is_m2, dtype=int))
-    return float(model.coef_[0][0])
 
 
 def verdict_g27_3(tv_w_const: float, tv_w_p2: float, delta_tv: float,

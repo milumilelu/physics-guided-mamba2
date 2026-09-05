@@ -200,21 +200,13 @@ def principal_angles(U_a: np.ndarray, U_b: np.ndarray) -> np.ndarray:
     return np.degrees(np.arccos(np.clip(s, -1.0, 1.0)))
 
 
-def cluster_lists(man: pd.DataFrame, key: str = "shared_height_source_id"):
-    return [g.to_numpy() for _, g in man.groupby(key)["dataset_index"]]
-
-
-def boot_draw(clusters: list, rng: np.random.Generator) -> np.ndarray:
-    pick = rng.integers(0, len(clusters), size=len(clusters))
-    return np.concatenate([clusters[p] for p in pick])
-
-
-def build_resample_bank(clusters: list, B: int,
-                        seed: int) -> list[np.ndarray]:
-    """Pre-generate B cluster resamples; reuse the same bank across fields."""
-    rng = np.random.default_rng(seed)
-    return [boot_draw(clusters, rng) for _ in range(B)]
-
+# cluster resampling trio: canonical implementation in src/statistics.py
+# (WP1 migration, parity-tested); frozen names kept as thin re-exports.
+from src.statistics import (  # noqa: E402,F401
+    boot_draw,
+    build_resample_bank,
+    cluster_lists,
+)
 
 def boot_angles_bank(G: np.ndarray, X: np.ndarray, bank: list,
                      ref_comps: np.ndarray,
