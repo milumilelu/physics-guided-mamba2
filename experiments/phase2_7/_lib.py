@@ -83,106 +83,22 @@ from src.geometry import (  # noqa: E402,F401
     q_distribution,
 )
 
-def assign_class(r: np.ndarray, valid: np.ndarray) -> np.ndarray:
-    """Five-class codes: 0=INVALID (not peak-valid or non-finite r), 1=OUT,
-    2..4 = m1..m3.  Mutually exclusive closed intervals -- no tie logic."""
-    r = np.asarray(r, dtype=float)
-    out = np.full(r.shape, CODE_OUT, dtype=int)
-    valid = np.asarray(valid, dtype=bool) & np.isfinite(r)
-    out[~valid] = CODE_INVALID
-    for code, m in ((CODE_M1, 1), (CODE_M2, 2), (CODE_M3, 3)):
-        lo, hi = INTERVALS[m]
-        out[valid & (r >= lo) & (r <= hi)] = code
-    return out
-
-
-def q_distribution(classes: np.ndarray, codes=CLASS_NAMES) -> np.ndarray:
-    """Five-class probability vector over `codes` order."""
-    classes = np.asarray(classes, dtype=int)
-    return np.array([(classes == code).mean() for code in range(5)])
-
-
-# TV / permutation-p / logistic slope: canonical implementation in
-# src/statistics.py (WP1 migration, parity-tested); frozen names kept as
 # thin re-exports (Phase 2.8 v2.1 section 4.2 migration step 5).
 from src.statistics import logistic_slope, tv, tv_perm_p  # noqa: E402,F401
 
 
-def hann_projection(profile: np.ndarray, x: np.ndarray, k: float) -> float:
-    """Hann-windowed continuous Fourier projection |Σ w g e^{-i2πkx}|².
-
-    Evaluated at the exact requested k -- no nearest-bin reading.
-    """
-    g = np.asarray(profile, dtype=float)
-    x = np.asarray(x, dtype=float)
-    finite = np.isfinite(g)
-    g, x = g[finite], x[finite]
-    w = np.hanning(g.size + 2)[1:-1]
-    return float(abs(np.sum(w * g * np.exp(-1j * 2 * np.pi * k * x))) ** 2)
-
-
-def cycles_level(lam: float, fov_um: float = 17.834048) -> str:
-    """Frozen three-level measurability: HIGH >=2, LOW [1.2,2), else UNMEASURABLE."""
-    n_cycles = fov_um / float(lam)
-    if n_cycles >= 2.0:
-        return "HIGH"
-    if n_cycles >= 1.2:
-        return "LOW"
-    return "UNMEASURABLE"
-
-
-def synth_field(profile: np.ndarray, x_profile: np.ndarray, h: float,
-                phi: float, c: float, *, pixel_um: float = 0.5,
-                roi_um: float = 80.0) -> np.ndarray:
-    """Finite-array 2D field: z(x,y) = Σ_n a_n g(x - n h - φ), replicated
-    along y on the 80 µm ROI (160 px @ 0.5 µm).  a_n = 1 + c(-1)^n."""
-    n_grid = int(round(roi_um / pixel_um))
-    x = (np.arange(n_grid) + 0.5) * pixel_um
-    field = np.zeros((n_grid, n_grid), dtype=float)
-    n_lines = int(np.floor((roi_um - phi) / h)) + 1
-    amp = 1.0
-    for n in range(n_lines):
-        center = phi + n * h
-        a_n = 1.0 + c * ((-1.0) ** n)
-        lo = np.searchsorted(x, center - x_profile.max())
-        hi = np.searchsorted(x, center - x_profile.min())
-        field[:, lo:hi] += a_n * np.interp(
-            x[lo:hi] - center, x_profile, profile, left=0.0, right=0.0)
-        amp = a_n
-    return field
-
-
-def field_class(field: np.ndarray, *, h: float, pixel_um: float = 0.5,
-                window_um: tuple[float, float] = (4.0, 32.0)) -> tuple[int, float]:
-    """Same-pipeline peak extraction: 2D residual → p25.radial_spectrum →
-    the frozen 4–32 µm peak validity → r = λ_peak/h → interval assignment."""
-    r = np.asarray(field, dtype=float)[None, :, :]
-    r = r - np.median(r)
-    out, _ = p25.radial_spectrum(r, pixel_um, 24, 0.7, 160.0)
-    long_rows = [{"dataset_index": 0, "bin": b,
-                  "lambda_geo_um": float(out["lambda_geo_um"][b]),
-                  "energy": float(out["energy"][0, b]),
-                  "n_modes": int(out["n_modes"][0, b])}
-                 for b in range(24)]
-    peak = p26.lambda_peak_4_32(pd.DataFrame(long_rows),
-                                window_um=window_um, n_modes_min=20,
-                                share_min=0.20)
-    valid = bool(peak.loc[0, "lambda_peak_valid"])
-    lam = float(peak.loc[0, "lambda_peak_4_32_um"]) if valid else np.nan
-    ratio = lam / h if valid else np.nan
-    cls = int(assign_class(np.array([ratio]), np.array([valid]))[0]) if valid \
-        else CODE_INVALID
-    return cls, lam
-
-
-def q2_aitchison_ilr(z_test: np.ndarray, z_pred: np.ndarray,
-                     z_train: np.ndarray) -> float:
-    """Task 12 ILR-coordinate-space Q2 (same definition as
-    18_scale_bridge_model_compare.py; provenance: Phase 2.5 `12_` script)."""
-    denom = float(((z_test - z_train.mean(axis=0)) ** 2).sum())
-    if denom <= 0:
-        return np.nan
-    return float(1.0 - ((z_test - z_pred) ** 2).sum() / denom)
+# WP1 canonical migration (parity-tested, tests/test_src_forward_models.py):
+# forward models now live in src/forward_models.py; the ILR-space Q2 lives
+# in src/cv.py (v1 name).  Frozen names kept as thin re-exports
+# (Phase 2.8 v2.1 section 4.2 migration step 5).  verdict_g27_3 stays
+# local: frozen G27-3 gate-order logic with no Phase 2.8 consumer.
+from src.cv import q2_aitchison_ilr_v1 as q2_aitchison_ilr  # noqa: E402,F401
+from src.forward_models import (  # noqa: E402,F401
+    cycles_level,
+    field_class,
+    hann_projection,
+    synth_field,
+)
 
 
 def verdict_g27_3(tv_w_const: float, tv_w_p2: float, delta_tv: float,
