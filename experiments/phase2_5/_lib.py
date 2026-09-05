@@ -18,6 +18,7 @@ Conventions (细则 §0.1, rev2):
 from __future__ import annotations
 
 import argparse
+import sys
 import importlib.util
 from pathlib import Path
 
@@ -27,6 +28,8 @@ import yaml
 from scipy.fft import dctn
 
 REPO = Path(__file__).resolve().parents[2]
+if str(REPO) not in sys.path:
+    sys.path.insert(0, str(REPO))
 
 _spec2 = importlib.util.spec_from_file_location(
     "phase2_lib_p25",
@@ -75,26 +78,6 @@ def output_dir(cfg: dict, sub: str = "") -> Path:
 # five-part composition (non-DC coefficient energies) + DC offset descriptor
 # --------------------------------------------------------------------------- #
 
-def five_part_composition(R: np.ndarray, pixel_um: float) -> tuple[dict, np.ndarray]:
-    """Clean five-part composition + dc_offset_frac per sample.
-
-    p_b uses non-DC coefficient energies only; dc_offset_frac = mu^2/M_2 with
-    mu = mean(R), M_2 = mean(R^2) (Parseval: = C_DC^2 / sum_all C^2).
-    """
-    C = dctn(R, axes=(1, 2), norm="ortho")
-    lam = l15.dct_lambda_grid(R.shape[1:], pixel_um)
-    nonDC = np.isfinite(lam)
-    sq = C ** 2
-    denom = (sq * nonDC).sum(axis=(1, 2))
-    require(np.all(denom > 0), "zero non-DC DCT energy")
-    p = {"lt8": (sq * (nonDC & (lam < 8))).sum(axis=(1, 2)) / denom}
-    for lo, hi, name in ((8, 16, "8_16"), (16, 32, "16_32"), (32, 64, "32_64")):
-        p[name] = (sq * (nonDC & (lam >= lo) & (lam < hi))).sum(axis=(1, 2)) / denom
-    p["64_inf"] = (sq * (nonDC & (lam >= 64))).sum(axis=(1, 2)) / denom
-    dc_offset_frac = C[:, 0, 0] ** 2 / (C ** 2).sum(axis=(1, 2))
-    return p, dc_offset_frac
-
-
 def frozen_band_fractions(R: np.ndarray, bands_um: list,
                           pixel_um: float) -> tuple[dict, float]:
     """Replicates the Phase 1.5-05 convention exactly:
@@ -105,163 +88,27 @@ def frozen_band_fractions(R: np.ndarray, bands_um: list,
     return E, coverage
 
 
-def apply_zero_replacement(p: np.ndarray, zero_threshold: float,
-                           delta: float) -> tuple[np.ndarray, np.ndarray]:
-    """Multiplicative replacement for confirmed numerical zeros; returns
-    (composition, replaced_mask). Caller must STOP if too many rows affected
-    (细则 §0.2: this dataset never triggers it)."""
-    p = np.asarray(p, dtype=float).copy()
-    replaced = p < zero_threshold
-    if not replaced.any():
-        return p, replaced
-    tiny = np.where(replaced, delta, p)
-    p = tiny / tiny.sum(axis=1, keepdims=True)
-    return p, replaced
-
-
-# --------------------------------------------------------------------------- #
-# ILR geometry (Z1..Z4 sequential balances on [lt8, 8_16, 16_32, 32_64, 64_inf])
-# --------------------------------------------------------------------------- #
-
-def ilr_matrix() -> np.ndarray:
-    """4x5 orthonormal-row contrast matrix (AA^T = I4; A 1 = 0)."""
-    z1 = np.sqrt(6.0 / 5.0) * np.array([0.5, 0.5, -1 / 3, -1 / 3, -1 / 3])
-    z2 = np.sqrt(0.5) * np.array([1.0, -1.0, 0.0, 0.0, 0.0])
-    z3 = np.sqrt(2.0 / 3.0) * np.array([0.0, 0.0, 1.0, -0.5, -0.5])
-    z4 = np.sqrt(0.5) * np.array([0.0, 0.0, 0.0, 1.0, -1.0])
-    return np.vstack([z1, z2, z3, z4])
-
-
-ILR_A = ilr_matrix()
-
-
-def ilr_transform(p: np.ndarray) -> np.ndarray:
-    p = np.asarray(p, dtype=float)
-    # log-floor keeps extreme inverse-ILR predictions numerically safe
-    return np.log(np.maximum(p, 1e-300)) @ ILR_A.T
-
-
-def ilr_inverse(z: np.ndarray) -> np.ndarray:
-    """Closure of exp(A^T z); A 1 = 0 makes the centering constant vanish."""
-    z = np.asarray(z, dtype=float)
-    logp = z @ ILR_A
-    logp = logp - logp.mean(axis=1, keepdims=True)
-    e = np.exp(logp)
-    return e / e.sum(axis=1, keepdims=True)
-
-
-def aitchison_distance(p_hat: np.ndarray, p: np.ndarray) -> np.ndarray:
-    return np.linalg.norm(ilr_transform(p_hat) - ilr_transform(p), axis=1)
-
-
-# --------------------------------------------------------------------------- #
-# radial spectrum on the frozen DCT wavelength grid
-# --------------------------------------------------------------------------- #
-
-def radial_spectrum(R: np.ndarray, pixel_um: float, n_bins: int,
-                    lam_lo: float, lam_hi: float) -> tuple[dict, np.ndarray]:
-    """Log-binned non-DC DCT energy spectrum. Returns (per-bin dict, edges).
-
-    Per-bin arrays are (n_samples, n_bins): energy, energy_fraction,
-    n_modes, low_mode_count; plus the uncovered non-DC energy fraction.
-    """
-    C = dctn(R, axes=(1, 2), norm="ortho")
-    lam = l15.dct_lambda_grid(R.shape[1:], pixel_um)
-    nonDC = np.isfinite(lam)
-    sq = C ** 2
-    denom = (sq * nonDC).sum(axis=(1, 2))
-    edges = np.geomspace(lam_lo, lam_hi, n_bins + 1)
-    energy = np.empty((R.shape[0], n_bins))
-    n_modes = np.empty((n_bins,), dtype=int)
-    covered = np.zeros_like(nonDC)
-    for b in range(n_bins):
-        msk = nonDC & (lam >= edges[b]) & \
-            ((lam < edges[b + 1]) if b < n_bins - 1 else (lam <= edges[b + 1]))
-        energy[:, b] = (sq * msk).sum(axis=(1, 2))
-        n_modes[b] = int(msk.sum())
-        covered |= msk
-    uncovered_frac = ((sq * (nonDC & ~covered)).sum(axis=(1, 2)) / denom)
-    frac = energy / denom[:, None]
-    out = {"energy": energy, "energy_fraction": frac,
-           "n_modes": np.broadcast_to(n_modes, frac.shape).copy(),
-           "low_mode_count": np.broadcast_to(n_modes < 20, frac.shape).copy(),
-           "lambda_geo_um": np.sqrt(edges[:-1] * edges[1:]),
-           "lambda_lo_um": edges[:-1], "lambda_hi_um": edges[1:],
-           "uncovered_frac": uncovered_frac}
-    return out, edges
-
-
-def spectrum_descriptors(frac: np.ndarray, lam_geo: np.ndarray) -> dict:
-    """Centroid / entropy / effective band number / peak (descriptive)."""
-    q = np.clip(frac, 0.0, None)
-    qsum = q.sum(axis=1, keepdims=True)
-    q = q / np.maximum(qsum, 1e-300)
-    logl = np.log(lam_geo)[None, :]
-    with np.errstate(divide="ignore", invalid="ignore"):
-        qlogq = np.where(q > 0, q * np.log(np.maximum(q, 1e-300)), 0.0)
-    mu = (q * logl).sum(axis=1)
-    return {"spectral_centroid_log_um": mu,
-            "spectral_centroid_um": np.exp(mu),
-            "spectral_entropy": -qlogq.sum(axis=1) / np.log(len(lam_geo)),
-            "effective_band_number": np.exp(-qlogq.sum(axis=1)),
-            "lambda_peak_um": lam_geo[np.argmax(q, axis=1)]}
-
-
-# --------------------------------------------------------------------------- #
-# directional spectrum (2D FFT, separable Hann, window-energy normalized)
-# --------------------------------------------------------------------------- #
-
-def directional_band_metrics(R: np.ndarray, pixel_um: float,
-                             bands: list, theta_bins: int) -> pd.DataFrame:
-    """Per-sample x per-band: A2 (second angular moment), wave-vector angle,
-    real-space stripe angle (= wave-vector + 90 deg mod 180), angular entropy.
-
-    Preprocessing per 细则 §4: subtract DC only, apply separable Hann window,
-    window-energy normalization. Orientation is IMAGE-FRAME relative.
-    """
-    nx, ny = R.shape[1:]
-    wx = np.hanning(nx)
-    wy = np.hanning(ny)
-    win = wx[:, None] * wy[None, :]
-    win_energy = float((win ** 2).sum())
-    # array convention (frozen dataset): axis0 = y, axis1 = x.
-    # Explicit broadcasts (square 160x160): KX[i, j] = kx[j] along axis1,
-    # KY[i, j] = ky[i] along axis0.
-    kx = np.fft.fftfreq(nx, d=pixel_um)
-    ky = np.fft.fftfreq(ny, d=pixel_um)
-    KX, KY = np.meshgrid(kx, ky)                # 'xy': KX varies along axis1
-    lam = np.full((nx, ny), np.inf)
-    f = np.hypot(KX, KY)
-    np.divide(1.0, f, out=lam, where=f > 0)
-    theta = np.arctan2(KY, KX)
-    edges = np.linspace(0.0, np.pi, theta_bins + 1)
-    rows = []
-    for i in range(R.shape[0]):
-        x = R[i] - R[i].mean()
-        P = np.abs(np.fft.fft2(x * win)) ** 2 / win_energy
-        for lo, hi, name in bands:
-            msk = np.isfinite(lam) & (lam >= lo) & \
-                ((lam < hi) if np.isfinite(hi) else True)
-            if name == "64_inf":
-                msk = np.isfinite(lam) & (lam >= lo)
-            Pm = P[msk]
-            th = theta[msk]
-            s2 = Pm @ np.exp(2j * th)
-            a2 = float(np.abs(s2) / Pm.sum())
-            theta_k = float(0.5 * np.degrees(np.angle(s2)))
-            stripe = (theta_k + 90.0) % 180.0
-            th_fold = np.mod(th, np.pi)
-            # weighted by PSD power (rev2 fix): entropy describes the angular
-            # POWER distribution, not the grid-point count distribution
-            hist, _ = np.histogram(th_fold, bins=edges, weights=Pm)
-            q = hist / max(hist.sum(), 1e-300)
-            with np.errstate(divide="ignore", invalid="ignore"):
-                qlogq = np.where(q > 0, q * np.log(np.maximum(q, 1e-300)), 0.0)
-            ent = float(-qlogq.sum() / np.log(theta_bins))
-            rows.append((i, name, a2, theta_k, stripe, ent))
-    return pd.DataFrame(rows, columns=["dataset_index", "band", "A2",
-                                       "theta_k_deg", "theta_stripe_deg",
-                                       "angular_entropy"])
+# WP1 canonical migration (parity-tested, tests/test_src_spectrum_composition.py):
+# composition/ILR + radial/directional spectral primitives now live in
+# src/composition.py and src/spectrum.py; the frozen names are thin
+# re-exports (Phase 2.8 v2.1 section 4.2 migration step 5).
+# frozen_band_fractions intentionally stays local: it replicates the
+# Phase 1.5-05 second-moment convention through l15.dct_band_fields and has
+# no Phase 2.8 consumer.
+from src.composition import (  # noqa: E402,F401
+    ILR_A,
+    aitchison_distance,
+    apply_zero_replacement,
+    five_part_composition,
+    ilr_inverse,
+    ilr_matrix,
+    ilr_transform,
+)
+from src.spectrum import (  # noqa: E402,F401
+    directional_band_metrics,
+    radial_spectrum,
+    spectrum_descriptors,
+)
 
 
 # --------------------------------------------------------------------------- #
