@@ -13,8 +13,8 @@ Phase 2    工艺→形貌的 grouped-CV 可预测性（Route P/T 判别）
 Phase 2.5  谱组成 + 方向 PSD + 机制桥 + 误差图集
 Phase 2.6  单线扫描尺度溯源（W50 / m 分解 / direct bridge）
 Phase 2.7  单轨谱包络 × hatch 阵列尺度选择（消融 / m 分解 / forward model）
-Phase 2.8  层级信息通道可预测性 + measured kernel → 多轨桥（formal 完成——G28-A VALID；G28-B1 未达成，L3b 为唯一正向信号）
-Phase 3    预测建模（先做 repeatability matrix 第一批实验，见 experiments/phase2_8/repeatability_matrix_design.md）
+Phase 2.8r1  审查修正版：统一 OOF/R² + 物理约束/相位/组级 median 修正（独立版本产物）
+后续       不补实验的论文统计收敛 → effective-physics feasibility → 通过验证后才做 virtual design
 ```
 
 ## 当前数据
@@ -27,7 +27,7 @@ Phase 3    预测建模（先做 repeatability matrix 第一批实验，见 expe
 
 矩形主数据共 **200 个 ROI / 实验记录**（120 formal + 60 pass_main + 20 pass_supplement），对应 **160 个唯一 height-source**（`shared_height_source_id`，即部分 measurement 含多个 ROI）与 **134 个 `cv_process_group`**。统计独立性由分组变量单独定义，不以"independent measurement"表述。
 
-## 核心结论（截至 Phase 2.8 formal）
+## 核心结论（Phase 2.8 统计主线；2.8B 以 r1 修正版为准）
 
 - **Route T（方向纹理）**：hatch spacing 单变量几乎承载全部预测能力（ΔR²_h = 0.651/0.645，proc 同向）
 - **Route P（谱组成）**：多因素共同调节（ΔR²_h = 0.181/0.350，去 h 后仍有独立贡献）
@@ -35,8 +35,8 @@ Phase 3    预测建模（先做 repeatability matrix 第一批实验，见 expe
 - **λ_peak/h 聚集于 {1,2,3}**（A_obs 0.904，TV 置换 p=0.0001）；m=2 份额逐 h 描述递减，但 block permutation 后 h-dependence 不显著（p=0.4103，descriptive only）
 - **简单线性叠加模型不足以重现峰选择**（G27-3 MODEL_INADEQUATE，2.7r2 统计契约修正后封账：TV_w 0.615/0.529 双双 >0.30；own-envelope 直接证据 2/3 反向）
 - **Phase 2.8A 统一协议谱表**（Q²，G28-A VALID）：方向组织 O_θ 0.64–0.66（Δ_h 0.64，h 近乎充分）≫ 尺度组成 P_λ 0.31（Δ_h 0.18）≫ 幅度 A 0.16；**深度 D 可预测 0.55 但几乎不由 h 承载**（−h 仍 0.50，τ/f/N/v 共同控制）；h 主导严格限于 8–16 µm 基频带（16–32 带 ~0.14）
-- **Phase 2.8A realization diagnostic**：同工艺重复对的 Fourier-phase 距离处随机对第 32 百分位——波峰落点不受工艺控制（描述性）
-- **Phase 2.8B**（n=7 usable，硬限制）：TV_cond L1 0.344 / L3b 0.286 / L3a 0.571；B1 三比较均未达成（L3b Δ=+0.058 达门槛但 CI 下界=0）；**负 γ cross-term（相邻轨去除竞争）是唯一正向信号**，进 Phase 3 预注册候选；pooled TV 的 "strong" 判级在逐条件指标下失真（L3a 例证），pooled 自此仅作 2.7 连续性参照
+- **Phase 2.8A realization diagnostic**：仅 1 对五参数完全相同、来源独立的重复，Fourier-phase 距离处随机配对第 32.43 百分位；不足以判断工艺对波峰落点的可控程度。另 11 对仅匹配四参数（不要求 h 相同），不可统称同工艺重复。
+- **Phase 2.8B**：旧版“负 γ 为唯一正向信号”撤回为历史探索结果；审查发现物理约束漏检、period-2 半周期采样及 mean/median 契约偏离。修正版位于 `experiments/phase2_8_r1/` 和 `outputs/phase2_8_r1/`；32 相位 TV_cond 为 L1=0.34375、L2=0.35714、L3a=0.34375、L3b=0.42857；L2/L3a 未达改进门槛，L3b 为 physical_invalid（1/7 留出失败）。不据参数负号推导相邻轨竞争机制。
 
 ## 已知风险与限制
 
@@ -44,6 +44,12 @@ Phase 3    预测建模（先做 repeatability matrix 第一批实验，见 expe
 - 方向 provenance：无逐样本 scan/hatch 方向 → G-SL4 / G27-4 均为 NOT_APPLICABLE
 - 单线 QA 由 AI 辅助标注（GPT），如需论文核心机制证据应补双人独立盲标
 - Discovery/Confirmation 未分离：当前 200 样本同时用于探索与报告
+
+## 审查修正版与后续路线
+
+[2.8r1 修正协议](experiments/phase2_8_r1/PROTOCOL.md)定义当前修正口径；[复现说明](experiments/phase2_8_r1/README.md)提供运行命令与产物索引。原 `experiments/phase2_8/` 与 `outputs/phase2_8/` 保留为历史复现版本，不能混作 r1 结果。
+
+当前目标是 **JMPT 论文主线收敛、不新增实验**，见[后续路线与声明边界](任务说明/JMPT_无新增实验路线_20260905.md)。新增 repeatability matrix 保留为 future work，不作为本轮前置条件。Route P effect maps、统一 error atlas、P/T residual separability 和 physics-informed application 各自仍须实际运行并通过相应验证；统一 OOF 的完成不等于这些研究任务已完成。
 
 ## 运行环境
 

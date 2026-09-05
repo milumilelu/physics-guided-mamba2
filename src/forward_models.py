@@ -211,3 +211,51 @@ def physical_validity_field(field: np.ndarray, tol_um: float = 1e-9) -> bool:
     (removal-positive convention).  Invalidation is a candidate-screening
     criterion, not a clipping licence."""
     return bool(np.nanmin(field) >= -float(tol_um))
+
+
+# Versioned corrections: historical functions above retain frozen semantics.
+__all__ += ["array_transfer_v2", "physical_validity_relative_v2", "phase_grid_v2"]
+
+
+def array_transfer_v2(k: np.ndarray, h: float, n_lines: int) -> np.ndarray:
+    """Stable finite-array power, including DC and reciprocal-lattice peaks."""
+    k = np.asarray(k, dtype=float)
+    if not np.isfinite(k).all() or not np.isfinite(h) or h <= 0:
+        raise ValueError("finite frequencies and positive finite hatch required")
+    if isinstance(n_lines, bool) or int(n_lines) != n_lines or n_lines < 1:
+        raise ValueError("n_lines must be a positive integer")
+    cycles = np.remainder(k * float(h), 1.0)
+    amp = np.exp(-2j * np.pi * cycles[..., None] * np.arange(int(n_lines)))
+    return np.abs(amp.sum(axis=-1)) ** 2
+
+
+def physical_validity_relative_v2(field: np.ndarray, base: np.ndarray,
+                                  tol_um: float = 0.01) -> dict:
+    """Noise-aware admissibility: z >= min(base, 0) - tol on EVERY pixel.
+
+    Preserve measured negative baseline noise; do not create negative removal
+    where base is positive. Never clip. Apply also to held-out fields after
+    selection, without consulting their observed classes.
+    """
+    z, s = np.asarray(field, float), np.asarray(base, float)
+    if z.shape != s.shape or z.size == 0:
+        raise ValueError("field and base must have matching nonempty shapes")
+    if not np.isfinite(tol_um) or tol_um < 0:
+        raise ValueError("tol_um must be finite and nonnegative")
+    finite = bool(np.isfinite(z).all() and np.isfinite(s).all())
+    margin = z - np.minimum(s, 0.0)
+    return {"valid": bool(finite and np.all(margin >= -tol_um)),
+            "finite": finite,
+            "min_field_um": float(z.min()) if finite else None,
+            "min_margin_um": float(margin.min()) if finite else None,
+            "n_violating_pixels": int((margin < -tol_um).sum()) if finite
+                                  else int(z.size)}
+
+
+def phase_grid_v2(h: float, n_phases: int, level: str,
+                  param: float | None = None) -> np.ndarray:
+    """Complete phase period, retaining Phase 2.7 finite-array convention."""
+    if not np.isfinite(h) or h <= 0 or int(n_phases) != n_phases or n_phases < 1:
+        raise ValueError("positive hatch and integer phase count required")
+    period = 2.0 * h if level == "L3a" and param not in (None, 0.0) else h
+    return np.arange(int(n_phases), dtype=float) * (period / n_phases)
