@@ -22,11 +22,10 @@
 
   <!-- 状态 A 卡：x=420 w=260（加宽）-->
   <rect x="420" y="90" width="260" height="240" rx="8" fill="none" stroke="#000000" stroke-width="2"/>
-  <text x="550" y="124" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle">当前状态（A 路径）</text>
+  <text x="550" y="124" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle">路径 A 当前状态</text>
 
   <!-- 状态A 上半：H_n^A -->
   <text x="550" y="164" font-size="26" fill="#000000" text-anchor="middle">表面形貌状态</text>
-  <text x="678" y="164" font-size="20" font-weight="bold" fill="#000000" text-anchor="start">1</text>
   <text x="550" y="206" font-size="36" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">H<tspan dy="6" font-size="22">n</tspan><tspan dy="-6" font-size="20">A</tspan></text>
 
   <!-- 分隔 -->
@@ -35,13 +34,11 @@
   <!-- 状态A 下半：Z_n^A 红色虚框 -->
   <rect x="438" y="254" width="224" height="44" rx="4" fill="none" stroke="#000000" stroke-width="2" stroke-dasharray="6 3"/>
   <text x="550" y="283" font-size="26" fill="#000000" text-anchor="middle">历史材料状态</text>
-  <text x="678" y="283" font-size="20" font-weight="bold" fill="#000000" text-anchor="start">2</text>
 
   <!-- ============ 中央 u_n 框：w=220, h=300, 居中 ============ -->
   <rect x="700" y="180" width="220" height="300" rx="8" fill="none" stroke="#000000" stroke-width="2.6"/>
   <text x="810" y="216" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle">相同下一脉冲</text>
   <text x="810" y="294" font-size="38" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">u<tspan dy="6" font-size="22">n</tspan></text>
-  <text x="858" y="288" font-size="20" font-weight="bold" fill="#000000" text-anchor="start">3</text>
   <text x="810" y="348" font-size="26" fill="#000000" text-anchor="middle">A/B 路径均输入</text>
   <text x="810" y="378" font-size="26" fill="#000000" text-anchor="middle">此同一作用条件</text>
   <text x="810" y="414" font-size="26" fill="#000000" text-anchor="middle">驱动后续可能</text>
@@ -80,11 +77,10 @@
 
   <!-- 状态 B 卡 -->
   <rect x="420" y="370" width="260" height="240" rx="8" fill="none" stroke="#000000" stroke-width="2"/>
-  <text x="550" y="404" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle">当前状态（B 路径）</text>
+  <text x="550" y="404" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle">路径 B 当前状态</text>
 
   <!-- 状态B 上半：H_n^B -->
   <text x="550" y="444" font-size="26" fill="#000000" text-anchor="middle">表面形貌状态</text>
-  <text x="678" y="444" font-size="20" font-weight="bold" fill="#000000" text-anchor="start">1</text>
   <text x="550" y="486" font-size="36" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">H<tspan dy="6" font-size="22">n</tspan><tspan dy="-6" font-size="20">B</tspan></text>
 
   <!-- 分隔 -->
@@ -93,7 +89,6 @@
   <!-- 状态B 下半：Z_n^B 红色虚框 -->
   <rect x="438" y="534" width="224" height="44" rx="4" fill="none" stroke="#000000" stroke-width="2" stroke-dasharray="6 3"/>
   <text x="550" y="563" font-size="26" fill="#000000" text-anchor="middle">历史材料状态</text>
-  <text x="678" y="563" font-size="20" font-weight="bold" fill="#000000" text-anchor="start">2</text>
 
   <!-- 状态B → u_n -->
   <line x1="680" y1="490" x2="692" y2="490" stroke="#000000" stroke-width="2.4"/>
@@ -119,15 +114,15 @@
   <!-- ============ 底部对照：传统 vs 本发明（h=92）============ -->
   <rect x="160" y="725" width="500" height="92" rx="8" fill="none" stroke="#000000" stroke-width="2"/>
   <text x="410" y="758" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle">传统描述</text>
-  <line x1="200" y1="772" x2="620" y2="772" stroke="#000000" stroke-width="0.8" stroke-dasharray="4 3"/>
-  <text x="410" y="804" font-size="28" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">S<tspan dy="5" font-size="22">n</tspan> = H<tspan dy="5" font-size="22">n</tspan></text>
+  <line x1="200" y1="770" x2="620" y2="770" stroke="#000000" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <text x="410" y="800" font-size="28" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">S<tspan dy="5" font-size="22">n</tspan> = H<tspan dy="5" font-size="22">n</tspan></text>
 
   <line x1="670" y1="771" x2="724" y2="771" stroke="#000000" stroke-width="2.4"/>
   <polygon points="734,771 722,765.5 722,776.5" fill="#000000"/>
 
   <rect x="740" y="725" width="500" height="92" rx="8" fill="none" stroke="#000000" stroke-width="2.6"/>
   <text x="990" y="758" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle">本发明</text>
-  <line x1="780" y1="772" x2="1200" y2="772" stroke="#000000" stroke-width="0.8" stroke-dasharray="4 3"/>
-  <text x="990" y="804" font-size="28" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">S<tspan dy="5" font-size="22">n</tspan> = ( H<tspan dy="5" font-size="22">n</tspan>, Z<tspan dy="5" font-size="22">n</tspan> )</text>
+  <line x1="780" y1="770" x2="1200" y2="770" stroke="#000000" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <text x="990" y="800" font-size="28" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">S<tspan dy="5" font-size="22">n</tspan> = ( H<tspan dy="5" font-size="22">n</tspan>, Z<tspan dy="5" font-size="22">n</tspan> )</text>
 
 </svg>

@@ -11,7 +11,7 @@
   <!-- A 加工条件 -->
   <rect x="40" y="197" width="200" height="125" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="2"/>
   <text x="140" y="225" font-size="26" font-weight="bold" fill="#444441" text-anchor="middle">加工条件</text>
-  <text x="140" y="255" font-size="26" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">P, f, &#964;<tspan dy="6" font-size="20">p</tspan></text>
+  <text x="140" y="255" font-size="26" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">P, f, &#964;<tspan dy="6" font-size="20">p</tspan><tspan font-size="18" fill="#185FA5" dx="4"> 3</tspan></text>
   <text x="140" y="285" font-size="26" fill="#444441" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">v, h, N<tspan dy="6" font-size="20">pass</tspan></text>
   <text x="140" y="312" font-size="24" fill="#5F5E5A" text-anchor="middle">材料及扫描轨迹</text>
 
@@ -32,16 +32,16 @@
   <polygon points="520,260 508,254.5 508,265.5" fill="#185FA5"/>
 
   <!-- C 双状态逐脉冲递推模型（核心，最大） -->
-  <rect x="520" y="160" width="340" height="240" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="2.8"/>
-  <text x="690" y="188" font-size="26" font-weight="bold" fill="#0C447C" text-anchor="middle">双状态逐脉冲递推模型</text>
+  <rect x="520" y="160" width="340" height="200" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="2.8"/>
+  <text x="690" y="188" font-size="26" font-weight="bold" fill="#0C447C" text-anchor="middle">双状态逐脉冲递推模型<tspan font-size="18" fill="#185FA5" dx="4"> 6</tspan></text>
   <text x="690" y="220" font-size="26" fill="#0C447C" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">(H<tspan dy="5" font-size="20">n</tspan><tspan dy="-5">, Z</tspan><tspan dy="5" font-size="20">n</tspan><tspan dy="-5">) + u</tspan><tspan dy="5" font-size="20">n</tspan></text>
   <line x1="690" y1="232" x2="690" y2="244" stroke="#185FA5" stroke-width="2"/>
   <polygon points="690,250 684,238 696,238" fill="#185FA5"/>
   <text x="690" y="274" font-size="24" fill="#0C447C" text-anchor="middle">材料去除状态计算</text>
   <line x1="690" y1="284" x2="690" y2="296" stroke="#185FA5" stroke-width="2"/>
   <polygon points="690,302 684,290 696,290" fill="#185FA5"/>
-  <text x="690" y="340" font-size="28" fill="#0C447C" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#916;H<tspan dy="6" font-size="20">n</tspan></text>
-  <text x="690" y="382" font-size="22" fill="#5F5E5A" text-anchor="middle">循环至加工过程结束</text>
+  <text x="690" y="332" font-size="28" fill="#0C447C" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">&#916;H<tspan dy="6" font-size="20">n</tspan></text>
+  <text x="690" y="378" font-size="22" fill="#5F5E5A" text-anchor="middle">循环至加工过程结束</text>
 
   <!-- C→D -->
   <line x1="860" y1="260" x2="892" y2="260" stroke="#185FA5" stroke-width="2.4"/>
@@ -99,6 +99,7 @@
   <line x1="860" y1="600" x2="860" y2="612" stroke="#BA7517" stroke-width="2"/>
   <polygon points="860,618 854,607 866,607" fill="#BA7517"/>
   <text x="860" y="644" font-size="24" font-weight="bold" fill="#633806" text-anchor="middle">联合反演 / 训练</text>
+  <text x="968" y="540" font-size="22" font-weight="bold" fill="#BA7517" text-anchor="end">7</text>
 
   <!-- H→I -->
   <line x1="980" y1="590" x2="1012" y2="590" stroke="#BA7517" stroke-width="2.4"/>
@@ -115,9 +116,9 @@
   <path d="M1250 360 L1250 420 L860 420 L860 512" fill="none" stroke="#D4A574" stroke-width="1.6" stroke-dasharray="6 4"/>
   <polygon points="860,520 854,508 866,508" fill="#D4A574"/>
 
-  <!-- ============ 唯一一根反馈线：参数更新 → 核心模型（走两泳道间空隙 y=440，竖段落在 G/H 框通道 x=720） ============ -->
-  <path d="M1140 520 L1140 440 L720 440 L720 408" fill="none" stroke="#6B96C8" stroke-width="1.6" stroke-dasharray="6 4"/>
-  <polygon points="720,400 714,412 726,412" fill="#6B96C8"/>
-  <text x="1128" y="478" font-size="22" fill="#5F5E5A" text-anchor="end">反馈更新模型参数</text>
+  <!-- ============ 唯一一根反馈线：参数更新 → 核心模型（底部90°折线，变细变淡） ============ -->
+  <path d="M1140 660 L1140 770 L690 770 L690 368" fill="none" stroke="#6B96C8" stroke-width="1.6" stroke-dasharray="6 4"/>
+  <polygon points="690,360 684,372 696,372" fill="#6B96C8"/>
+  <text x="930" y="763" font-size="22" fill="#5F5E5A" text-anchor="middle">反馈更新模型参数</text>
 
 </svg>

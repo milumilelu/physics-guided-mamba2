@@ -19,19 +19,18 @@
   <!-- L3: 压缩观测 Y_line（拆 2 行，h 加大）-->
   <rect x="40" y="292" width="290" height="116" rx="8" fill="none" stroke="#000000" stroke-width="2"/>
   <text x="185" y="322" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle">压缩观测</text>
-  <text x="330" y="322" font-size="20" font-weight="bold" fill="#000000" text-anchor="start">4</text>
   <text x="185" y="360" font-size="28" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">Y<tspan dy="5" font-size="20">line</tspan> =</text>
   <text x="185" y="396" font-size="28" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">[ w<tspan dy="5" font-size="20">line</tspan>, d<tspan dy="5" font-size="20">line</tspan> ]</text>
 
   <!-- L4a: 主要提供 -->
   <rect x="40" y="424" width="290" height="66" rx="6" fill="none" stroke="#000000" stroke-width="1.8"/>
   <text x="60" y="450" font-size="26" font-weight="bold" fill="#000000" text-anchor="start">主要提供</text>
-  <text x="60" y="478" font-size="26" fill="#000000" text-anchor="start">局部作用范围、纵向去除能力</text>
+  <text x="60" y="478" font-size="22" fill="#000000" text-anchor="start">局部作用范围与去除能力</text>
 
   <!-- L4b: 主要约束 -->
   <rect x="40" y="506" width="290" height="66" rx="6" fill="none" stroke="#000000" stroke-width="1.8"/>
   <text x="60" y="532" font-size="26" font-weight="bold" fill="#000000" text-anchor="start">主要约束</text>
-  <text x="60" y="560" font-size="26" fill="#000000" text-anchor="start">局部去除响应、部分历史状态</text>
+  <text x="60" y="560" font-size="22" fill="#000000" text-anchor="start">局部去除响应与历史状态</text>
 
   <!-- 左列内部竖向箭头 -->
   <line x1="185" y1="180" x2="185" y2="188" stroke="#000000" stroke-width="2"/>
@@ -46,7 +45,6 @@
   <!-- ============ 中央：同一模型 ============ -->
   <rect x="460" y="100" width="480" height="380" rx="10" fill="none" stroke="#000000" stroke-width="2.8"/>
   <text x="700" y="134" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle">同一脉冲级多脉冲烧蚀模型</text>
-  <text x="900" y="134" font-size="20" font-weight="bold" fill="#000000" text-anchor="start">6</text>
 
   <text x="700" y="206" font-size="36" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">H<tspan dy="6" font-size="24">n</tspan><tspan dx="14">, Z</tspan><tspan dy="6" font-size="24">n</tspan></text>
 
@@ -75,19 +73,18 @@
   <!-- R3: 压缩观测 Y_groove（拆 2 行，h 加大）-->
   <rect x="1070" y="292" width="290" height="116" rx="8" fill="none" stroke="#000000" stroke-width="2"/>
   <text x="1215" y="322" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle">压缩观测</text>
-  <text x="1360" y="322" font-size="20" font-weight="bold" fill="#000000" text-anchor="start">5</text>
   <text x="1215" y="360" font-size="28" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">Y<tspan dy="5" font-size="20">groove</tspan> =</text>
-  <text x="1215" y="396" font-size="24" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">[ d<tspan dy="4" font-size="18">groove</tspan>, S<tspan dy="4" font-size="18">a</tspan>, S<tspan dy="4" font-size="18">q</tspan>, S<tspan dy="4" font-size="18">z</tspan> ]</text>
+  <text x="1215" y="396" font-size="22" fill="#000000" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic">[ d<tspan dy="4" font-size="18">groove</tspan>, S<tspan dy="4" font-size="18">a</tspan>, S<tspan dy="4" font-size="18">q</tspan>, S<tspan dy="4" font-size="18">z</tspan> ]</text>
 
   <!-- R4a: 主要提供 -->
   <rect x="1070" y="424" width="290" height="66" rx="6" fill="none" stroke="#000000" stroke-width="1.8"/>
   <text x="1090" y="450" font-size="26" font-weight="bold" fill="#000000" text-anchor="start">主要提供</text>
-  <text x="1090" y="478" font-size="26" fill="#000000" text-anchor="start">长期累积、空间均匀性信息</text>
+  <text x="1090" y="478" font-size="22" fill="#000000" text-anchor="start">长期累积与空间均匀性</text>
 
   <!-- R4b: 主要约束 -->
   <rect x="1070" y="506" width="290" height="66" rx="6" fill="none" stroke="#000000" stroke-width="1.8"/>
   <text x="1090" y="532" font-size="26" font-weight="bold" fill="#000000" text-anchor="start">主要约束</text>
-  <text x="1090" y="560" font-size="26" fill="#000000" text-anchor="start">门控参数及空间累积</text>
+  <text x="1090" y="560" font-size="22" fill="#000000" text-anchor="start">门控参数及空间累积</text>
 
   <!-- 右列内部竖向箭头（修正旧版重复 polygon 残影） -->
   <line x1="1215" y1="180" x2="1215" y2="188" stroke="#000000" stroke-width="2"/>
@@ -103,7 +100,7 @@
   <rect x="410" y="596" width="580" height="100" rx="10" fill="none" stroke="#000000" stroke-width="2.8"/>
   <text x="700" y="626" font-size="28" font-weight="bold" fill="#000000" text-anchor="middle">联合约束 / 反演校准</text>
   <line x1="460" y1="644" x2="940" y2="644" stroke="#000000" stroke-width="1" stroke-dasharray="4 3"/>
-  <text x="700" y="676" font-size="28" fill="#000000" text-anchor="middle">单线 + 槽联合约束  →  反演 / 校准  →  更新模型</text>
+  <text x="700" y="676" font-size="24" fill="#000000" text-anchor="middle">单线 + 槽联合约束  →  反演 / 校准  →  更新模型</text>
 
   <!-- 左 Y_line → 联合约束 -->
   <line x1="330" y1="342" x2="330" y2="640" stroke="#000000" stroke-width="2.4"/>
