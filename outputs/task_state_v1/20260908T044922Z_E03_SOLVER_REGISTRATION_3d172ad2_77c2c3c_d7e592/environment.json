@@ -1,0 +1,12 @@
+{
+  "python": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+  "executable": "/home/renziwei/venv-taskstate/bin/python",
+  "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.35",
+  "packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "pandas": "2.3.2",
+    "scikit-learn": "1.7.1",
+    "PyYAML": "5.4.1"
+  }
+}

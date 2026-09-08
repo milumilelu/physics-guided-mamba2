@@ -1,0 +1,29 @@
+{
+  "stage": "parameter_domain",
+  "result": [
+    "domain_P11_124_w0.874_r1",
+    [
+      {
+        "job": "domain_P11_124_w0.874_r1",
+        "switch": "P11",
+        "check": "tail",
+        "descriptor": "ALL",
+        "error": null,
+        "passed": false,
+        "reason": "ValueError: Window attempt registration budget exceeded"
+      }
+    ],
+    {
+      "vector": [
+        5.699096985838029,
+        -16.54655525723489,
+        -3.512019062403117,
+        -0.40214125697769276,
+        0.8939065549883971,
+        -0.4658742000287931
+      ],
+      "accepted": false,
+      "failure": "ValueError: Window attempt registration budget exceeded"
+    }
+  ]
+}

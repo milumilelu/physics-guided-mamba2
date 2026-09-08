@@ -1,0 +1,60 @@
+schema_version: '1.2.1'
+scope: E01_GRADIENT_GATE_AND_SCAN_CONVERGENCE
+status: FROZEN_NUMERIC_SCOPE
+allowed_to_train: false
+parameter_interpretation: synthetic_numeric_fixture_not_calibrated_material_constants
+# Fixture inherits the E01 unit-gate base values; gamma terms are enabled so that
+# log(tau) has a nonzero derivative. They are synthetic fixture values, not
+# calibrated material constants (calibration belongs to E03).
+waist_m: 2.0e-6
+wavelength_m: 1.03e-6
+m_squared: 1.2
+F1_reference_J_m2: 10000.0
+delta_reference_m: 1.0e-9
+kappa: 0.01
+saturation_ratio: 0.5
+gamma_F: 0.25
+gamma_delta: 0.10
+reference_duration_s: 1.0e-12
+switch: P11
+# Constant-power fixture; value taken from the MAIN180 measured_power_W column
+# (upstream already flags constant_power_assumption=True / PENDING_REGISTRATION).
+power_W: 5.3333
+scenario:
+  name: single_pass_unidirectional_raster_centered
+  region_m: 2.0e-5
+  grid_n: 80
+  passes: 1
+  turn_exposure: false
+  guard_region: none
+  start_phase_xy_m: [0.0, 0.0]
+  scenario_assumptions: [passes, turn_exposure, guard_region, start_phase]
+sampling:
+  seed: 20260908
+  pool_size: 512
+  n_points: 32
+  tau_fs: [223.0, 6000.0]
+  f_kHz: [2.0, 200.0]
+  v_mm_s: [3.0, 25.0]
+  h_um: [2.0, 10.0]
+caps:
+  n_x_max: 96
+  n_y_max: 16
+  total_pulses_max: 512
+fd:
+  directions: [log_tau_s, log_f_Hz, log_v_m_s, log_h_m]
+  steps: [1.0e-2, 1.0e-3, 1.0e-4, 1.0e-5, 1.0e-6]
+  plateau_rtol: 1.0e-3
+  pass_rtol: 1.0e-3
+  unexplained_fail_rtol: 1.0e-2
+  min_pass_fraction: 0.95
+  deriv_floor_factor: 1.0e-6
+convergence:
+  refinement_points: 3
+  grid_px_per_axis: [40, 80, 160]
+  packet_splits: [1, 2, 4, 8]
+  packet_repeat_count: 8   # pulses per lattice site so the frozen-state packet
+                           # approximation is exercised non-trivially (single-pass
+                           # scans give one pulse per site and a vacuous test)
+  packet_position: grid_center
+  refinement_tolerance: 0.01

@@ -1,0 +1,48 @@
+{
+  "n_recipe_coverage_cases": 48,
+  "n_parameter_domain_cases": 3744,
+  "n_domain_enforcement_cases": 40,
+  "n_grid_refinement_cases": 48,
+  "n_determinism_cases": 4,
+  "representative_recipe_dataset_index": 1,
+  "grid_refinement_dataset_indices": [
+    3,
+    2,
+    1,
+    0
+  ],
+  "parameter_bounds_registered": {
+    "log_F1_J_m2": [
+      4.605,
+      16.118
+    ],
+    "log_delta_m": [
+      -27.631,
+      -13.816
+    ],
+    "log_kappa": [
+      -9.21,
+      0.693
+    ],
+    "logit_rho": [
+      -6.0,
+      6.0
+    ],
+    "gamma_F": [
+      -1.0,
+      1.0
+    ],
+    "gamma_delta": [
+      -1.0,
+      1.0
+    ]
+  },
+  "nominal_physics_fixture": {
+    "log_F1_J_m2": 10.0,
+    "log_delta_m": -20.0,
+    "log_kappa": -1.609,
+    "logit_rho": -0.847,
+    "gamma_F": 0.0,
+    "gamma_delta": 0.0
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "scope": "FINITE_ROI_SOLVER_REGISTRATION",
+  "training_executed": false,
+  "parameter_fitting_executed": false,
+  "calibration_semantic_sha256": "9c3a6caeadd424adb9b271584fc39cca82724eebac912ee2093e75909ef0c83a",
+  "calibration_config": "config/task_state_v1/physics_calibration.yaml",
+  "calibration_config_sha256": "037c060525fc3fd36041eda25eb877b58ab9b8fcd9e8b8a5e857f68ffeb6fca9",
+  "input_sha256": "0396071b3644adfb21eeb558c8d9edd11ea7f88d8d8fd0779f8ea07fb4a1eed7",
+  "recipe_coverage": {
+    "cases": 48,
+    "waists": [
+      0.874,
+      2.0,
+      3.0
+    ],
+    "switches": [
+      "P00",
+      "P10",
+      "P01",
+      "P11"
+    ],
+    "gate_descriptor_checks": 528,
+    "failed_descriptor_checks": 0,
+    "failed_cases": 0,
+    "failed_case_ids": [],
+    "solver_failures": 0,
+    "nonfinite_cases": 0,
+    "implausible_depth_cases": 0,
+    "implausible_depth_threshold_um": 650.8415985107422,
+    "max_window_attempts_observed": 2,
+    "max_window_attempts_allowed": 4,
+    "window_self_consistent": true,
+    "sensitivity_3w_vs_6w_checks": 480,
+    "sensitivity_3w_vs_6w_max_error": 0.0008254759134491141
+  },
+  "parameter_domain": {
+    "cases": 3744,
+    "descriptor_checks": 41154,
+    "failed_descriptor_checks": 3,
+    "accepted_vectors": 3741,
+    "rejected_or_nonfinite": 3,
+    "implausible_depth_cases": 304,
+    "implausible_depth_threshold_um": 650.8415985107422,
+    "D_um_max": 134594.7301909552,
+    "bounds_registered": {
+      "log_F1_J_m2": [
+        4.605,
+        16.118
+      ],
+      "log_delta_m": [
+        -27.631,
+        -13.816
+      ],
+      "log_kappa": [
+        -9.21,
+        0.693
+      ],
+      "logit_rho": [
+        -6.0,
+        6.0
+      ],
+      "gamma_F": [
+        -1.0,
+        1.0
+      ],
+      "gamma_delta": [
+        -1.0,
+        1.0
+      ]
+    }
+  },
+  "domain_enforcement": {
+    "probes": 40,
+    "rejected_as_required": 40,
+    "wrongly_accepted": 0
+  },
+  "grid_refinement": {
+    "cases": 48,
+    "descriptor_checks": 960,
+    "failed_descriptor_checks": 2
+  },
+  "determinism": {
+    "cases": 4,
+    "identical": true
+  },
+  "conditions": {
+    "all_jobs_accounted": true,
+    "full_recipe_coverage": false,
+    "window_self_consistent": true,
+    "recipe_coverage_finite_and_converged": true,
+    "parameter_domain_finite_and_converged": false,
+    "out_of_bounds_rejected": true,
+    "grid_refinement_converged": false,
+    "determinism_bitwise": true
+  },
+  "worker_errors": {
+    "recipe_coverage": [],
+    "parameter_domain": [],
+    "domain_enforcement": [],
+    "grid_refinement": [],
+    "determinism": []
+  },
+  "status": "FAIL",
+  "allowed_to_calibrate": false,
+  "recipe_coverage_scope": "smoke_first_4_rows",
+  "metric_status": "INVALID",
+  "scenario_status": "FINITE_ROI_REGISTERED_FIXTURE",
+  "remaining": [
+    "full_recipe_coverage",
+    "parameter_domain_finite_and_converged",
+    "grid_refinement_converged"
+  ]
+}

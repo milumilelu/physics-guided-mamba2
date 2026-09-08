@@ -1,0 +1,69 @@
+schema_version: '1.2.1'
+scope: FINITE_ROI_SOLVER_REGISTRATION
+status: FROZEN_BEFORE_RESULTS
+
+# Registration is the hard entry gate for E03 calibration:
+# experiments/task_state_v1/03_physics_calibration.py refuses to run unless this
+# run produces solver_registration_gate.json with status PASS and
+# allowed_to_calibrate true.
+
+# MAIN180 identity: only used for recipe coverage and split identity, never for
+# fitting (this run performs no parameter estimation).
+split_run: 20260906T111435Z_E00_a1a1c9a8_533009c_9e0686
+
+# The registered parameter domain is read from the calibration config itself,
+# so registration cannot drift away from the bounds the optimizer will use.
+calibration_config: config/task_state_v1/physics_calibration.yaml
+
+power_W: 5.3333
+wavelength_m: 1.03e-06
+m_squared: 1.2
+reference_duration_s: 1.0e-12
+
+waist_um: [0.874, 2.0, 3.0]
+switches: [P00, P10, P01, P11]
+tail_waists: [6.0, 8.0]
+tail_relative_tolerance: 0.01
+# Informational lower-window sensitivity: 3 w vs 6 w is NOT a gate. It bounds
+# how conservative the 6 w truncation is, because 6 w vs 8 w is often exactly
+# zero (fluence beyond 6 w is ~exp(-72) of peak, i.e. no removal).
+sensitivity_tail_waists: 3.0
+# The solver widens its own pulse window until the final defocused waist fits.
+# Defocus switches (P10/P11) legitimately need 2 attempts because w grows with
+# depth; exhausting the retry budget (16) would be a real failure.
+max_window_attempts_allowed: 4
+# Informational plausibility flag: |D| above this multiple of the largest
+# observed MAIN180 depth is reported (never silently dropped, never a gate).
+implausible_depth_factor: 10.0
+
+# Nominal in-domain physics used for the MAIN180 recipe-coverage sweep. It is a
+# registration fixture, not a fitted value and not a material constant.
+nominal_physics:
+  log_F1_J_m2: 10.0      # F1 ~ 2.2e4 J/m^2
+  log_delta_m: -20.0     # delta ~ 2.06e-9 m
+  log_kappa: -1.609      # kappa ~ 0.2
+  logit_rho: -0.847      # rho ~ 0.3
+  gamma_F: 0.0
+  gamma_delta: 0.0
+
+domain_sampling:
+  include_vertices: true
+  lhs_points: 64
+  seed: 20260908
+  out_of_bounds_probe_fraction: 0.02   # probes just outside both bounds
+
+grid_refinement:
+  grids: [640, 1280]
+  n_recipes: 5
+  # Include the densest exposure; all three waists are crossed with all switches.
+  recipe_selection: pulse_count_quartiles_including_endpoints
+  map: bilinear_interpolation_to_fixed_160_pixel_centers
+
+determinism_repeats: 2
+
+near_zero_scales: {D: 1.0e-6, A_med: 1.0e-6, ilr_z1: 1.0, ilr_z2: 1.0, ilr_z3: 1.0, ilr_z4: 1.0,
+                   A2_8_16: 1.0, entropy_8_16: 1.0, A2_16_32: 1.0, entropy_16_32: 1.0}
+near_zero_rule: denominator_max_abs_reference_and_fixed_scale
+
+threads_per_worker: 1
+workers: 8

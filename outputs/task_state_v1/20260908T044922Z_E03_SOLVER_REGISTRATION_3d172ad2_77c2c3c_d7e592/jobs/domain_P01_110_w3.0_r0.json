@@ -1,0 +1,122 @@
+{
+  "stage": "parameter_domain",
+  "result": [
+    "domain_P01_110_w3.0_r0",
+    [
+      {
+        "descriptor": "D",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "domain_P01_110_w3.0_r0",
+        "switch": "P01",
+        "check": "tail"
+      },
+      {
+        "descriptor": "A_med",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "domain_P01_110_w3.0_r0",
+        "switch": "P01",
+        "check": "tail"
+      },
+      {
+        "descriptor": "ilr_z1",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "domain_P01_110_w3.0_r0",
+        "switch": "P01",
+        "check": "tail"
+      },
+      {
+        "descriptor": "ilr_z2",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "domain_P01_110_w3.0_r0",
+        "switch": "P01",
+        "check": "tail"
+      },
+      {
+        "descriptor": "ilr_z3",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "domain_P01_110_w3.0_r0",
+        "switch": "P01",
+        "check": "tail"
+      },
+      {
+        "descriptor": "ilr_z4",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "domain_P01_110_w3.0_r0",
+        "switch": "P01",
+        "check": "tail"
+      },
+      {
+        "descriptor": "A2_8_16",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "domain_P01_110_w3.0_r0",
+        "switch": "P01",
+        "check": "tail"
+      },
+      {
+        "descriptor": "entropy_8_16",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "domain_P01_110_w3.0_r0",
+        "switch": "P01",
+        "check": "tail"
+      },
+      {
+        "descriptor": "A2_16_32",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "domain_P01_110_w3.0_r0",
+        "switch": "P01",
+        "check": "tail"
+      },
+      {
+        "descriptor": "entropy_16_32",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "domain_P01_110_w3.0_r0",
+        "switch": "P01",
+        "check": "tail"
+      },
+      {
+        "descriptor": "q_state",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "domain_P01_110_w3.0_r0",
+        "switch": "P01",
+        "check": "tail"
+      }
+    ],
+    {
+      "vector": [
+        13.962757711653436,
+        -18.164870418322465,
+        -2.8513189257422145,
+        -5.406708424255981,
+        -0.941225928212283,
+        0.9745459286221507
+      ],
+      "D_um": 0.4367075863633642,
+      "A_um": 0.0326727220952926,
+      "implausible_depth": false,
+      "all_finite": true,
+      "accepted": true
+    }
+  ]
+}

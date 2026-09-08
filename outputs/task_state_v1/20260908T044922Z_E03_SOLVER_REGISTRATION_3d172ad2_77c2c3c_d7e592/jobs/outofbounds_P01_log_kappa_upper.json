@@ -1,0 +1,21 @@
+{
+  "stage": "domain_enforcement",
+  "result": [
+    "outofbounds_P01_log_kappa_upper",
+    {
+      "job": "outofbounds_P01_log_kappa_upper",
+      "switch": "P01",
+      "out_of_bounds_accepted": false,
+      "rejected_as_required": true,
+      "message": "ValueError: Calibration parameter out of bounds",
+      "vector": [
+        10.3615,
+        -20.7235,
+        0.89106,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ]
+}

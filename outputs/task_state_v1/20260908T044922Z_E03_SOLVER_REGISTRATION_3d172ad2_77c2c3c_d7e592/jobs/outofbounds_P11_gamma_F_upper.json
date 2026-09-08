@@ -1,0 +1,21 @@
+{
+  "stage": "domain_enforcement",
+  "result": [
+    "outofbounds_P11_gamma_F_upper",
+    {
+      "job": "outofbounds_P11_gamma_F_upper",
+      "switch": "P11",
+      "out_of_bounds_accepted": false,
+      "rejected_as_required": true,
+      "message": "ValueError: Calibration parameter out of bounds",
+      "vector": [
+        10.3615,
+        -20.7235,
+        -4.258500000000001,
+        0.0,
+        1.04,
+        0.0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "stage": "recipe_coverage",
+  "result": [
+    "recipe_1_P01_w3.0",
+    [
+      {
+        "descriptor": "D",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "tail"
+      },
+      {
+        "descriptor": "A_med",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "tail"
+      },
+      {
+        "descriptor": "ilr_z1",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "tail"
+      },
+      {
+        "descriptor": "ilr_z2",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "tail"
+      },
+      {
+        "descriptor": "ilr_z3",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "tail"
+      },
+      {
+        "descriptor": "ilr_z4",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "tail"
+      },
+      {
+        "descriptor": "A2_8_16",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "tail"
+      },
+      {
+        "descriptor": "entropy_8_16",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "tail"
+      },
+      {
+        "descriptor": "A2_16_32",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "tail"
+      },
+      {
+        "descriptor": "entropy_16_32",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "tail"
+      },
+      {
+        "descriptor": "q_state",
+        "error": 0.0,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "tail"
+      },
+      {
+        "descriptor": "D",
+        "error": 5.764404135778376e-07,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "sensitivity_3w_vs_6w"
+      },
+      {
+        "descriptor": "A_med",
+        "error": 3.989999625970015e-06,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "sensitivity_3w_vs_6w"
+      },
+      {
+        "descriptor": "ilr_z1",
+        "error": 3.871993618636924e-06,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "sensitivity_3w_vs_6w"
+      },
+      {
+        "descriptor": "ilr_z2",
+        "error": 1.1416979439133148e-06,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "sensitivity_3w_vs_6w"
+      },
+      {
+        "descriptor": "ilr_z3",
+        "error": 1.053248514548688e-05,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "sensitivity_3w_vs_6w"
+      },
+      {
+        "descriptor": "ilr_z4",
+        "error": 4.873817246291677e-05,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "sensitivity_3w_vs_6w"
+      },
+      {
+        "descriptor": "A2_8_16",
+        "error": 1.1308754557792788e-05,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "sensitivity_3w_vs_6w"
+      },
+      {
+        "descriptor": "entropy_8_16",
+        "error": 8.610064277378426e-05,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "sensitivity_3w_vs_6w"
+      },
+      {
+        "descriptor": "A2_16_32",
+        "error": 7.537790362566188e-05,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "sensitivity_3w_vs_6w"
+      },
+      {
+        "descriptor": "entropy_16_32",
+        "error": 0.0001908556988695076,
+        "passed": true,
+        "reason": "",
+        "job": "recipe_1_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 1,
+        "check": "sensitivity_3w_vs_6w"
+      }
+    ],
+    {
+      "D_um": 0.4122482430130469,
+      "A_um": 0.016581690302351165,
+      "implausible_depth": false,
+      "max_window_attempts": 1,
+      "physical_pulses": 11000,
+      "evaluated_point_pulse_updates": 16540800,
+      "band_valid": true,
+      "all_finite": true
+    }
+  ]
+}

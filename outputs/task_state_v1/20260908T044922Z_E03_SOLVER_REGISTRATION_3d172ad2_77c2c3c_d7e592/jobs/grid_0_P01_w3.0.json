@@ -1,0 +1,232 @@
+{
+  "stage": "grid_refinement",
+  "result": [
+    "grid_0_P01_w3.0",
+    [
+      {
+        "descriptor": "D",
+        "error": 0.00022516648205901885,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_finest"
+      },
+      {
+        "descriptor": "A_med",
+        "error": 0.0032712230008462607,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_finest"
+      },
+      {
+        "descriptor": "ilr_z1",
+        "error": 0.00017591107187709678,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_finest"
+      },
+      {
+        "descriptor": "ilr_z2",
+        "error": 5.794451654916304e-06,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_finest"
+      },
+      {
+        "descriptor": "ilr_z3",
+        "error": 0.00011600616307653512,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_finest"
+      },
+      {
+        "descriptor": "ilr_z4",
+        "error": 2.005882377984977e-05,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_finest"
+      },
+      {
+        "descriptor": "A2_8_16",
+        "error": 2.1442449937847385e-07,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_finest"
+      },
+      {
+        "descriptor": "entropy_8_16",
+        "error": 1.0062349685979743e-06,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_finest"
+      },
+      {
+        "descriptor": "A2_16_32",
+        "error": 3.37727289642098e-05,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_finest"
+      },
+      {
+        "descriptor": "entropy_16_32",
+        "error": 3.2954847366956086e-05,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_finest"
+      },
+      {
+        "descriptor": "D",
+        "error": 7.502513660687307e-05,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_to_direct_points"
+      },
+      {
+        "descriptor": "A_med",
+        "error": 0.0003286997276947795,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_to_direct_points"
+      },
+      {
+        "descriptor": "ilr_z1",
+        "error": 1.4432189253266302e-05,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_to_direct_points"
+      },
+      {
+        "descriptor": "ilr_z2",
+        "error": 3.903525064814783e-05,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_to_direct_points"
+      },
+      {
+        "descriptor": "ilr_z3",
+        "error": 2.2347311117984495e-05,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_to_direct_points"
+      },
+      {
+        "descriptor": "ilr_z4",
+        "error": 4.066258572136411e-06,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_to_direct_points"
+      },
+      {
+        "descriptor": "A2_8_16",
+        "error": 3.9480339442121704e-08,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_to_direct_points"
+      },
+      {
+        "descriptor": "entropy_8_16",
+        "error": 1.6068651939593614e-07,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_to_direct_points"
+      },
+      {
+        "descriptor": "A2_16_32",
+        "error": 6.573955118716057e-06,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_to_direct_points"
+      },
+      {
+        "descriptor": "entropy_16_32",
+        "error": 6.389136335216428e-06,
+        "passed": true,
+        "reason": "",
+        "job": "grid_0_P01_w3.0",
+        "switch": "P01",
+        "waist_um": 3.0,
+        "dataset_index": 0,
+        "check": "grid_to_direct_points"
+      }
+    ],
+    {
+      "dataset_index": 0,
+      "switch": "P01"
+    }
+  ]
+}

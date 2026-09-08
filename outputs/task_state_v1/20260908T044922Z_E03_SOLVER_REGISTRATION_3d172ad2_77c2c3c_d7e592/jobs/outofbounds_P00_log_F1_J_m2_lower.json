@@ -1,0 +1,19 @@
+{
+  "stage": "domain_enforcement",
+  "result": [
+    "outofbounds_P00_log_F1_J_m2_lower",
+    {
+      "job": "outofbounds_P00_log_F1_J_m2_lower",
+      "switch": "P00",
+      "out_of_bounds_accepted": false,
+      "rejected_as_required": true,
+      "message": "ValueError: Calibration parameter out of bounds",
+      "vector": [
+        4.37474,
+        -20.7235,
+        0.0,
+        0.0
+      ]
+    }
+  ]
+}

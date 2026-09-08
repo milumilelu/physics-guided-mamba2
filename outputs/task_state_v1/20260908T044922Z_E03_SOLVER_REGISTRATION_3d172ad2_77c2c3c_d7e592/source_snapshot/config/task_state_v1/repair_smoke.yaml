@@ -1,0 +1,9 @@
+scope: REPAIR_ENGINEERING_SMOKE_NOT_G2
+seed: 1709
+families: 16
+token_lengths: [8]
+epochs: 2
+models: [STATIC, H0, GRU, CTSSM, MAMBA2, MAMBA2_DP, GRU_DP]
+tracks: [coupled, 'null']
+device: cuda
+allowed_to_claim_learning_benefit: false

@@ -1,0 +1,17 @@
+{
+  "stage": "determinism",
+  "result": [
+    "det_3_P01_w0.874",
+    {
+      "job": "det_3_P01_w0.874",
+      "switch": "P01",
+      "waist_um": 0.874,
+      "dataset_index": 3,
+      "digests": [
+        "5a5a50ef79c3498a816ce028f6d07019804f0c88041850c907aa671e081153d2",
+        "5a5a50ef79c3498a816ce028f6d07019804f0c88041850c907aa671e081153d2"
+      ],
+      "identical": true
+    }
+  ]
+}

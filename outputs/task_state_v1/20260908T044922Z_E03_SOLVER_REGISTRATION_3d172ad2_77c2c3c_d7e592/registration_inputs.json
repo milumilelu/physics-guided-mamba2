@@ -1,0 +1,1160 @@
+{
+  "files": [
+    {
+      "path": "experiments/phase2_5/phase2_5_config.yaml",
+      "bytes": 2617,
+      "sha256": "f6fde13f58d8e377d475cf4d4633af10c9e054e7030b2bb688f647395e343ea9"
+    },
+    {
+      "path": "experiments/phase2_8_r1/24_information_decomposition.py",
+      "bytes": 29363,
+      "sha256": "91fbc2279dd18ff691c3df2f2fae03abb991c03b99187de96f9965aeff2f8216"
+    },
+    {
+      "path": "experiments/phase2_8_r1/phase2_8_config.yaml",
+      "bytes": 5204,
+      "sha256": "3f4dea28e698745853fd602e42aee33860e8cb6d4a663ebb3cc28da65f8a89dc"
+    },
+    {
+      "path": "outputs/phase1_minimal/exploration_manifest.csv",
+      "bytes": 38406,
+      "sha256": "aee221b708fd5d9ba9aac11bef968d121f1c2188746f71e6998b1e400fac97f0"
+    },
+    {
+      "path": "outputs/phase2/manifest/phase2_manifest.csv",
+      "bytes": 80762,
+      "sha256": "d6e932973fd26a50104b164a0feb6cc1c11b2049ee90c9904f085ed9d64eb1ba"
+    },
+    {
+      "path": "outputs/phase2_5/directional_spectrum/directional_metrics.csv",
+      "bytes": 65774,
+      "sha256": "ceb1d0ed44265894ecd247a547dec1fa93edd4a95b4302d1b8ec6e55a03be98b"
+    },
+    {
+      "path": "outputs/phase2_5/spectral_composition/ilr_coordinates.csv",
+      "bytes": 16739,
+      "sha256": "2ebd43d336e9c7fecfbbb3a143fc32b6ca4dc686762c55a3f0d51f0fe8c2737f"
+    },
+    {
+      "path": "outputs/phase2_8_r1/folds/fold_assignments.csv",
+      "bytes": 41533,
+      "sha256": "31a9d980a90f23a703250cd3498463c4775c1e83750e647551b43d93478b379e"
+    },
+    {
+      "path": "outputs/phase2_8_r1/predictability_oof.csv",
+      "bytes": 2806377,
+      "sha256": "4ca8fbb585555109b0f81e2b88bada601bb21cbf55e8db5abcbbe1dc2ad74a56"
+    },
+    {
+      "path": "outputs/phase2_8_r1/predictability_spectrum.csv",
+      "bytes": 1836,
+      "sha256": "fa9773bba2416cef15430872d3e334d2764fc86d5282b7570276ebbabe2dcbff"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/dataset/stable_roi_80um_dataset.npz",
+      "bytes": 32946526,
+      "sha256": "8a116fe28f1239506ee1f0c409132ca805569e256abffb049c4cb51d4c9b9423"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_001.npz",
+      "bytes": 185573,
+      "sha256": "d040bb693909be3d7ae5792f990cfde152f52157d94ad6bce17895ef8eb6df78"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_002.npz",
+      "bytes": 185949,
+      "sha256": "e88fa42772d2ae359418ba181b4880ad8518c71ed678a67d07516d8ee2677589"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_003.npz",
+      "bytes": 190963,
+      "sha256": "76d869fd36f265ed281a14bb8cc7b7df0dec0d64b3306f423975e0ec9f55b624"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_004.npz",
+      "bytes": 195565,
+      "sha256": "aafc187f1f2b72b5026f000fbf15d886e7889886315c90031cb4f5f4a1cea94a"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_005.npz",
+      "bytes": 191176,
+      "sha256": "70225bfc13e80d03a38f7d6c92f680f6008ab78ec56c1c914577aebed16cf9f5"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_006.npz",
+      "bytes": 198518,
+      "sha256": "4783ec9e48faa2c3a50ca08895645bc8cf326e64ef8ce15e443aabf06e7395f7"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_007.npz",
+      "bytes": 193497,
+      "sha256": "c28f7d486d2ad69f4f6105b77e15198a872f180dfcfede411a5175813de47913"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_008.npz",
+      "bytes": 198167,
+      "sha256": "604cbe2880a4b28d5b353680968be67e1df883c5e7dfaa729d4b4eef6ccdcd89"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_009.npz",
+      "bytes": 179630,
+      "sha256": "ea62b90b93877b836997d01a94ac04334ee4a464b86ef61eeef9965f84fae04d"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_010.npz",
+      "bytes": 194668,
+      "sha256": "17da4cd1bb015a010ac73c23809ab6570724658631ff4b79549e1af89d765cea"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_011.npz",
+      "bytes": 183627,
+      "sha256": "d71d5ee7dab03407fbc5e5611c452614459c4f5e21a2b7d543c1c95e87d21c8f"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_012.npz",
+      "bytes": 185208,
+      "sha256": "62c56868c3f17116ff0d028caad032fdc517fb62039252898e8a63f3887ac5f8"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_013.npz",
+      "bytes": 185838,
+      "sha256": "fc775e6637082188a6a98fb6f053fb833cc1a728a4afcae01ddda97c0af68708"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_014.npz",
+      "bytes": 193963,
+      "sha256": "9bb16d94de419a8e45bc2b5449039aff05bfa18dd5941ce2945902004937df31"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_015.npz",
+      "bytes": 194912,
+      "sha256": "250fedc9440050b133178a3718605652eab776c070c8e46f488727eb827716f5"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_016.npz",
+      "bytes": 182900,
+      "sha256": "302d74157e3f3b3292c29300b69c1f4e22506618ecfb9dd2e3b2a246da17a631"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_017.npz",
+      "bytes": 187964,
+      "sha256": "3a0a2def00904f00389e2366b824111f066b071634807b0a1307e80642d37e9e"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_018.npz",
+      "bytes": 193407,
+      "sha256": "3224a222d7140ebae8e5b5f31383dcf7d577fff34bc3c21cc40b07c2b52bb172"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_019.npz",
+      "bytes": 192980,
+      "sha256": "08166444f9786120e1902a6edc9c2ae1694904fa1e631bd2e4ad41d783e1e4e8"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_020.npz",
+      "bytes": 188273,
+      "sha256": "f7e58079996a645cdea2cd5f51ea7139847ddc603592c0bbcedb16926d2d1208"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_021.npz",
+      "bytes": 187322,
+      "sha256": "440c9043f0d18d86ec055fbc8580329227759d1f9f73c6498240071cddefffd6"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_022.npz",
+      "bytes": 187018,
+      "sha256": "a1956f1016758d1b44143c7b574ed9f98e3db674e3df2079447b8390b1acfcac"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_023.npz",
+      "bytes": 188957,
+      "sha256": "afe07df2cf39ab5232f10b93be398a900bf250fce6f6d0f03e49d9437e29b878"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_024.npz",
+      "bytes": 189698,
+      "sha256": "d18885bcf4e600d4651f492fb3837e7a2edfb3d371cde1f79a9cd68e58fee7aa"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_025.npz",
+      "bytes": 186288,
+      "sha256": "31363d76f8e8d0202fc2199d618e0daec10a365229a84e1f9f6c975c7a75bb66"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_026.npz",
+      "bytes": 198519,
+      "sha256": "2a56ee6cb79ee293b5628dd8893c57adc6a94c408eb0d570bef5ff4664cb0c33"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_027.npz",
+      "bytes": 182951,
+      "sha256": "50baeffe46a55a41c2a5e392c5b95d04fcc0722daa0b60449d3ec8e6322a7b25"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_028.npz",
+      "bytes": 187194,
+      "sha256": "57ae6547f9d222cf7c93594e304156b38995d9818486c87eaba80166df5cc99d"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_029.npz",
+      "bytes": 180646,
+      "sha256": "729b1ad4aea9dce7dfccbbc86192c43df1f28bc508e878eea21564614f9113f8"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_030.npz",
+      "bytes": 185079,
+      "sha256": "c88a014238bffdfe613fd3433a90c29e3512afb345a12b389a3f17bd0ba2b93d"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_031.npz",
+      "bytes": 189802,
+      "sha256": "6ffc3fdfdf9ae174c9ec219a04f14fec68383cd411cbade952db837c0ded17cc"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_032.npz",
+      "bytes": 184927,
+      "sha256": "58b4e0fe12db7bd46992e24020d5bac069a704a4e1e4f3f72aeb130293c78ea0"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_033.npz",
+      "bytes": 181030,
+      "sha256": "a662b42ca457768e72b6f7245861c6acc153884710ddcf76a836a5481d3f1dd6"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_034.npz",
+      "bytes": 182999,
+      "sha256": "5643e6a8663f1957000ff19a9c447021e428226c1ee4cf275645a33db401e69f"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_035.npz",
+      "bytes": 195193,
+      "sha256": "2376031569a540a9d20b112196cdd231c01950b572919c0100efa34a8cdb613e"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_036.npz",
+      "bytes": 184375,
+      "sha256": "336912d47fe4ca21e8d3915473e3d2bc471bc0187a9b8ac212f01b057b1bbf4c"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_037.npz",
+      "bytes": 185878,
+      "sha256": "e76150bea3cccba4a9756a30c83d80db630fb94e228114316016651a79be75ec"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_038.npz",
+      "bytes": 188731,
+      "sha256": "d2f33674fdc174f5ab88ce499a46e2c73f06e8f3b13887d8d87d40589a4a2ca5"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_039.npz",
+      "bytes": 194018,
+      "sha256": "38372c04da5a88dd713c434e75bdcc3fa0a67e3759530019192efc9ad23702e2"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_040.npz",
+      "bytes": 186441,
+      "sha256": "fdaebc5a4d75919610844b2402c9083dc364d2e1fe43322b0e96aa2caaf93d10"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_041.npz",
+      "bytes": 185208,
+      "sha256": "f10d34a4b8fd4cf75b18288908763d1907ed78e52e516e122bea474a3b6b29a3"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_042.npz",
+      "bytes": 185262,
+      "sha256": "87477e852b273f5f7b16cf2822c93c2b6f83efe4378ba12befbb30ba1c39c82c"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_043.npz",
+      "bytes": 186069,
+      "sha256": "ce95fb5eeeda8fc8aa8c7036e736d0d891cbced0715638c8ee74958313331be0"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_044.npz",
+      "bytes": 189201,
+      "sha256": "6e0bf1686998661a59ee0e70325d33573afa6064f93261bb685ef427d331f9d4"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_045.npz",
+      "bytes": 189777,
+      "sha256": "eab97acdfe70c1fe7a746ef0c3b43ff46d8b6ffaef41dbbb119412d39d0a4a0a"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_046.npz",
+      "bytes": 183350,
+      "sha256": "bc594c5be4655306f55b692022b32f1d5ee3725e19dc8fb83013497bb8edff87"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_047.npz",
+      "bytes": 186994,
+      "sha256": "01c3d88c2955969a444e84fa346cbb92f5685fb18a5822552364106e3eb56009"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_048.npz",
+      "bytes": 184165,
+      "sha256": "19141cd2561a305f288bf39c38ea8e4d0d24410d35782f17372ec600ecba1950"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_049.npz",
+      "bytes": 194672,
+      "sha256": "b59fa553f321b73064492b65b295d2c4ea55a92376123fa175987cddb3c976e5"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_050.npz",
+      "bytes": 194763,
+      "sha256": "9304b5d21a4eb99866b85f61f5f889868295167dd87db83dac67ed77dce241c8"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_051.npz",
+      "bytes": 198090,
+      "sha256": "2e84d60a19733b1b4673c8c7c9057f616238159f86ba2135d52bcb6d62d6bcd6"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_052.npz",
+      "bytes": 183799,
+      "sha256": "20830cb78609f4e4d3f492fc06544c78c9377e56dc4963aee83321ff5a3c4a39"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_053.npz",
+      "bytes": 184128,
+      "sha256": "ba2fe5a25b810c858f41dd73a38e660a4f504c1d52f15d038e3729bf18ef8aeb"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_054.npz",
+      "bytes": 182734,
+      "sha256": "619b4ebdc005a793a46d2d41dc96639505adc1e2f42bb54a9b29c0e8c5662572"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_055.npz",
+      "bytes": 186956,
+      "sha256": "3cef6b89277495adfecc4b0d71428c50eecaf53dec6831e9b7249618edef8558"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_056.npz",
+      "bytes": 182542,
+      "sha256": "5158d946217814556db2193b3d33e59915243de1526e339de40091f6fb8e3770"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_057.npz",
+      "bytes": 180699,
+      "sha256": "c246395a5f688a32b8046199019f27594a7eb223ee6b0712069ba10c4107b755"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_058.npz",
+      "bytes": 183732,
+      "sha256": "e7fed91b3e9cadb77948c9953e12f49f39818495f55f379d20965c027eb0d256"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_059.npz",
+      "bytes": 184690,
+      "sha256": "dbb32f3fc4f5e8bb1cc6e069d08d041a760d1dfbe785b4dbfa895afc30d6576a"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_060.npz",
+      "bytes": 199515,
+      "sha256": "96ababff301653576278cc56db5aa509da8c4198d97f2dc5ab2a4da24dad437e"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_061.npz",
+      "bytes": 184769,
+      "sha256": "ad71fc025b4daab17ec30d3777a881aa90df085f71eaff0ed386f01bf926f3ae"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_062.npz",
+      "bytes": 185312,
+      "sha256": "a89b32956504c5a45aca750589838df88ad53f2fad7ded91cbaf177b31a070ac"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_063.npz",
+      "bytes": 188155,
+      "sha256": "ba59c34442b0f7e13e33e1ea5e29b04b3f002af558c51e7339db8fdda7b92714"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_064.npz",
+      "bytes": 187869,
+      "sha256": "e70ac9b62b4257bcc38f5c51394eba3e6599dfb27badc6fc6868e9cf4721e255"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_065.npz",
+      "bytes": 186512,
+      "sha256": "2017cc44c87040d0531c2b464abca02989bd67f7f805c7e7e7111c9e4de29be1"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_066.npz",
+      "bytes": 187825,
+      "sha256": "2834c11d82bc8e3b47fb19a861fe8356db822bd3564fb9339247abee2bf1d590"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_067.npz",
+      "bytes": 188166,
+      "sha256": "a9fa8c51bc2011e04573b8e0357014464e7ac514a203642085c442306ca820a6"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_068.npz",
+      "bytes": 187530,
+      "sha256": "347708da9e54ac6d5527857f6e52931d316bf52c779fe7d7fc983f53308be3b4"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_069.npz",
+      "bytes": 193006,
+      "sha256": "f0c93bf111bde23b409b5cc311bc2e9779f3094fb2e0d135292a773099b8aba2"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_070.npz",
+      "bytes": 188029,
+      "sha256": "e0d5c05ed2ccf4ae68c5e42e061cd476ae2f9e8483fd6f27189f3ef55b3e583d"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_071.npz",
+      "bytes": 193215,
+      "sha256": "55cc334c89bf5d6c446efd0a2461c1373f0bd0f9b20b8985414b94c1b4b51148"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_072.npz",
+      "bytes": 185598,
+      "sha256": "ab47d24313aa332b3ee12979136ebf4f4fdee511a230a9494bf1c435255fe509"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_073.npz",
+      "bytes": 183659,
+      "sha256": "8ff7d1ece70c0f109bbc90bc8adb0e3c15537fc902727cc24847dd43431f5b92"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_074.npz",
+      "bytes": 184293,
+      "sha256": "b67c02547006508985d41d743ae1122403382bd5e858b1893702e21ca311b3f5"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_075.npz",
+      "bytes": 194658,
+      "sha256": "3349ee9598406da53f994690ad9114a9c52676bf25213c4eaf8cb32c3806c9cb"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_076.npz",
+      "bytes": 187664,
+      "sha256": "050e6faa1e5b00cec600a9b81628116e5fda07c5f4598950828bf30e64732e06"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_077.npz",
+      "bytes": 183723,
+      "sha256": "b67e09d26e1a16177f16598b84734347b809b43f1893f04d801982bb214a12fb"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_078.npz",
+      "bytes": 193910,
+      "sha256": "d5da24deb45e28904c518cf1a5d8e98d4d5ea82d24cba6e9638f73d5aa7f884a"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_079.npz",
+      "bytes": 194834,
+      "sha256": "47144a7b006e2493900980fcc30aa39ed352138d6382eac25f7a9a0b06b744ef"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_080.npz",
+      "bytes": 181792,
+      "sha256": "1f09f8054a2fbef12023fc662398e178498b658e30865abd0e53ab0a10c75046"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_081.npz",
+      "bytes": 182125,
+      "sha256": "cc1c2451287ca7081ea15c9bec8c10d1911481872f1604c70bd955b2e114c3d7"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_082.npz",
+      "bytes": 182154,
+      "sha256": "5a4b964bf29f111b96bbd03083ea091980823fb0ce96334d7e34b1dabbcf37b4"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_083.npz",
+      "bytes": 185410,
+      "sha256": "a3ad9162b9fe7571472359b8b38b97cf1f851d43d4b11397e4a08d540fb202a8"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_084.npz",
+      "bytes": 183035,
+      "sha256": "f57bf44d6b03d0294dd216744500ea3cb304fac534c810eb4234c82d976dce9f"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_085.npz",
+      "bytes": 187497,
+      "sha256": "de34ffd86a23d8e076c4583caee7fd424dc45bf8ef411791c6e11d4125daa936"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_086.npz",
+      "bytes": 195315,
+      "sha256": "172e29446003dd38666018541e0f89780650672e7c2c516c163e59f7bc07da24"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_087.npz",
+      "bytes": 184646,
+      "sha256": "fed259f0cfd51cff6ea36a354f236d1acab7047e0bfa0da7959da4fec051b528"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_088.npz",
+      "bytes": 190179,
+      "sha256": "badfd66657e768caaea049a81339355b6baf4d7cfbffe403f7e67b3841188a3a"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_089.npz",
+      "bytes": 183772,
+      "sha256": "f3bb7f4cbace55e46dfed6b2dcdc685a2ab54a451e0adae14208821310590c9d"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_090.npz",
+      "bytes": 183891,
+      "sha256": "45dc35e5ffed5ece9b100ec1f90483f181613590b3cb40d414451921a949a077"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_091.npz",
+      "bytes": 182466,
+      "sha256": "e9412dc066a9bf493a9b14e32e0f1e8ae0a6cdc3eefd77e08f8d8858e9c0b810"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_092.npz",
+      "bytes": 188984,
+      "sha256": "0e2fc6593458a4c59a22abfdf95bf5c34b31c6db80ff6bf68f89d5147f9c3063"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_093.npz",
+      "bytes": 185173,
+      "sha256": "b75d1999caf72a0ea41cec1e90581f0219d63c3ae3aa20ba451040b914258d62"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_094.npz",
+      "bytes": 183476,
+      "sha256": "9f86e900bf6344d8491963cd448030a3e20ed5d4de0d24758827d4ef5140e4ec"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_095.npz",
+      "bytes": 185974,
+      "sha256": "bcd8026e9d890e943c8f210a0d711063c2cbe6909fa29e2a10934998fcfe03d3"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_096.npz",
+      "bytes": 184861,
+      "sha256": "2e20f56d9601d23198073189cf816995d1cf8023674a3b2091ee71c68cddfdb8"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_097.npz",
+      "bytes": 183897,
+      "sha256": "623976516aa18072a3a3c545c1ec6a0cfb1419328a843ebfa8805e60c75012fd"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_098.npz",
+      "bytes": 186951,
+      "sha256": "0cfaf027abe025f77f188255f8a2c216f735eb9fa2079cab54574b0955282a41"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_099.npz",
+      "bytes": 195547,
+      "sha256": "b5c434a0bc0feb202ee9e48a64fa9583746e67b943016ee9701ea132921bd76f"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_100.npz",
+      "bytes": 198779,
+      "sha256": "8946b81eb33533bd35aa797e88c68af1725bac3ce000830729ea3076fe4dce66"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_101.npz",
+      "bytes": 192159,
+      "sha256": "4daafc433f5de33952c86dfc73a8cd90c998fb212b2a5757eeccde2fd8012476"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_102.npz",
+      "bytes": 196593,
+      "sha256": "3a28862bb8d74fdb0cc9cb1987dd02342519b41116021391613c1569f34cae7c"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_103.npz",
+      "bytes": 194856,
+      "sha256": "75830a167cdfbcc2115f00b6d9fdf0a91740570cd9931c3e8b71dcabed54d476"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_104.npz",
+      "bytes": 182192,
+      "sha256": "c709fe4cd65f59c2148f78fad2d7a8d5f440886f16128e434c4042bf3d915c61"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_105.npz",
+      "bytes": 180967,
+      "sha256": "911b52fa099726f64ed700f3af2136c08c4fac2621c030601baab234d552610a"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_106.npz",
+      "bytes": 188553,
+      "sha256": "1568ef26bd8ea6dc20f437367e64b0c961e0587f6d379cd3725efdee52972a48"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_107.npz",
+      "bytes": 193804,
+      "sha256": "1b9868bb12234a14d24e853a962c4c909eee64e16d8ce31a7561b7e79ac68489"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_108.npz",
+      "bytes": 188401,
+      "sha256": "a3fca823e5137ad8cd2b75940864cf55f72c72363078ca55c5a7142722652527"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_109.npz",
+      "bytes": 199317,
+      "sha256": "8e323eac2db300e7a454d6e76782e4dadf9b46d6dc54da240aa84d7a26f67237"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_110.npz",
+      "bytes": 182781,
+      "sha256": "2d32b9b0403b9edc7905c6eb4f2cb6c485d6026dc63f01b4e68d37561048e981"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_111.npz",
+      "bytes": 183479,
+      "sha256": "ffe098be4e52b1420d5e4cef68dc07ae0fd729820a37576d2be6509cd47238a9"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_112.npz",
+      "bytes": 191245,
+      "sha256": "a9dec8f47cb576cc714ea4d7db8367895667a078bca88329e8de0e4f901bf6c2"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_113.npz",
+      "bytes": 180983,
+      "sha256": "92f71810c1bf82a1a06adac98d0c2f97057a2bb97bc7fc20e3afbdc996693939"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_114.npz",
+      "bytes": 183817,
+      "sha256": "1dd0ceee105acef624e33ccc00bc7255906609b0c6333be8b6353da2a539d155"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_115.npz",
+      "bytes": 182644,
+      "sha256": "9ecb6d6f08fba6f053e9616dbfc1c10386b3b625b3427d4472afc8c3c3435ab3"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_116.npz",
+      "bytes": 183807,
+      "sha256": "3288fbd2969db912c6a5c37f5e608439e9c559baecedc934cf4faaa3a5803e9c"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_117.npz",
+      "bytes": 196524,
+      "sha256": "31b01af7c0983e2178fdb484cf609a233622f1726842551eb18127b46b6a16bd"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_118.npz",
+      "bytes": 194101,
+      "sha256": "7b3442152c46bbde6b81670e22efac734e84744519cd1f5346dd184257dff750"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_119.npz",
+      "bytes": 183739,
+      "sha256": "32eb482ba6fb2555b440233a6ebffff742dd371fcaefdde473caa4c3face39f8"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_120_formal__sample_120.npz",
+      "bytes": 184312,
+      "sha256": "919e91b076eb957d6b8f9e9873936f4ea57491cbfb70952edde9b8ec0cefe27f"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_001.npz",
+      "bytes": 190087,
+      "sha256": "e29e98f975c7237bd509156e61054b0168e63b49feadca078f0d2cdc042969c9"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_002.npz",
+      "bytes": 188316,
+      "sha256": "835cd6e7fdbb1dd30bc534ce02494265ebb6872b11efc316186e70373e58609a"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_003.npz",
+      "bytes": 187552,
+      "sha256": "c57c5faf94cb1a166ac3908ad01a3da7fd831230c4150e14501f7ab4f13febab"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_004.npz",
+      "bytes": 186121,
+      "sha256": "67a49b1fb181ad4c557e9013909680c0bbcb859fc1a51f7e3c6a8443335fabcb"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_005.npz",
+      "bytes": 184906,
+      "sha256": "24613bd2a5121327b21aaa4e747d25709f3ccda7dedaaefdb6b65001ebda9fb0"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_006.npz",
+      "bytes": 181389,
+      "sha256": "c26ce40ea58ef47bb9a17cdcd768a402dcfd4d338109783bd0846901dac8c11f"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_007.npz",
+      "bytes": 183412,
+      "sha256": "505c1bb3d33619877863427106a2019dcc741e528825e7005fd655130a2fdc86"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_008.npz",
+      "bytes": 180922,
+      "sha256": "fe5e2e8abe2b6de92cf9e68a16271668939afb25926a7d7d240bdf45d867509c"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_009.npz",
+      "bytes": 182963,
+      "sha256": "9292608f15740dd1d9596136e804d547e2ef178d1970bca7e5004916c34d7204"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_010.npz",
+      "bytes": 180257,
+      "sha256": "0d5e5b07737f60e316a31ea8f99c5afdcb2265f748a40e52263eed3ba083392b"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_011.npz",
+      "bytes": 188576,
+      "sha256": "b8c8164212ec928cb9a0d3e3e24902c5cbba5519977f6af06ccc663c5409eae3"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_012.npz",
+      "bytes": 188810,
+      "sha256": "6faecde257b1187d5b18d42619b5fe47918748028a339b53f6298733a79f371b"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_013.npz",
+      "bytes": 182293,
+      "sha256": "7e1021e8fdcc02851868b48878740f3b64cdd88530d5e5b3b4f7e18e72c11a57"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_014.npz",
+      "bytes": 181639,
+      "sha256": "4122a4781b9a75e1f77751f02e9d77d7a9f27c740f725cace914c57231e9d8c0"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_015.npz",
+      "bytes": 182428,
+      "sha256": "0955946ea896c3f3e66e311318b4475b3ccc1f18ef3ce3e2ca1a13982569e5d7"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_016.npz",
+      "bytes": 181461,
+      "sha256": "1be0059364bba7e83551c5d490a17f8e627af55436f311beef590989659c841f"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_017.npz",
+      "bytes": 185554,
+      "sha256": "0251aee401b1b26643e7c7ce51628b65624107138f0e75dcdd02af8b70b23085"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_018.npz",
+      "bytes": 183601,
+      "sha256": "3f973756755b62610c5307adda16e73c1326c0b50adccac685f8d56e52fd13dd"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_019.npz",
+      "bytes": 186092,
+      "sha256": "be6091ff436e7eec91ac60276a967a86a35a6e1f97acb478995513aeab4f63d7"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_20_supplement__sample_020.npz",
+      "bytes": 179433,
+      "sha256": "aaae6cc93361b28985a0fc5f12e02fe256724912f5c40dc3ff8cef6f663a9deb"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_001.npz",
+      "bytes": 195949,
+      "sha256": "c830266999386930f2b4af93d9b3ef57768ef450e42c586124d540b34c6b0bc2"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_002.npz",
+      "bytes": 183944,
+      "sha256": "9a697319c89313d61be6b706bcf0e693d572a80871d6faf76139ee2661fe5e92"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_003.npz",
+      "bytes": 184883,
+      "sha256": "9751aa214d4ace0751befef8b2d5411628b03e7f62a1765400889979e589a264"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_004.npz",
+      "bytes": 182931,
+      "sha256": "52121b6679f2a7a57304e4f637eee6d0bd1a27bef73dd7961f46fa48ef6839f7"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_005.npz",
+      "bytes": 182522,
+      "sha256": "97439f2c267a2c6c36010dc0eb27f4568244383ae13cbe93988ef386e1d0fad6"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_006.npz",
+      "bytes": 183829,
+      "sha256": "21be0066925f66d21e924f0daeed830cd28b2487eb6d7abd7042460801cb3acf"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_007.npz",
+      "bytes": 182164,
+      "sha256": "8c298b6b8fb0f06c6be94102d04da77cfae524b3cd66ac3912c4cfc02fab9731"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_008.npz",
+      "bytes": 184367,
+      "sha256": "f9467d9da3b7ba29ad25ef3ce42093eb25980309c85a329ba08deee4a157f3a9"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_009.npz",
+      "bytes": 187307,
+      "sha256": "1a0045184880412761223af3a99d9b8964d68783182b6b63016bf2f32461214c"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_010.npz",
+      "bytes": 195855,
+      "sha256": "dd1ad9088288c196ae391bc3939fcbf5d69c4044c7eceab1448e909d125997c2"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_011.npz",
+      "bytes": 182564,
+      "sha256": "4a130edae3aa56e730e139314a6abcbc92722fc2b66996c44573f0c29b6d5c80"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_012.npz",
+      "bytes": 181688,
+      "sha256": "14dac65f01e32eab4ce945d1507c9025976cb3c1de30a220f37b7110c174955f"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_013.npz",
+      "bytes": 180855,
+      "sha256": "135149a9e2968f83c614bd50b6f7354e0da635606d764ab160c86898cea56fad"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_014.npz",
+      "bytes": 199651,
+      "sha256": "3f7250c1d2f9fe95c57b9ce4ed3f30404a72670b5a389b23c579713f526061ab"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_015.npz",
+      "bytes": 188939,
+      "sha256": "a8c427653b376f30b151bc5bf4098f942e366497bc8a6020cc1fd50cdb751b7b"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_016.npz",
+      "bytes": 186569,
+      "sha256": "c39db0d76c3ccc1baaa8e54e80adb7dbbdadfa508ff8f77b07f5774d2c843a80"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_017.npz",
+      "bytes": 185390,
+      "sha256": "a9ad51d15ce75b412f355f4d5c0500dab0401515b180559dd833d79d80947461"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_018.npz",
+      "bytes": 189334,
+      "sha256": "5468f9af3b84c75b3abccbedb81f0492ab87b98e8455e1a07c70b05336281fb3"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_019.npz",
+      "bytes": 185774,
+      "sha256": "9c470fffcadfa0da8295d3a2991fc83ec774e3b4308dd40223569a954ba8b791"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_020.npz",
+      "bytes": 192149,
+      "sha256": "72155e73e6c542ee70edc838115a1f727d1fd4eda245dc71be01998c24e23211"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_021.npz",
+      "bytes": 190614,
+      "sha256": "45a43f8120d110eb27718e36fe2d537f9559e21c12b066a8aa512dbe632837ee"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_022.npz",
+      "bytes": 186794,
+      "sha256": "4886742ab940ab58b7d8b2eb04942993abac8b1809c4927a1d1b3aa8e63c9cec"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_023.npz",
+      "bytes": 187132,
+      "sha256": "5f966c4239e888a03ca86d87539f4e334f8a8953deb1f8f1b1ad67a3a7ad87e7"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_024.npz",
+      "bytes": 186798,
+      "sha256": "a41457ec8101734a86f7c61747c29bf7167adbc1fbdfb39ec45adfb9473be97e"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_025.npz",
+      "bytes": 191227,
+      "sha256": "ab8368dffd5f6aacf486ad3717e3d39209561919d33fb1aa65d03b352a4d5245"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_026.npz",
+      "bytes": 193168,
+      "sha256": "9230c4027d6584a58f8a249ec95216c551b9cba65e0ebeeddd079d62f3def98e"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_027.npz",
+      "bytes": 198990,
+      "sha256": "72c8eff8ad3f1ea941c5d2ff4073e9623254b033173d8c2dfca5a4be3c041600"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_028.npz",
+      "bytes": 193163,
+      "sha256": "3511d57915dc1893d95269189a276c5a10b904666d821cb22cb452838fcb71b2"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_029.npz",
+      "bytes": 187315,
+      "sha256": "04edfb8ec5ae13a811fd8c87c34de0a066efa61d81612588e9c1b11a11736e9d"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_030.npz",
+      "bytes": 182388,
+      "sha256": "a3ced4a8991162c0e027d189507f226cbc54fca7d02dacd6840693287d9dddbc"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_031.npz",
+      "bytes": 189651,
+      "sha256": "ce2dc8f2fae5a61c3dee7b8d4229746063136fda9c07d795527c86e990973a38"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_032.npz",
+      "bytes": 181906,
+      "sha256": "562970416a50c18f83ee90b48cfa7e9dccf7e583001c82f97a277845682d3088"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_033.npz",
+      "bytes": 194338,
+      "sha256": "dc0f46b69634c72902e076625204d0db343853eda95343995c96c6a3e7cd6097"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_034.npz",
+      "bytes": 191805,
+      "sha256": "086c7191dfaa856c94e66719bdffd6029ef1ff0536333077007a09791014cdee"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_035.npz",
+      "bytes": 195729,
+      "sha256": "6867c3fc371895ed40206efa278c211befbca492a5942eb1c679ccdb41b37dd7"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_036.npz",
+      "bytes": 191664,
+      "sha256": "edc3729d5a35d9fe57469b503f0dc83f5fa25b94a437f7513356e9d69f1b43a2"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_037.npz",
+      "bytes": 188171,
+      "sha256": "54a18c8455341e3e2bd5d610d9dca336b319557c3b3a8113e6463443644d5080"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_038.npz",
+      "bytes": 185027,
+      "sha256": "0e025b6c7ceb141d14b6f023de076df45159ee31fe3a3dfb7d8f68a5fd685c27"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_039.npz",
+      "bytes": 183490,
+      "sha256": "815e2357e0a812ca6beede5797b4c81b70013cb54f1e009da16b4e916dd7a0af"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_040.npz",
+      "bytes": 181628,
+      "sha256": "b983daf523a4afc077f6220d33054cfed93a6d47a5a4c41e50259f50e359f675"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_041.npz",
+      "bytes": 186652,
+      "sha256": "7be4e1462262a2550f0d2fa121713669dc95e62dbc298f6a4de91653c7dec589"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_042.npz",
+      "bytes": 185166,
+      "sha256": "74928bccaa34e22bb70f71edbaa2079dedadd84a37b6cc61ebf29f649b03acd9"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_043.npz",
+      "bytes": 195248,
+      "sha256": "041b3c430e0207c89ea856f72091131d17192078992e6eee39c0ebeb91bb0e90"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_044.npz",
+      "bytes": 190745,
+      "sha256": "d7a1a3e0cf762aa56aaf87370e3fd9186c8b9c76a284239fbeefbe2451f1b3bb"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_045.npz",
+      "bytes": 192622,
+      "sha256": "9ef4d11883bce81cf004937422f46cdcb210681f0ba1948fc8d0ebfc406f91dd"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_046.npz",
+      "bytes": 191033,
+      "sha256": "c5618585887b873e908dadf06563eabc430db8538b81d7546e75324644d9c461"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_047.npz",
+      "bytes": 197554,
+      "sha256": "71dc4635c325e8106447174dc8282f737c3f17b6c626ef0bb41b2a44761d8f25"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_048.npz",
+      "bytes": 195652,
+      "sha256": "eaeeedff40f5fc49b1b456113af0617fc3865f02d2ac17e5667ed83f35dc4347"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_049.npz",
+      "bytes": 187059,
+      "sha256": "af1daf012387cac84ad0ac9b00a48f5344f3600b3f7d4778e8e2ec91bfbb7e2e"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_050.npz",
+      "bytes": 190887,
+      "sha256": "b6c3dba1b6d0c4228f6fd05cf32b8c1f470093e54629c3b87bb85db334cb2fd9"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_051.npz",
+      "bytes": 190188,
+      "sha256": "719c44f1ea9f9dbb9875a49dc3ee27c9c121ac0470c399c9aee379781a02913a"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_052.npz",
+      "bytes": 190105,
+      "sha256": "c6ca9ed41a031a7fea65877d67d62b2bb40b353b763c760c57896b1eed1bb7ca"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_053.npz",
+      "bytes": 190870,
+      "sha256": "e36aeaeb201ff520c222dcc04dba83827d667e0fd5efcc7acf681b48e58dc191"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_054.npz",
+      "bytes": 195306,
+      "sha256": "321b24a31d044c1248680910a1e32bdcc7b81e7ee08a24a447038d99382d9846"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_055.npz",
+      "bytes": 193142,
+      "sha256": "bb63d77faceb1f0531cb65b42584ffc846f5e5d303853c68c87c2a4879a62fd2"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_056.npz",
+      "bytes": 190799,
+      "sha256": "43bc56c8bec94e46d3872d6cd22ec4555ff98a07f31203ce380366960594d9d1"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_057.npz",
+      "bytes": 186915,
+      "sha256": "662fb5dcee870f24aa44b8885b0d917e70440e7b032fc1afd4b47d7b31cec23c"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_058.npz",
+      "bytes": 192354,
+      "sha256": "c70ed6b57aa2127b5299973ee82f6d0f61091bc11861c99c349803e647cdea04"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_059.npz",
+      "bytes": 187513,
+      "sha256": "b4d483de88f85d3cc46974a037a57c9fccf8c9fd3f14269711483ff9797c1e84"
+    },
+    {
+      "path": "outputs/rectangle_registration/manual_internal_roi_v1/registered/H_stable_raw/zro2_60_pass__sample_060.npz",
+      "bytes": 188512,
+      "sha256": "65b3162ec3a4642a10c45814067337d95de309974b539abe968394ecae1ee899"
+    },
+    {
+      "path": "outputs/task_state_v1/20260906T111435Z_E00_a1a1c9a8_533009c_9e0686/inner_split_manifest.csv",
+      "bytes": 52890,
+      "sha256": "8f09450e20804f2d7493e3876812253fb349d7bdb46b52c2b765200a82db5c09"
+    },
+    {
+      "path": "outputs/task_state_v1/20260906T111435Z_E00_a1a1c9a8_533009c_9e0686/split_manifest.csv",
+      "bytes": 23466,
+      "sha256": "cd90d1a1147c256df3f0bfdffb1b5e5fca5976323f9bae2aabfa8eb7e3bf7d2a"
+    },
+    {
+      "path": "src/__init__.py",
+      "bytes": 79,
+      "sha256": "76069c0fe10f56f361604e60580955e4772069aadfe87a142b5daa931e797014"
+    },
+    {
+      "path": "src/composition.py",
+      "bytes": 3815,
+      "sha256": "3ebbec2f75a5b32a4746d1544c57750cee7d0834af7255b321ac174166ae2f77"
+    },
+    {
+      "path": "src/confirmation.py",
+      "bytes": 3885,
+      "sha256": "f1803133ee0962c7120bab461ca0f06a17480a061a611cb343cec4636afb4fa1"
+    },
+    {
+      "path": "src/conical_dropout.py",
+      "bytes": 7344,
+      "sha256": "7b709154c214ddfc453fc9e4c2378583a76c348dd5d073f410379e79269a1c29"
+    },
+    {
+      "path": "src/cv.py",
+      "bytes": 9173,
+      "sha256": "30d5d2f8a472e65b87b635e155e16ae3a0f8731dd009e8923806d17ff2044b28"
+    },
+    {
+      "path": "src/data.py",
+      "bytes": 8754,
+      "sha256": "870872d7956638ad7a89b077a6c595d7afa83404ee78a417ba931bf0ce117b05"
+    },
+    {
+      "path": "src/data_contracts.py",
+      "bytes": 5276,
+      "sha256": "ac573ee8b43a9ea6f4ea6be7497682a2e7c4b068cf63ace4bcb4331ccc1bd96b"
+    },
+    {
+      "path": "src/forward_models.py",
+      "bytes": 11762,
+      "sha256": "3f32aaa2bb9ad49e2aa4253ce84d039df532f9dd39f802735528921f3f2560a6"
+    },
+    {
+      "path": "src/geometry.py",
+      "bytes": 32314,
+      "sha256": "8493ca37d4269e98edaca0e17dfc05f3a915eeb9d835dbf2c1f4bfc28411a581"
+    },
+    {
+      "path": "src/io_cag.py",
+      "bytes": 25587,
+      "sha256": "b2bd666fa33d4cb26dbc2f02080b6eeaccc9de99462bfd6343d637e97e6fa2d1"
+    },
+    {
+      "path": "src/io_npz.py",
+      "bytes": 2527,
+      "sha256": "8465b8c8fc6492698922d0f5e552060bf687edb072bbe1b3c0a78f6ebceb7c20"
+    },
+    {
+      "path": "src/manual_four_edge_annotation.py",
+      "bytes": 3728,
+      "sha256": "1ee7f866ab58324de9cad5f19d298021380bc85ea2d3c62715e397dec7f2f485"
+    },
+    {
+      "path": "src/manual_groove_annotation.py",
+      "bytes": 6468,
+      "sha256": "e105fec980245301967fc1a99a28eccc50bd8d9f60c9245df41a92a08ec1986f"
+    },
+    {
+      "path": "src/manual_single_line_annotation.py",
+      "bytes": 9784,
+      "sha256": "ba9db821fa7521a3768d35fb3d05a2f383436b7138885ef089e146085cc52b4c"
+    },
+    {
+      "path": "src/provenance.py",
+      "bytes": 6013,
+      "sha256": "60b65ec12f0276cbf8bd41de1dd241a845932ea277f24d0e7e03cfe4918f4259"
+    },
+    {
+      "path": "src/resampling.py",
+      "bytes": 3807,
+      "sha256": "12abaf7a886a86db2035ccfe96a68f64c7f0aff307062dbc195390a017e0becd"
+    },
+    {
+      "path": "src/spectrum.py",
+      "bytes": 9486,
+      "sha256": "e9c0877653d4463482092f47ce5d2931fb2c792aca5e2cd7e68e8e047b9b5ae8"
+    },
+    {
+      "path": "src/statistics.py",
+      "bytes": 6130,
+      "sha256": "189a001ac20409c38ccef4fedde3b6bc3555c94d65590e06b648c5bd77bd7443"
+    }
+  ],
+  "sha256": "0396071b3644adfb21eeb558c8d9edd11ea7f88d8d8fd0779f8ea07fb4a1eed7"
+}

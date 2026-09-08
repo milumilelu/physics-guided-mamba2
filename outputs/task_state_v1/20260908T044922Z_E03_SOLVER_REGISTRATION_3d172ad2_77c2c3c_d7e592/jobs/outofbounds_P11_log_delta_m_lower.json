@@ -1,0 +1,21 @@
+{
+  "stage": "domain_enforcement",
+  "result": [
+    "outofbounds_P11_log_delta_m_lower",
+    {
+      "job": "outofbounds_P11_log_delta_m_lower",
+      "switch": "P11",
+      "out_of_bounds_accepted": false,
+      "rejected_as_required": true,
+      "message": "ValueError: Calibration parameter out of bounds",
+      "vector": [
+        10.3615,
+        -27.9073,
+        -4.258500000000001,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ]
+}
