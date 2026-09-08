@@ -1,0 +1,9 @@
+{
+  "scope": "E03_PHYSICS_CALIBRATION_TRACK_R",
+  "training_executed": false,
+  "single_line_track": "PENDING_SEPARATE_RUN",
+  "error": "KeyError: 'component_id'",
+  "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\experiments\\task_state_v1\\03_physics_calibration.py\", line 223, in main\n    order = list(train_pool.groupby('component_id').size().sort_values(ascending=False).index)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\.venv\\Lib\\site-packages\\pandas\\util\\_decorators.py\", line 336, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\.venv\\Lib\\site-packages\\pandas\\core\\frame.py\", line 10817, in groupby\n    return DataFrameGroupBy(\n           ^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\.venv\\Lib\\site-packages\\pandas\\core\\groupby\\groupby.py\", line 1095, in __init__\n    grouper, exclusions, obj = get_grouper(\n                               ^^^^^^^^^^^^\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\.venv\\Lib\\site-packages\\pandas\\core\\groupby\\grouper.py\", line 901, in get_grouper\n    raise KeyError(gpr)\nKeyError: 'component_id'\n",
+  "execution_status": "FAIL",
+  "status": "FAIL"
+}

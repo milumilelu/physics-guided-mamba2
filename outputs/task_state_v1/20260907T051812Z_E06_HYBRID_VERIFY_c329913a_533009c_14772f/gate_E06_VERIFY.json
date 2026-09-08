@@ -1,0 +1,8 @@
+{
+  "scope": "E06_HYBRID_FORWARD_VERIFICATION",
+  "training_executed": false,
+  "error": "ValueError: too many values to unpack (expected 3)",
+  "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\experiments\\task_state_v1\\06_hybrid_verify.py\", line 96, in main\n    d_roll, a_roll, drift = rollout_recipe(row, vec, cfg)\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\experiments\\task_state_v1\\06_hybrid_verify.py\", line 31, in rollout_recipe\n    line_matrix, line_mask, counts = build_batch_plan(schedules, cfg)\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: too many values to unpack (expected 3)\n",
+  "execution_status": "FAIL",
+  "status": "FAIL"
+}

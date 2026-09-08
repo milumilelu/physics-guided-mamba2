@@ -1,0 +1,32 @@
+{
+  "status": "FAIL_REGISTRATION",
+  "sparse_packet_cap_1_D_relative_error": 0.1354405609777471,
+  "sparse_packet_cap_1_A_relative_error": 0.02744204572278862,
+  "packet_caps_tested": [
+    1,
+    2,
+    8,
+    64
+  ],
+  "all_caps_return_identical_wrong_results": true,
+  "fixture": {
+    "waist_m": 8.74e-07,
+    "F1_J_m2": 10000.0,
+    "delta_m": 1e-08,
+    "kappa": 0.2,
+    "rho": 0.1,
+    "switch": "P01",
+    "h_m": 2e-06,
+    "dx_m": 2e-07,
+    "f_Hz": 100000.0,
+    "passes": 1
+  },
+  "issues": [
+    "sparse_w_and_threshold_frozen_for_whole_track",
+    "dense_w_frozen_for_whole_track",
+    "drift_limits_not_enforced_and_last_span_omitted",
+    "region_m_unused_in_output",
+    "G1_close_hardcodes_metrics_instead_of_reading_artifacts",
+    "single_line_pulse_count_claim_off_by_100"
+  ]
+}

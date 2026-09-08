@@ -1,0 +1,9 @@
+{
+  "scope": "E03_PHYSICS_CALIBRATION_TRACK_R",
+  "training_executed": false,
+  "single_line_track": "PENDING_SEPARATE_RUN",
+  "error": "ValueError: Split manifest identity",
+  "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\experiments\\task_state_v1\\03_physics_calibration.py\", line 217, in main\n    require(set(manifest.dataset_index) == set(range(200)), 'Split manifest identity')\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\src\\task_state_learning\\grouping.py\", line 16, in require\n    raise ValueError(message)\nValueError: Split manifest identity\n",
+  "execution_status": "FAIL",
+  "status": "FAIL"
+}

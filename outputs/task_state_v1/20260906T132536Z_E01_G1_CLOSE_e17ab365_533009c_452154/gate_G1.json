@@ -1,0 +1,32 @@
+{
+  "experiment_id": "E01",
+  "gate_id": "G1_NUMERIC",
+  "gate_scope": "NUMERIC_AND_AUTODIFF",
+  "execution_status": "FAIL",
+  "hypothesis_status": "NOT_TESTED",
+  "training_executed": false,
+  "subgates": {
+    "observer": {
+      "run": "20260906T111445Z_E01_OBS_e17ab365_533009c_9fd9ef",
+      "status": "PASS",
+      "scope": "CANONICAL_OBSERVER"
+    },
+    "physics_unit": {
+      "run": "20260906T112222Z_E01_PHYS_UNIT_d0670347_533009c_8ccbfd",
+      "status": "PASS",
+      "scope": "ANALYTIC_PHYSICS_REFERENCE"
+    },
+    "backend_observer": {
+      "run": "20260906T130901Z_E01_BACKEND_OBS_337bc8f7_533009c_770c91",
+      "status": "PASS",
+      "scope": "DIFFERENTIABLE_OBSERVER_BACKEND"
+    },
+    "gradient": {
+      "run": "20260906T132432Z_E01_GRAD_5fd0d231_533009c_8c578d",
+      "status": "PASS",
+      "scope": "GRADIENT_AND_SCAN_CONVERGENCE"
+    }
+  },
+  "error": "JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+  "status": "FAIL"
+}

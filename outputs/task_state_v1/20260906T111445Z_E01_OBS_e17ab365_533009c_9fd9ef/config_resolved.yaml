@@ -1,0 +1,13 @@
+schema_version: '1.2'
+scope: E01_CANONICAL_OBSERVER_ONLY
+status: FROZEN_SCOPE
+allowed_to_train: false
+atol: 1.0e-08
+rtol: 1.0e-08
+pixel_um: 0.5
+theta_bins: 36
+zero_threshold: 1.0e-10
+replacement_delta: 1.0e-06
+synthetic_seed: 20260906
+audit_run: outputs\task_state_v1\20260906T111435Z_E00_a1a1c9a8_533009c_9e0686
+audit_release_sha256: 10657b9878eac9f3ab3500c6be07cbd068783626f1b6ca4f68702049ac870abb

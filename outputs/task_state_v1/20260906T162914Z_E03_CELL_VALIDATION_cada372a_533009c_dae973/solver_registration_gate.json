@@ -1,0 +1,16 @@
+{
+  "experiment_id": "E03",
+  "gate_scope": "CELL_SOLVER_REVIEW_NOT_CALIBRATION",
+  "status": "FAIL",
+  "hypothesis_status": "NOT_TESTED",
+  "training_executed": false,
+  "allowed_to_calibrate": false,
+  "cases": 12,
+  "passed_cases": 11,
+  "failures_retained": true,
+  "remaining": [
+    "finite_80um_observer_sampling_validation",
+    "whole_calibration_parameter_domain_or_runtime_acceptance_guard",
+    "full_MA​​IN180_recipe_numerical_coverage"
+  ]
+}

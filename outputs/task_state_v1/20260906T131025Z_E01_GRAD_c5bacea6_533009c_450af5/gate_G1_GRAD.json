@@ -1,0 +1,11 @@
+{
+  "experiment_id": "E01",
+  "gate_scope": "GRADIENT_AND_SCAN_CONVERGENCE",
+  "execution_status": "FAIL",
+  "hypothesis_status": "NOT_TESTED",
+  "G1_complete": false,
+  "training_executed": false,
+  "backend": "torch_2.14.0+cpu_cpu_float64_vs_numpy_float64",
+  "error": "KeyError: 'v'",
+  "status": "FAIL"
+}

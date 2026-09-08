@@ -1,0 +1,11 @@
+{
+  "experiment_id": "E01",
+  "gate_scope": "GRADIENT_AND_SCAN_CONVERGENCE",
+  "execution_status": "FAIL",
+  "hypothesis_status": "NOT_TESTED",
+  "G1_complete": false,
+  "training_executed": false,
+  "backend": "torch_2.14.0+cpu_cpu_float64_vs_numpy_float64",
+  "error": "ValueError: Per-direction pass fraction below threshold: {'log_f_Hz': 0.96875, 'log_h_m': 0.90625, 'log_tau_s': 1.0, 'log_v_m_s': 1.0}",
+  "status": "FAIL"
+}

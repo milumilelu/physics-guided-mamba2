@@ -1,0 +1,7 @@
+# Independent environment B; canonical target exports remain from environment A.
+numpy==2.3.5
+scipy==1.18.1
+pandas==3.0.1
+scikit-learn==1.7.2
+PyYAML==6.0.3
+# Install separately from official CPU index: torch==2.8.0+cpu

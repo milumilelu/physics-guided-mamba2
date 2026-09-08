@@ -1,0 +1,39 @@
+{
+  "experiment_id": "E01",
+  "gate_scope": "GRADIENT_AND_SCAN_CONVERGENCE",
+  "execution_status": "PASS",
+  "hypothesis_status": "NOT_TESTED",
+  "G1_complete": false,
+  "training_executed": false,
+  "backend": "torch_2.14.0+cpu_cpu_float64_vs_numpy_float64",
+  "gradient_based_inverse_design": "ALLOWED",
+  "registered_points": 32,
+  "ad_fd_comparisons": 128,
+  "per_direction_pass_fraction": {
+    "log_f_Hz": 1.0,
+    "log_h_m": 1.0,
+    "log_tau_s": 1.0,
+    "log_v_m_s": 1.0
+  },
+  "overall_pass_fraction": 1.0,
+  "unexplained_gt_fail_rtol_count": 0,
+  "max_rel_error": 0.0005081206852638662,
+  "plateau_flags": {
+    "PLATEAU": 123,
+    "PLATEAU_EDGE": 4,
+    "UNSTABLE": 1
+  },
+  "deriv_floor": {
+    "log_tau_s": 1.9077810411355122e-15,
+    "log_f_Hz": 1.0795802787287963e-14,
+    "log_v_m_s": 1.9233113950309937e-14,
+    "log_h_m": 1.815665061080178e-14
+  },
+  "grid_refinement_max_rel_change": 0.0025109507846179722,
+  "packet_refinement_max_rel_change": 0.0,
+  "remaining": [
+    "real_parameter_calibration_E03",
+    "memory_block_refinement_E04_B1"
+  ],
+  "status": "PASS"
+}

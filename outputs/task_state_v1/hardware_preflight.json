@@ -1,0 +1,10 @@
+{
+  "gpu": {
+    "returncode": 0,
+    "output": "NVIDIA GeForce RTX 5060 Ti, 8151 MiB, 576.88"
+  },
+  "wsl": {
+    "returncode": 1,
+    "output": "未安装适用于 Linux 的 Windows 子系统。可通过运行 “wsl.exe --install” 进行安装。\r\r\n有关详细信息，请访问 https://aka.ms/wslinstall"
+  }
+}

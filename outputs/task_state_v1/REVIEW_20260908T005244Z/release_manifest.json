@@ -1,0 +1,99 @@
+{
+  "files": [
+    {
+      "path": "process_snapshot.json",
+      "sha256": "cb7da7c9aa37f76c06ef568b070a5877c2151b9f282dd3ca7983498b5b4295e4",
+      "bytes": 662
+    },
+    {
+      "path": "reproduction_results.json",
+      "sha256": "a6d01018f636e2753825538c7253c26ee9185dc01dfbeb5acade223d028201e8",
+      "bytes": 1074
+    },
+    {
+      "path": "REVIEW_ZH.md",
+      "sha256": "c252aa3537e2081293726b0d93d63dae702c1fd7b62aac730ed87390e133aa0b",
+      "bytes": 13745
+    },
+    {
+      "path": "reviewed_source/config/task_state_v1/physics_calibration.yaml",
+      "sha256": "e1f7205c41a9623d7a9dc4bc009d4a03b8c45b70f5d34123fc531df58fc0a8ed",
+      "bytes": 977
+    },
+    {
+      "path": "reviewed_source/experiments/task_state_v1/03_physics_calibration.py",
+      "sha256": "e36e6140b797c6cbe91aea9661f22abd48b5b80bbae94fc6e6c7f3c60156d3f2",
+      "bytes": 15847
+    },
+    {
+      "path": "reviewed_source/experiments/task_state_v1/04_b1_terminal.py",
+      "sha256": "932ca6b8376553028f02dbdd0faf0602a0a58a1047bf024cab86a3354aaff2b2",
+      "bytes": 14705
+    },
+    {
+      "path": "reviewed_source/experiments/task_state_v1/05_g2_gate.py",
+      "sha256": "7babede8c3f768c0c13b6a8dd0e1693c7afa4e08c4df8f8b116942fa27432fa9",
+      "bytes": 11507
+    },
+    {
+      "path": "reviewed_source/experiments/task_state_v1/06_real_main.py",
+      "sha256": "47bebcf4a47898648226771e0dc02df8016eff1c5c293b92444fa6bd492038aa",
+      "bytes": 21564
+    },
+    {
+      "path": "reviewed_source/experiments/task_state_v1/10_robustness_release.py",
+      "sha256": "b79a3465c34131d3e58d031162371e7f015582c9cd256cdb8563def7999b3fc6",
+      "bytes": 11857
+    },
+    {
+      "path": "reviewed_source/src/task_state_learning/design.py",
+      "sha256": "fbeab2ec9f63792abb1c9d3aa01d4f2ce21e4851d39e16f61449b9f127600dda",
+      "bytes": 2930
+    },
+    {
+      "path": "reviewed_source/src/task_state_learning/laser_hybrid.py",
+      "sha256": "721ec652f47a7ab257f8edeb006865bdeaacbf64a54f1bc015ae60110d6af809",
+      "bytes": 5326
+    },
+    {
+      "path": "reviewed_source/src/task_state_learning/laser_rollout.py",
+      "sha256": "678778bbb57d5e39a4aba16859dff0ecdbe1c40e3ba9a3502441445e85af1f7e",
+      "bytes": 18025
+    },
+    {
+      "path": "reviewed_source/src/task_state_learning/models.py",
+      "sha256": "91aa2425c138c0f21a0ccf43dda0f4d8b1e0f121dfbbdfad89200d0e529a3093",
+      "bytes": 3530
+    },
+    {
+      "path": "reviewed_source/src/task_state_learning/scan_cell.py",
+      "sha256": "6cfc3615e99aec1b13293c1ff4dd1396d3756b13618b2ea5a748f99f7d6d0bc6",
+      "bytes": 16110
+    },
+    {
+      "path": "reviewed_source/src/task_state_learning/training.py",
+      "sha256": "b262db352b7d13b92497ac221e4f3bf384824e95ba2c5597662eb68b2e6b4084",
+      "bytes": 5444
+    },
+    {
+      "path": "reviewed_sources.json",
+      "sha256": "930a837ad74ab20049f4c76acb3d8dc5ae72bb49dcddaeda398f27171b4c9ef8",
+      "bytes": 1808
+    },
+    {
+      "path": "seal_checks.json",
+      "sha256": "89c81963181a10fac2fb68ad8b6417f9a0928b13d9ed9589914f3edfdefa5e1d",
+      "bytes": 428
+    },
+    {
+      "path": "sealed_choices_probe.csv",
+      "sha256": "a7021b59fd3ae08f86fec101883d89ce7f32cf80db04fd4a820946f2c17f918c",
+      "bytes": 6478
+    },
+    {
+      "path": "sealed_choices_probe.csv.sha256",
+      "sha256": "3f7839ee170a8f8a33384a1c9bffdd98f8c901ce335b4eb779af547c8924f54d",
+      "bytes": 64
+    }
+  ]
+}

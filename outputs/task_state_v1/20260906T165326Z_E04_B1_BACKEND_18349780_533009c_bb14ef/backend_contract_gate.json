@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "gate_scope": "B1_COMMON_API_AND_ZERO_CLOSURE_PARITY",
+  "training_executed": false,
+  "models": [
+    "H0",
+    "GRU",
+    "CTSSM"
+  ],
+  "Mamba_implemented": false,
+  "excluded_test_file": "test_finite_scan.py",
+  "excluded_reason": "Numba dependency installation still running; finite raster not verified",
+  "remaining": [
+    "active_closure_AD_FD",
+    "memory_block_refinement",
+    "static_full_history_baseline",
+    "Mamba2_backend",
+    "training_and_G2"
+  ]
+}

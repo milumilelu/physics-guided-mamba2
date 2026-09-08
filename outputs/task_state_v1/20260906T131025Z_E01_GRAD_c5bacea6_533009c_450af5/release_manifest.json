@@ -1,0 +1,204 @@
+{
+  "files": [
+    {
+      "path": "config_source.yaml",
+      "sha256": "c5bacea6fb3f67810d79d3488165441741ce2341299067233b42578c1e63ecf9",
+      "bytes": 1648
+    },
+    {
+      "path": "environment.json",
+      "sha256": "85508e0b0e48c20846a38f900479b0e723ca0dc298835867966f7a32e795106e",
+      "bytes": 392
+    },
+    {
+      "path": "environment_lock.txt",
+      "sha256": "5c4c839033b0bc2a440358cebf86849e81c904d1b790ab2ec05a029943f293b4",
+      "bytes": 585
+    },
+    {
+      "path": "gate_G1_GRAD.json",
+      "sha256": "1d30fe887fd1d3b1c9007a4e5c643e22212c26f2cabb468eada31517e7110975",
+      "bytes": 318
+    },
+    {
+      "path": "git_state.json",
+      "sha256": "4ea301b5c095d5debfed816a364fdc0c984e4e94f90540323517cd302b34d47a",
+      "bytes": 1044
+    },
+    {
+      "path": "scan_tests.log",
+      "sha256": "34e9c0ae5ea497d04cd6d787525361c0e96988f7716f147f7fca75bc48434c09",
+      "bytes": 698
+    },
+    {
+      "path": "source_snapshot/config/task_state_v1/data_audit.yaml",
+      "sha256": "a1a1c9a82a5a8f728cab618edadab5b41fc3c82b28a4c7a2f1f7b882c1357464",
+      "bytes": 487
+    },
+    {
+      "path": "source_snapshot/config/task_state_v1/depth_compression.yaml",
+      "sha256": "b901bea5a64cf90b3524b921bc50c35a017d697f7560070afe2782827822821f",
+      "bytes": 1045
+    },
+    {
+      "path": "source_snapshot/config/task_state_v1/diff_backend.yaml",
+      "sha256": "337bc8f7708cda88a3bf5d335671c0cb283ad1f689b2d96e88e08b805890440c",
+      "bytes": 313
+    },
+    {
+      "path": "source_snapshot/config/task_state_v1/gradient_gate.yaml",
+      "sha256": "c5bacea6fb3f67810d79d3488165441741ce2341299067233b42578c1e63ecf9",
+      "bytes": 1648
+    },
+    {
+      "path": "source_snapshot/config/task_state_v1/observer_parity.yaml",
+      "sha256": "e17ab3654b44172c7f8b8466948d1b7c48902ac9ea4ba8c74a0e879ba90f4a73",
+      "bytes": 243
+    },
+    {
+      "path": "source_snapshot/config/task_state_v1/physics_numeric.yaml",
+      "sha256": "d0670347dcc1590eba9060ee6da235f233146e537ec888fdcc972d36a0f45440",
+      "bytes": 480
+    },
+    {
+      "path": "source_snapshot/config/task_state_v1/requirements_numeric.txt",
+      "sha256": "2ef85d4e2ca75a78a4b45de9c7d19c9a02572eb5e8c9916b7888ae7e76fff015",
+      "bytes": 219
+    },
+    {
+      "path": "source_snapshot/experiments/task_state_v1/00_audit.py",
+      "sha256": "717b643af570dcde22fd7241eb79f8bba503de3142309e3ca0792f032058f6b1",
+      "bytes": 5989
+    },
+    {
+      "path": "source_snapshot/experiments/task_state_v1/01_differentiable_backend.py",
+      "sha256": "47c81c12caea72d8e2a8a4f1d310bedc84014413cca4f5776487934e5bd4b2fe",
+      "bytes": 10293
+    },
+    {
+      "path": "source_snapshot/experiments/task_state_v1/01_gradient_gate.py",
+      "sha256": "ea3a82ce18b05f996705e731657493ac610acde5b6a0f88ab3345cbe78c1046a",
+      "bytes": 14547
+    },
+    {
+      "path": "source_snapshot/experiments/task_state_v1/01_observer_parity.py",
+      "sha256": "ffc181280b7626ede2f7aecf1c4df7a0126f12711ffd930cf952fe1f26bc7762",
+      "bytes": 4379
+    },
+    {
+      "path": "source_snapshot/experiments/task_state_v1/01_physics_numeric.py",
+      "sha256": "ca051e29dd6a9def519f0c6d956eb0b12f0956a12d2f596834cdf57a8152412a",
+      "bytes": 3956
+    },
+    {
+      "path": "source_snapshot/experiments/task_state_v1/02_depth_compression.py",
+      "sha256": "4dfe2361491f51b5c8e6c272d7ae112be155ed0ec8f93441bb5e1f56a1feeb9e",
+      "bytes": 11004
+    },
+    {
+      "path": "source_snapshot/experiments/task_state_v1/README.md",
+      "sha256": "9b55a27ae31e1d381a95269aa0031927e1c957d4fa8ebd2efe658a731b753d7c",
+      "bytes": 2773
+    },
+    {
+      "path": "source_snapshot/src/task_state_learning/__init__.py",
+      "sha256": "6601f7d1f7b3c52e24d8f28bef64d5481ad9c43ac907744c21589439e81086fb",
+      "bytes": 83
+    },
+    {
+      "path": "source_snapshot/src/task_state_learning/artifacts.py",
+      "sha256": "f7ea7e8e0f0e251c3bd73fc9ba85098afccc91652362c5a921158188f4c1eed9",
+      "bytes": 3945
+    },
+    {
+      "path": "source_snapshot/src/task_state_learning/contracts.py",
+      "sha256": "4efb55d2af93ed6c7e012c8506e0d8fca9e990458ba43c5fc0a935e95c55691d",
+      "bytes": 3929
+    },
+    {
+      "path": "source_snapshot/src/task_state_learning/diagnostics.py",
+      "sha256": "a548e196b6f7d47dce77b5e174ef63b918a2ed1ed4d5a5d2557db787655fec75",
+      "bytes": 4488
+    },
+    {
+      "path": "source_snapshot/src/task_state_learning/differentiable_observer.py",
+      "sha256": "a4f921d4eaf3dd18a3dc0481f0578d0ca6a802c67e537693b5b595bd667db9c9",
+      "bytes": 6977
+    },
+    {
+      "path": "source_snapshot/src/task_state_learning/differentiable_physics.py",
+      "sha256": "370a6d94934166a6e5dffe90d5cbc74d96e62cbe2702ddf83bc73487f86839ad",
+      "bytes": 2687
+    },
+    {
+      "path": "source_snapshot/src/task_state_learning/grouping.py",
+      "sha256": "17c2565d26c7a9e2cd676e1234d4f28cfb6d8db5763cc25e534b96f36e0f404d",
+      "bytes": 5123
+    },
+    {
+      "path": "source_snapshot/src/task_state_learning/observers.py",
+      "sha256": "1101c97a6be6a4e691e0984035c75d945bda631a859dd4e92ec594a56b23065f",
+      "bytes": 4404
+    },
+    {
+      "path": "source_snapshot/src/task_state_learning/physics.py",
+      "sha256": "55dcf1fc7d67a4f5352ebf8c1e740681034bae54193e6928239c3e5db6bb3fc9",
+      "bytes": 3721
+    },
+    {
+      "path": "source_snapshot/src/task_state_learning/scan.py",
+      "sha256": "82f9721eb59c6f96539ba0bd8f28efe4ea20fd7421ed1d25f752ba75ceca58b5",
+      "bytes": 4975
+    },
+    {
+      "path": "source_snapshot/tests/task_state_v1/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "source_snapshot/tests/task_state_v1/test_differentiable_observer.py",
+      "sha256": "c51b3ce4a80be12756163d1941fc9129c54f6af831491659eb1444d25e0febe5",
+      "bytes": 3278
+    },
+    {
+      "path": "source_snapshot/tests/task_state_v1/test_grouping.py",
+      "sha256": "69a74be47f59cc3e4e289ff5f0a2f817938c8c5f0afdd4cdb8ae284a5070a5dd",
+      "bytes": 2847
+    },
+    {
+      "path": "source_snapshot/tests/task_state_v1/test_nested_diagnostics.py",
+      "sha256": "547b9de384c1b7851c66e09f0db51396e823ac1c9ae8850fdf09b358648992db",
+      "bytes": 1699
+    },
+    {
+      "path": "source_snapshot/tests/task_state_v1/test_observers.py",
+      "sha256": "a4d09481772cb97a719093a9186c6aff55e1787a4677ff59677ce56fc418bf2f",
+      "bytes": 1867
+    },
+    {
+      "path": "source_snapshot/tests/task_state_v1/test_physics.py",
+      "sha256": "a61cb1b17b6ed035bc6f07547c63728d87b5eb765b4b711f9568facd74b84831",
+      "bytes": 2758
+    },
+    {
+      "path": "source_snapshot/tests/task_state_v1/test_scan.py",
+      "sha256": "6d412bc01dfd7ec8a2508c9156b507f7abd1938ef890e862dcf8388efa28ffbe",
+      "bytes": 3659
+    },
+    {
+      "path": "source_snapshot.json",
+      "sha256": "bfb9d1c1106d81dc268eb6d33c5e6b4e79593b7a4680b630939508190e4cdb04",
+      "bytes": 5681
+    },
+    {
+      "path": "staged.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "working_tree.patch",
+      "sha256": "c4dc52f0f336dc62d79e435e845b98a9c525b125784e85abb170d1d5a81af86f",
+      "bytes": 12598
+    }
+  ]
+}

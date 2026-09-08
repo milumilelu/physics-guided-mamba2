@@ -1,0 +1,14 @@
+{
+  "status": "FAIL",
+  "completed_cases": 12,
+  "checks": 140,
+  "failed_checks": 2,
+  "scope": "FINITE_ROI_NUMERICAL_FIXTURE",
+  "allowed_to_calibrate": false,
+  "training_executed": false,
+  "remaining": [
+    "MAIN180_recipe_coverage",
+    "calibration_parameter_domain",
+    "all_switch_grid_refinement"
+  ]
+}

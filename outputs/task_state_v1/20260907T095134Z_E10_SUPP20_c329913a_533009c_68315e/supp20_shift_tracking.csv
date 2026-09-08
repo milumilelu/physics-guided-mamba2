@@ -1,0 +1,2 @@
+stage,run,models,supp_family_overlap,note
+static,20260907T084747Z_E06_STATIC_c329913a_533009c_c0a874,"DUMMY,RIDGE,SPLINE,MLP_U,MLP_UPHYS",20,joint pass/session/domain shift; NOT pure N>=5 extrapolation

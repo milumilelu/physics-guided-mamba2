@@ -1,0 +1,26 @@
+{
+  "H0": {
+    "n_physical_state_scalars": 2,
+    "n_ssm_or_recurrent_cache_scalars": 0,
+    "n_conv_cache_scalars": 0,
+    "n_other_persistent_scalars": 0,
+    "persistent_state_bytes": 8,
+    "n_trainable_parameters": 7746
+  },
+  "GRU": {
+    "n_physical_state_scalars": 2,
+    "n_ssm_or_recurrent_cache_scalars": 32,
+    "n_conv_cache_scalars": 0,
+    "n_other_persistent_scalars": 0,
+    "persistent_state_bytes": 136,
+    "n_trainable_parameters": 7810
+  },
+  "CTSSM": {
+    "n_physical_state_scalars": 2,
+    "n_ssm_or_recurrent_cache_scalars": 32,
+    "n_conv_cache_scalars": 0,
+    "n_other_persistent_scalars": 0,
+    "persistent_state_bytes": 136,
+    "n_trainable_parameters": 7778
+  }
+}

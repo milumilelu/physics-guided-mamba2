@@ -1,0 +1,20 @@
+schema_version: '1.2.1'
+scope: B1_REFERENCE_AND_TERMINAL_ONLY_DATA
+seed: 20260906
+families: {train: 512, validation: 128, test: 256}
+control_blocks: 8
+token_lengths: [32, 64, 128]
+token_dt_range: [0.01, 0.08]
+initial_state: [0.0, 0.0, 0.0, 0.0]
+reference_max_step: 0.001
+refined_max_step: 0.0005
+reference_points_per_split: 8
+independent_method: DOP853
+independent_rtol: 1.0e-11
+independent_atol: 1.0e-13
+reference_relative_tolerance: 1.0e-6
+reference_absolute_scale: 1.0e-6
+coupling: [true, false]
+terminal_only_arrays: [control, physical_dt, mask, terminal_x, family_id]
+hidden_state_access: evaluator_only
+learning_executed: false

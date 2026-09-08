@@ -1,0 +1,14 @@
+{
+  "experiment_id": "E02",
+  "execution_status": "PASS",
+  "hypothesis_status": "NOT_TESTED",
+  "training_executed": true,
+  "deep_training_executed": false,
+  "metric_status": "VALID",
+  "oof_rows": 22680,
+  "models": 18,
+  "outer_refits": 90,
+  "scope": "MAIN180 diagnostic OOF; HIST200 rerun and support-matched scientific interpretation not completed",
+  "status": "PASS",
+  "walltime_seconds": 8.311481299926527
+}

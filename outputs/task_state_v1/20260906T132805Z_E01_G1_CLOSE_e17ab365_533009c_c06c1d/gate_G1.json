@@ -1,0 +1,41 @@
+{
+  "experiment_id": "E01",
+  "gate_id": "G1_NUMERIC",
+  "gate_scope": "NUMERIC_AND_AUTODIFF",
+  "execution_status": "PASS",
+  "hypothesis_status": "NOT_TESTED",
+  "training_executed": false,
+  "subgates": {
+    "observer": {
+      "run": "20260906T111445Z_E01_OBS_e17ab365_533009c_9fd9ef",
+      "status": "PASS",
+      "scope": "CANONICAL_OBSERVER"
+    },
+    "physics_unit": {
+      "run": "20260906T112222Z_E01_PHYS_UNIT_d0670347_533009c_8ccbfd",
+      "status": "PASS",
+      "scope": "ANALYTIC_PHYSICS_REFERENCE"
+    },
+    "backend_observer": {
+      "run": "20260906T132630Z_E01_BACKEND_OBS_337bc8f7_533009c_440a38",
+      "status": "PASS",
+      "scope": "DIFFERENTIABLE_OBSERVER_BACKEND"
+    },
+    "gradient": {
+      "run": "20260906T132733Z_E01_GRAD_5fd0d231_533009c_f3cce6",
+      "status": "PASS",
+      "scope": "GRADIENT_AND_SCAN_CONVERGENCE"
+    }
+  },
+  "e00_audit_run": "outputs\\task_state_v1\\20260906T111435Z_E00_a1a1c9a8_533009c_9e0686",
+  "observer_values": 2000,
+  "backend_compared_values": 4050,
+  "ad_fd_points": 32,
+  "ad_fd_comparisons": 128,
+  "refinement": {
+    "grid_max_rel_change": 0.0025109507846179722,
+    "packet_max_rel_change": 0.002435893397249689
+  },
+  "memory_block_refinement": "E04_B1_SCOPE",
+  "status": "PASS"
+}

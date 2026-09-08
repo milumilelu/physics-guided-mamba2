@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "family_counts": {
+    "train": 512,
+    "validation": 128,
+    "test": 256
+  },
+  "reference_checks": 96,
+  "max_relative_error": 5.096445793216342e-09,
+  "dataset_sha256": "f99507466a3d11fb10a88d7277ec9969c3c59e8f694ec5201c5f7f7ec617f7cf",
+  "gate_scope": "B1_REFERENCE_AND_DATA_ISOLATION",
+  "training_executed": false,
+  "hypothesis_status": "NOT_TESTED",
+  "remaining": [
+    "learner_backend_gate",
+    "B1_training_null_continuation_OOD"
+  ]
+}

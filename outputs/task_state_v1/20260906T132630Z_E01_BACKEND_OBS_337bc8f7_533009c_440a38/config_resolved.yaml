@@ -1,0 +1,12 @@
+schema_version: 1.2.1
+scope: E01_DIFFERENTIABLE_OBSERVER_BACKEND_PARITY
+status: FROZEN_NUMERIC_SCOPE
+allowed_to_train: false
+atol_float64: 1.0e-08
+rtol_float64: 1.0e-08
+atol_float32_input: 1.0e-06
+rtol_float32_input: 1.0e-06
+theta_bins: 36
+zero_threshold: 1.0e-10
+replacement_delta: 1.0e-06
+synthetic_seed: 20260906

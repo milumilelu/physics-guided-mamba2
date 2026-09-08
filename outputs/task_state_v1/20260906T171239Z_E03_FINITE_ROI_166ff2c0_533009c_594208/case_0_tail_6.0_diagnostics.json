@@ -1,0 +1,30 @@
+{
+  "domain_model": "finite_unidirectional_raster",
+  "finite_region_simulated": true,
+  "spatial_coupling": "none_pointwise_model",
+  "nominal_pulses_per_line": 2288,
+  "nominal_lines_per_pass": 50,
+  "physical_pulses": 114400,
+  "evaluated_point_pulse_updates": 7680000,
+  "max_window_attempts": 1,
+  "config": {
+    "scan_region_m": 0.0002,
+    "roi_region_m": 8e-05,
+    "observation_n": 160,
+    "phase_x_pitch": 0.0,
+    "phase_y_pitch": 0.0,
+    "tail_waists": 6.0,
+    "max_window_retries": 16,
+    "max_updates_per_point": 2000000
+  },
+  "exposure_origin_xy_m": [
+    -9.994189999999999e-05,
+    -9.8e-05
+  ],
+  "tail_convergence_validated": false,
+  "scenario_status": "SCENARIO_ASSUMPTION",
+  "scan_order": "increasing_y_tracks_increasing_x_pulses_same_order_each_pass",
+  "turn_exposure": false,
+  "decay_between_passes": false,
+  "extra_exposure_guard_m": 0.0
+}

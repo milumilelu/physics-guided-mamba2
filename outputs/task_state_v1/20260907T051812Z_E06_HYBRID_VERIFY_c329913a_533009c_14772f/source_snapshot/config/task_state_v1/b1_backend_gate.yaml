@@ -1,0 +1,39 @@
+schema_version: '1.2.1'
+scope: E04_MAMBA2_REFERENCE_BACKEND_ACCEPTANCE
+mamba_backend: reference_pure_torch_ssd_v1
+status: FROZEN_BEFORE_FORMAL_TRAINING
+allowed_to_train: false
+architecture:
+  layers: 1
+  d_model: 32
+  expand: 2
+  head_dim: 16
+  d_conv: 4
+  d_state: 16
+  n_groups: 1
+  chunk: 64
+  dt_min: 0.001
+  dt_max: 0.1
+seed: 20260907
+closed_loop:
+  token_count: 32
+  families: 8
+  directions: [control_early_u1_token5, parameter_readout_last_weight]
+  points: 16
+  fd_relative_steps: [1.0e-2, 1.0e-3, 1.0e-4, 1.0e-5, 1.0e-6]
+  plateau_rtol: 0.05
+  deriv_floor: {control_early_u1_token5: 1.0e-9, parameter_readout_last_weight: 1.0e-9}
+  pass_fraction_required: 0.95
+  fail_rtol: 1.0e-3
+  unexplained_fail_rtol: 1.0e-2
+continuation:
+  split_fractions: [0.4, 0.7]
+  relative_tolerance: 1.0e-10
+float32:
+  relative_tolerance_reported: true
+  gate_tolerance: 1.0e-3
+memory_block_refinement:
+  token_counts: [32, 64, 128]
+  semantic: same_control_function_resampled_same_physical_T
+  gate: DESCRIPTIVE_ONLY_ARCHITECTURE_SENSITIVITY
+regression_test_modules: [test_mamba2, test_b1_models, test_benchmarks]

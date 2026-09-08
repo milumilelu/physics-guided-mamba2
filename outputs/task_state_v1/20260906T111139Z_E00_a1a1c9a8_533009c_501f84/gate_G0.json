@@ -1,0 +1,14 @@
+{
+  "experiment_id": "E00",
+  "execution_status": "PASS",
+  "hypothesis_status": "NOT_TESTED",
+  "training_executed": false,
+  "gate_scope": "DATA_IDENTITIES_TARGET_EXPORT_NESTED_SPLITS",
+  "G1_complete": false,
+  "status": "PASS",
+  "gate_id": "G0_DATA",
+  "data_sha256": "920200251a28eb81b137c20f6ff5cca1fd153e553d6be9f9f2c9a10eff7014ac",
+  "split_sha256": "cd90d1a1147c256df3f0bfdffb1b5e5fca5976323f9bae2aabfa8eb7e3bf7d2a",
+  "config_sha256": "cd83bc025529f84819e532ad590e24696dc846971533c0f1991a4a4cd38e3dd7",
+  "evidence_boundary": "Input/split freeze only; no algorithm results; retrospective internal population"
+}

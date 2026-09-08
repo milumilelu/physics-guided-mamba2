@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "new_tests": 23,
+  "historical_tests": 14,
+  "upstream_seals_verified": 4,
+  "frozen_input_hashes_rechecked": 231,
+  "changed_input_files": [],
+  "saved_estimators_replayed": 90,
+  "maximum_checkpoint_prediction_error": 8.881784197001252e-16,
+  "depth_crossfit_partitions_checked": 80,
+  "G1_complete": false,
+  "Mamba_trained": false
+}

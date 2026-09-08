@@ -1,0 +1,25 @@
+schema_version: '1.2.1'
+scope: E02_MAIN180_STATIC_DIAGNOSTIC
+status: FROZEN_SCOPE_BEFORE_MODEL_FITS
+allowed_to_train: true
+permission_scope: statistical_Ridge_GAM_only_requires_G0_and_canonical_target_parity
+deep_training_allowed: false
+families: [Ridge, GAM]
+variants: [M_D, M_Dh, M_U, M_UD, M_UDhat, C1, C2, C3, C4]
+C5_alias: M_U
+alpha_grid: [0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
+depth_crossfit_alpha: 1.0
+depth_crossfit_splits: 3
+process_coordinates: log_tau_f_v_h_N
+depth_coordinate: native_um_standardized_training_only
+spline: {degree: 2, n_knots: 4, knots: uniform, include_bias: false, extrapolation: linear}
+selection: component_balanced_three_block_A_P_T_normalized_risk
+alpha_tie_break: smaller_alpha
+deterministic_seed: 17
+final_seed_policy: single_run_deterministic_convex_models_no_seed_selection
+variance_floor: 1.0e-12
+bootstrap_replicates: 5000
+bootstrap_seed: 20260907
+interval_level: 0.95
+interval_scope: descriptive_fixed_OOF_conditional_no_primary_C1_C2_C3_claim
+HIST200: not_rerun_separate_historical_artifacts_only

@@ -1,0 +1,19 @@
+{
+  "experiment_id": "E01",
+  "execution_status": "PASS",
+  "hypothesis_status": "NOT_TESTED",
+  "gate_scope": "ANALYTIC_PHYSICS_REFERENCE",
+  "G1_complete": false,
+  "training_executed": false,
+  "analytic_cases": 16,
+  "maximum_analytic_relative_error": 1.1456345929437581e-15,
+  "finest_grid_relative_error": 7.026740512852887e-06,
+  "remaining": [
+    "scan_event_topology",
+    "real_parameter_calibration",
+    "scan_grid_and_packet_refinement",
+    "AD_FD",
+    "differentiable_backend"
+  ],
+  "status": "PASS"
+}

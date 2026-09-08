@@ -1,0 +1,11 @@
+{
+  "experiment_id": "E01",
+  "gate_scope": "CANONICAL_OBSERVER",
+  "execution_status": "FAIL",
+  "hypothesis_status": "NOT_TESTED",
+  "G1_complete": false,
+  "differentiable_observer": "NOT_RUN",
+  "training_executed": false,
+  "error": "ValueError: Real observer parity/coverage failed",
+  "status": "FAIL"
+}

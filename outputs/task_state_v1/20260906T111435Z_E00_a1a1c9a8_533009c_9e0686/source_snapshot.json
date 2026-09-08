@@ -1,0 +1,65 @@
+{
+  "sha256": "7ec073aaa9706f292b9e8c24a5ef651b6bfc5d7a4759ed8fb6d3e3ebd96da84c",
+  "files": [
+    {
+      "path": "config/task_state_v1/data_audit.yaml",
+      "bytes": 487,
+      "sha256": "a1a1c9a82a5a8f728cab618edadab5b41fc3c82b28a4c7a2f1f7b882c1357464"
+    },
+    {
+      "path": "config/task_state_v1/observer_parity.yaml",
+      "bytes": 243,
+      "sha256": "e17ab3654b44172c7f8b8466948d1b7c48902ac9ea4ba8c74a0e879ba90f4a73"
+    },
+    {
+      "path": "experiments/task_state_v1/00_audit.py",
+      "bytes": 5989,
+      "sha256": "717b643af570dcde22fd7241eb79f8bba503de3142309e3ca0792f032058f6b1"
+    },
+    {
+      "path": "experiments/task_state_v1/01_observer_parity.py",
+      "bytes": 4379,
+      "sha256": "ffc181280b7626ede2f7aecf1c4df7a0126f12711ffd930cf952fe1f26bc7762"
+    },
+    {
+      "path": "src/task_state_learning/__init__.py",
+      "bytes": 83,
+      "sha256": "6601f7d1f7b3c52e24d8f28bef64d5481ad9c43ac907744c21589439e81086fb"
+    },
+    {
+      "path": "src/task_state_learning/artifacts.py",
+      "bytes": 3945,
+      "sha256": "f7ea7e8e0f0e251c3bd73fc9ba85098afccc91652362c5a921158188f4c1eed9"
+    },
+    {
+      "path": "src/task_state_learning/contracts.py",
+      "bytes": 3929,
+      "sha256": "4efb55d2af93ed6c7e012c8506e0d8fca9e990458ba43c5fc0a935e95c55691d"
+    },
+    {
+      "path": "src/task_state_learning/grouping.py",
+      "bytes": 5123,
+      "sha256": "17c2565d26c7a9e2cd676e1234d4f28cfb6d8db5763cc25e534b96f36e0f404d"
+    },
+    {
+      "path": "src/task_state_learning/observers.py",
+      "bytes": 4404,
+      "sha256": "1101c97a6be6a4e691e0984035c75d945bda631a859dd4e92ec594a56b23065f"
+    },
+    {
+      "path": "tests/task_state_v1/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/task_state_v1/test_grouping.py",
+      "bytes": 2847,
+      "sha256": "69a74be47f59cc3e4e289ff5f0a2f817938c8c5f0afdd4cdb8ae284a5070a5dd"
+    },
+    {
+      "path": "tests/task_state_v1/test_observers.py",
+      "bytes": 1867,
+      "sha256": "a4d09481772cb97a719093a9186c6aff55e1787a4677ff59677ce56fc418bf2f"
+    }
+  ]
+}

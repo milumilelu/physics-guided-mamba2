@@ -1,0 +1,14 @@
+{
+  "scope": "E06_HYBRID_FORWARD_VERIFICATION",
+  "training_executed": false,
+  "max_rel_error_D": 0.056591178533066944,
+  "max_rel_error_A": 6.760896289467327,
+  "max_drift_log_threshold": 0.6921784979223631,
+  "max_drift_dd_over_zr": 1.5301662820764026,
+  "tolerance": 0.02,
+  "drift_bound": 0.05,
+  "execution_status": "FAIL",
+  "metric_status": "VALID",
+  "evidence_boundary": "Forward-model agreement on sampled recipes; not a calibration or performance claim.",
+  "status": "FAIL"
+}

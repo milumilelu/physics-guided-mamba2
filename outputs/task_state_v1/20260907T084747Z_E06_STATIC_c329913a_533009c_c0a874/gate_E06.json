@@ -1,0 +1,17 @@
+{
+  "scope": "E06_static",
+  "stage": "static",
+  "training_executed": true,
+  "n_oof_rows": 11340,
+  "models": [
+    "DUMMY",
+    "MLP_U",
+    "MLP_UPHYS",
+    "RIDGE",
+    "SPLINE"
+  ],
+  "execution_status": "PASS",
+  "metric_status": "VALID",
+  "hypothesis_status": "PENDING_CONTRASTS",
+  "status": "PASS"
+}

@@ -1,0 +1,76 @@
+{
+  "scope": "E04_MAMBA2_REFERENCE_BACKEND_ACCEPTANCE",
+  "mamba_backend": "reference_pure_torch_ssd_v1",
+  "architecture": {
+    "layers": 1,
+    "d_model": 32,
+    "expand": 2,
+    "head_dim": 16,
+    "d_conv": 4,
+    "d_state": 16,
+    "n_groups": 1,
+    "chunk": 64,
+    "dt_min": 0.001,
+    "dt_max": 0.1
+  },
+  "training_executed": false,
+  "closed_loop_points": 4,
+  "closed_loop_pass_fraction": 0.5,
+  "closed_loop_unexplained": 0,
+  "continuation_max_rel_error": 2.1436549642522564,
+  "float32_finite": true,
+  "float32_vs_float64_rel_error": 3.7607172310599058e-06,
+  "state_budget": {
+    "H0": {
+      "n_physical_state_scalars": 2,
+      "n_ssm_or_recurrent_cache_scalars": 0,
+      "n_conv_cache_scalars": 0,
+      "n_other_persistent_scalars": 0,
+      "persistent_state_bytes": 8,
+      "n_trainable_parameters": 7746
+    },
+    "GRU": {
+      "n_physical_state_scalars": 2,
+      "n_ssm_or_recurrent_cache_scalars": 32,
+      "n_conv_cache_scalars": 0,
+      "n_other_persistent_scalars": 0,
+      "persistent_state_bytes": 136,
+      "n_trainable_parameters": 7810
+    },
+    "CTSSM": {
+      "n_physical_state_scalars": 2,
+      "n_ssm_or_recurrent_cache_scalars": 32,
+      "n_conv_cache_scalars": 0,
+      "n_other_persistent_scalars": 0,
+      "persistent_state_bytes": 136,
+      "n_trainable_parameters": 7778
+    },
+    "MAMBA2": {
+      "n_physical_state_scalars": 2,
+      "n_ssm_or_recurrent_cache_scalars": 1312,
+      "n_conv_cache_scalars": 0,
+      "n_other_persistent_scalars": 0,
+      "persistent_state_bytes": 5256,
+      "n_trainable_parameters": 9278
+    }
+  },
+  "token_resampling_descriptive": [
+    {
+      "token_count": 32,
+      "same_T_terminal_sq_sum": 0.08125091333182469
+    },
+    {
+      "token_count": 64,
+      "same_T_terminal_sq_sum": 0.08125091333182438
+    },
+    {
+      "token_count": 128,
+      "same_T_terminal_sq_sum": 0.08125091333182488
+    }
+  ],
+  "execution_status": "FAIL",
+  "metric_status": "VALID",
+  "hypothesis_status": "NOT_TESTED",
+  "evidence_boundary": "Backend acceptance of the Mamba-2 reference on the actual closed-loop training path. No learning result.",
+  "status": "FAIL"
+}

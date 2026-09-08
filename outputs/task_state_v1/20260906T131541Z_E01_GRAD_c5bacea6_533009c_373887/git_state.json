@@ -1,0 +1,5 @@
+{
+  "repo_full_sha": "533009cc37c9b67cc4e31019436265fb2728b44f",
+  "repo_dirty": true,
+  "status": " M annotations/README.md\n M scripts/34_manual_single_line_annotator.py\n M scripts/README.md\n?? CFRP矩形槽盲标操作说明.md\n?? annotations/cfrp_groove_range_annotation.csv\n?? annotations/cfrp_groove_view_manifest.csv\n?? config/task_state_v1/\n?? experiments/task_state_v1/\n?? outputs/cfrp_groove_mapping_report.csv\n?? outputs/software_execution_plan/\n?? outputs/task_state_v1/\n?? scripts/35_build_cfrp_groove_annotation_table.py\n?? src/manual_groove_annotation.py\n?? src/task_state_learning/\n?? tests/task_state_v1/\n?? tests/test_manual_groove_annotation.py\n?? 任务说明/state_space_experiment_package/\n?? 任务说明/超快激光形貌论文后续研究实施指导文件_v1.0.docx\n?? \"任务说明/🔎 独立外审报告：physics-guided-mamba2 的科学主线、JMPT 可行性与研究收敛路线.md\"\n?? 启动CFRP矩形槽盲标_A.bat\n?? 氧化锆/single_pulse_line_full_factorial_72_one_column.csv\n"
+}

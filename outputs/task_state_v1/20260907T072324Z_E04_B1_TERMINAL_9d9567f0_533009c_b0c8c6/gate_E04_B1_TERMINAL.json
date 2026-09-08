@@ -1,0 +1,12 @@
+{
+  "scope": "E04_B1_TERMINAL_ONLY_TRAINING",
+  "tracks": [
+    "coupled"
+  ],
+  "training_executed": true,
+  "mamba_backend": "reference_pure_torch_ssd_v1",
+  "error": "RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!",
+  "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\experiments\\task_state_v1\\04_b1_terminal.py\", line 187, in main\n    result = fit(model, train_tensors, val_tensors, lr=lr,\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\src\\task_state_learning\\training.py\", line 77, in fit\n    dp_loss = decision_gap_loss(pred_full, tensors['terminal_x'], dp['anchors'],\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\src\\task_state_learning\\losses.py\", line 67, in decision_gap_loss\n    pi, pj = pred[pairs[:, 0]] / scale, pred[pairs[:, 1]] / scale\n             ~~~~~~~~~~~~~~~~~~^~~~~~~\nRuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!\n",
+  "execution_status": "FAIL",
+  "status": "FAIL"
+}

@@ -1,0 +1,15 @@
+model_id,contrast,mean_difference,ci95_low,ci95_high,scope
+Ridge,M_Dh minus M_D,-0.11999454393614005,-0.17072043494541544,-0.06935803859815129,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+Ridge,M_UD minus M_U,-0.004471260574418162,-0.023636333868656323,0.012712166121199837,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+Ridge,M_UDhat minus M_U,0.00048353963193909476,-0.0020595286951610725,0.0030228187975421335,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+Ridge,M_U minus C1,-0.1955003133763433,-0.27582754592001013,-0.11593465284899229,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+Ridge,M_U minus C2,-0.14651604096461665,-0.2268246515112897,-0.0726502073893679,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+Ridge,M_U minus C3,-0.03631728401435617,-0.07702239389668757,0.0028235550204401653,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+Ridge,M_U minus C4,-0.01455114912583384,-0.043052053623203294,0.011282371440310305,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+GAM,M_Dh minus M_D,-0.17872381922669442,-0.24864664931140748,-0.11059034601882951,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+GAM,M_UD minus M_U,-0.029622993290090164,-0.08595058598905259,0.025618805129328216,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+GAM,M_UDhat minus M_U,-0.03109616934512622,-0.08456462401707263,0.02239507555976668,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+GAM,M_U minus C1,-0.13027591755740947,-0.21912439110436785,-0.04765411506265291,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+GAM,M_U minus C2,-0.0480227900597594,-0.11673355142034546,0.02190022608933095,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+GAM,M_U minus C3,0.023813435502394915,-0.03970554730359538,0.08837094188393121,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+GAM,M_U minus C4,-0.0018600244093606333,-0.05254948083779834,0.04688084623574934,descriptive_conditional_fixed_OOF_no_confirmatory_claim

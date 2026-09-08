@@ -1,0 +1,14 @@
+[
+  {
+    "ProcessId": 43664,
+    "ParentProcessId": 16876,
+    "CreationDate": "2026-09-07T23:43:31.563487+08:00",
+    "CommandLine": "\"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\.venv-task-state\\Scripts\\python.exe\" -X utf8 -B experiments/task_state_v1/04_b1_terminal.py --tracks coupled null"
+  },
+  {
+    "ProcessId": 47136,
+    "ParentProcessId": 43664,
+    "CreationDate": "2026-09-07T23:43:31.576102+08:00",
+    "CommandLine": "\"C:\\Users\\RZF\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe\" -X utf8 -B experiments/task_state_v1/04_b1_terminal.py --tracks coupled null"
+  }
+]

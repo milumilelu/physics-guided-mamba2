@@ -1,0 +1,5 @@
+schema_version: "1.2.1"
+scope: E03_SOLVER_REVIEW
+allowed_to_calibrate: false
+relative_descriptor_tolerance: 0.01
+reference: exact_current_state_pulse_lattice

@@ -1,0 +1,40 @@
+schema_version: '1.2.1'
+scope: E06_MAIN180_MAIN_EXPERIMENT
+status: FROZEN_BEFORE_RESULTS
+split_run: 20260906T111435Z_E00_a1a1c9a8_533009c_9e0686
+power_W: 5.3333
+wavelength_m: 1.03e-6
+m_squared: 1.2
+reference_duration_s: 1.0e-12
+waist_um_nominal: 0.874
+learning_rates: [3.0e-4, 1.0e-3]
+tuning_seed: 17
+final_seeds: [17, 29, 43]
+weight_decay: 1.0e-4
+max_epochs: 120
+patience: 25
+batch: 4
+accum: 4
+grad_clip: 1.0
+lambda_dp: 0.25
+lambda_closure: 1.0e-3
+n_anchors: 20
+pairs_per_epoch: 128
+anchor_seed: 20260907
+static:
+  ridge_alphas: [0.1, 1.0, 10.0]
+  mlp_hidden: 32
+  mlp_epochs: 200
+  mlp_patience: 30
+rollout:
+  max_packets: 48
+  tail_waists: 6.0
+device: auto
+hybrid_models: [H0, GRU, CTSSM, MAMBA2]
+dp_models: [MAMBA2_DP, GRU_DP]
+static_models: [DUMMY, RIDGE, SPLINE, MLP_U, MLP_UPHYS]
+physics_models: [P00, P10, P01, P11]
+g6_contrasts:
+  paired_interval: 0.9833
+  bootstrap: 5000
+  bootstrap_seed: 20260907

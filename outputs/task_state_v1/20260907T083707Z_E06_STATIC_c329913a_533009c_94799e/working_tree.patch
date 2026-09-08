@@ -1,0 +1,245 @@
+diff --git a/annotations/README.md b/annotations/README.md
+index 547c5a5..64576f0 100644
+--- a/annotations/README.md
++++ b/annotations/README.md
+@@ -5,7 +5,9 @@
+ - `session_geometry.csv`：三个 session 的固定旋转角；
+ - `sample_view_manifest.csv`：双槽 measurement 的左右视图映射；
+ - `single_line_view_manifest.csv`：120 条单线每组冻结的平面/方向角/裁剪视图清单（脚本 33 生成）；
+-- `single_line_range_annotation.csv`：可继续编辑的单线加工范围人工标注表（狭长矩形，脚本 34）。
++- `single_line_range_annotation.csv`：可继续编辑的单线加工范围人工标注表（狭长矩形，脚本 34）；
++- `cfrp_groove_view_manifest.csv`：CFRP 矩形槽 189 个 ROI 的平面/槽中心/裁剪视图清单（脚本 35 生成）；
++- `cfrp_groove_range_annotation.csv`：可继续编辑的 CFRP 矩形槽人工标注表（脚本 34 `--profile groove`）。
+ 
+ 双击仓库根目录的 `启动四边盲标_A.bat` 可打开标注器。保存仍写入可编辑 CSV，
+ 不会自动覆盖冻结副本。
+@@ -16,3 +18,7 @@
+ 单线标注：双击仓库根目录的 `启动单线盲标_A.bat`，操作见 `单线盲标操作说明.md`；
+ 未保存框的草稿文件为 `single_line_annotation_draft_a.json`。
+ 
++CFRP 矩形槽标注：双击 `启动CFRP矩形槽盲标_A.bat`，操作见
++`CFRP矩形槽盲标操作说明.md`；草稿文件与单线共用（按 session/measurement/roi
++区分行，不会串行）。
++
+diff --git a/scripts/34_manual_single_line_annotator.py b/scripts/34_manual_single_line_annotator.py
+index 5b28890..8e32433 100644
+--- a/scripts/34_manual_single_line_annotator.py
++++ b/scripts/34_manual_single_line_annotator.py
+@@ -1,11 +1,17 @@
+ #!/usr/bin/env python3
+-"""Interactive blinded elongated-rectangle annotation of single-line ranges.
++"""Interactive blinded annotation of machining ranges.
+ 
+-Build the table first with ``scripts/33_build_single_line_annotation_table.py``.
+-The view freezes the display rotation per measurement, so the machined line
+-appears horizontal and the annotator marks its extent with one elongated
+-rectangle (ends = machining range, sides = line boundaries).  No automatic
+-line boundary is ever displayed.
++One annotator serves two frozen view families built by scripts 33/35:
++
++- ``--profile line``: elongated rectangle along a machined single line
++  (default; zro2 120-group single lines);
++- ``--profile groove``: rectangle around a machined groove patch (CFRP
++  rectangular grooves), without the elongation nag.
++
++Build the table first with ``scripts/33_build_single_line_annotation_table.py``
++(lines) or ``scripts/35_build_cfrp_groove_annotation_table.py`` (grooves).
++The view manifest freezes the per-row display geometry; no automatic line or
++groove boundary is ever displayed.
+ """
+ 
+ from __future__ import annotations
+@@ -34,7 +40,6 @@ from src.manual_four_edge_annotation import (  # noqa: E402
+     local_extents_from_record,
+ )
+ from src.manual_single_line_annotation import (  # noqa: E402
+-    DEFAULT_MINIMUM_ASPECT,
+     RANGE_FIELDS,
+     elongated_box_record,
+     elongation_is_suspicious,
+@@ -43,19 +48,49 @@ from src.resampling import resample_to_canonical  # noqa: E402
+ 
+ BASE_FIELDS = ("session_id", "sample_id", "measurement_id",
+                "roi_within_measurement")
+-VIEW_REQUIRED = ("measurement_id", "cag_path", "plane_a", "plane_b", "plane_c",
++VIEW_REQUIRED = ("session_id", "measurement_id", "roi_within_measurement",
++                 "cag_path", "plane_a", "plane_b", "plane_c",
+                  "theta_line_deg", "crop_center_x_um", "crop_center_y_um",
+                  "crop_length_um", "crop_pixels")
+ 
++#: Display profiles.  ``line`` words the task as an elongated single-line
++#: range (CFRP/zro2 lines); ``groove`` words it as a rectangular groove
++#: patch and disables the aspect-ratio nag, which only makes sense for
++#: elongated marks.
++PROFILES = {
++    "line": {
++        "title": "Single-line range annotation",
++        "box_hint": ("elongated box: ends = machining range, "
++                     "sides = line boundaries"),
++        "instruction": ("Drag one elongated rectangle along the machined "
++                        "line. Cover the continuous machining range; ignore "
++                        "isolated spatter."),
++        "unusable_comment": "machined line range not reliably visible",
++        "default_minimum_aspect": 3.0,
++    },
++    "groove": {
++        "title": "Groove-range annotation",
++        "box_hint": "rectangle aligned to the four groove edges",
++        "instruction": ("Drag one rectangle around the machined groove "
++                        "patch. Mark the transition midline of each of the "
++                        "four edges; ignore rim pile-up beyond it."),
++        "unusable_comment": "groove range not reliably visible",
++        "default_minimum_aspect": 1.0,
++    },
++}
++
+ 
+ class SingleLineAnnotator:
+     def __init__(self, *, annotator: str, table_path: Path,
+-                 view_manifest_path: Path,
+-                 minimum_aspect: float = DEFAULT_MINIMUM_ASPECT) -> None:
++                 view_manifest_path: Path, profile: str = "line",
++                 minimum_aspect: float | None = None) -> None:
+         self.annotator = annotator.lower()
+         self.prefix = f"annotator_{self.annotator}_"
+         self.table_path = table_path
+-        self.minimum_aspect = float(minimum_aspect)
++        self.profile = PROFILES[profile]
++        self.minimum_aspect = float(
++            minimum_aspect if minimum_aspect is not None
++            else self.profile["default_minimum_aspect"])
+         self.table = pd.read_csv(table_path, encoding="utf-8-sig",
+                                  keep_default_na=False)
+         self._validate_table()
+@@ -69,10 +104,14 @@ class SingleLineAnnotator:
+             raise ValueError(
+                 "view manifest is stale; rerun the table builder: "
+                 f"missing {missing}")
+-        self.views = {int(row["measurement_id"]): row
+-                      for row in manifest.to_dict("records")}
++        self.views = {
++            (str(row["session_id"]), int(row["measurement_id"]),
++             str(row["roi_within_measurement"])): row
++            for row in manifest.to_dict("records")}
+         unknown = sorted(set(
+-            self.table["measurement_id"].astype(int))-set(self.views))
++            (str(row["session_id"]), int(row["measurement_id"]),
++             str(row["roi_within_measurement"]))
++            for _, row in self.table.iterrows())-set(self.views))
+         if unknown:
+             raise ValueError(f"table rows missing from view manifest: {unknown}")
+         self.index = first_incomplete_index(
+@@ -164,8 +203,13 @@ class SingleLineAnnotator:
+     def _row(self) -> pd.Series:
+         return self.table.iloc[self.index]
+ 
++    def _view_key(self) -> tuple[str, int, str]:
++        row = self._row()
++        return (str(row["session_id"]), int(row["measurement_id"]),
++                str(row["roi_within_measurement"]))
++
+     def _view(self) -> pd.Series:
+-        return self.views[int(self._row()["measurement_id"])]
++        return self.views[self._view_key()]
+ 
+     def _reader_for(self, cag_path: str) -> CagHeightReader:
+         if self.reader_cag != cag_path:
+@@ -230,8 +274,11 @@ class SingleLineAnnotator:
+             return None
+         row = self._row()
+         if (str(draft.get("annotator", "")).lower() == self.annotator
++                and str(draft.get("session_id", "")) == str(row["session_id"])
+                 and int(draft.get("measurement_id", -1))
+                 == int(row["measurement_id"])
++                and str(draft.get("roi_within_measurement", ""))
++                == str(row["roi_within_measurement"])
+                 and draft.get("extents") is not None):
+             return draft
+         return None
+@@ -273,11 +320,10 @@ class SingleLineAnnotator:
+         completed = int(self.table[self.prefix+"state"].astype(str).isin(
+             ["complete", "unusable"]).sum())
+         self.ax.set_title(
+-            f"Single-line range annotator {self.annotator.upper()} | "
++            f"{self.profile['title']} {self.annotator.upper()} | "
+             f"completed={completed}/{len(self.table)} | row={self.index+1} | "
+             f"{row['session_id']} sample {int(row['sample_id'])}\n"
+-            f"state={state} | elongated box: ends = machining range, "
+-            f"sides = line boundaries"
++            f"state={state} | {self.profile['box_hint']}"
+         )
+         self.selector = RectangleSelector(
+             self.ax, self._on_select, useblit=True, button=[1],
+@@ -294,10 +340,7 @@ class SingleLineAnnotator:
+                    f"{self.minimum_aspect:g}, check the box" if suspicious else "")
+             )
+         else:
+-            self._set_status(
+-                "Drag one elongated rectangle along the machined line. "
+-                "Cover the continuous machining range; ignore isolated spatter."
+-            )
++            self._set_status(self.profile["instruction"])
+         self.fig.canvas.draw_idle()
+ 
+     def _on_select(self, click, release) -> None:
+@@ -324,7 +367,9 @@ class SingleLineAnnotator:
+         row = self._row()
+         payload = {
+             "annotator": self.annotator,
++            "session_id": str(row["session_id"]),
+             "measurement_id": int(row["measurement_id"]),
++            "roi_within_measurement": str(row["roi_within_measurement"]),
+             "extents": self.current_extents,
+             "comment": self.current_comment,
+         }
+@@ -409,7 +454,7 @@ class SingleLineAnnotator:
+ 
+     def _unusable(self, _event=None) -> None:
+         if not self.current_comment:
+-            self.current_comment = "machined line range not reliably visible"
++            self.current_comment = self.profile["unusable_comment"]
+         if self._save("unusable"):
+             self._advance_to_next_incomplete()
+ 
+@@ -456,8 +501,10 @@ def main() -> int:
+         REPO/"annotations/single_line_range_annotation.csv"))
+     parser.add_argument("--view-manifest", type=Path, default=(
+         REPO/"annotations/single_line_view_manifest.csv"))
+-    parser.add_argument("--min-aspect-warning", type=float,
+-                        default=DEFAULT_MINIMUM_ASPECT)
++    parser.add_argument("--profile", default="line", choices=tuple(PROFILES))
++    parser.add_argument("--min-aspect-warning", type=float, default=None,
++                        help="override the profile default (line: 3.0, "
++                             "groove: disabled)")
+     parser.add_argument("--check", action="store_true")
+     parser.add_argument("--render-smoke", type=Path,
+                         help="Render the first resume sample and exit without saving annotations.")
+@@ -492,6 +539,7 @@ def main() -> int:
+             app = SingleLineAnnotator(
+                 annotator=args.annotator, table_path=temporary_table,
+                 view_manifest_path=Path(directory) / args.view_manifest.name,
++                profile=args.profile,
+                 minimum_aspect=args.min_aspect_warning)
+             app.current_extents = (-100.0, 100.0, -6.0, 6.0)
+             if not app._save("complete"):
+@@ -515,7 +563,7 @@ def main() -> int:
+         return 0
+     app = SingleLineAnnotator(
+         annotator=args.annotator, table_path=args.table,
+-        view_manifest_path=args.view_manifest,
++        view_manifest_path=args.view_manifest, profile=args.profile,
+         minimum_aspect=args.min_aspect_warning)
+     if args.render_smoke:
+         args.render_smoke.parent.mkdir(parents=True, exist_ok=True)
+diff --git a/scripts/README.md b/scripts/README.md
+index dc18dcd..d5bb0cb 100644
+--- a/scripts/README.md
++++ b/scripts/README.md
+@@ -5,5 +5,6 @@
+ - `23_build_stable_roi_dataset.py`：打包为一个可直接读取的 NPZ 数据集。
+ - `32_run_manual_internal_roi_v1.py`：环境检查、测试、提取、打包一键执行。
+ - `33_build_single_line_annotation_table.py`：为 120 条单线生成视图清单（平面拟合 + 线方向角）与空标注表。
+-- `34_manual_single_line_annotator.py`：单线加工范围盲标（狭长矩形交互标注器）。
++- `34_manual_single_line_annotator.py`：单线/矩形槽加工范围盲标（`--profile line|groove`，交互标注器）。
++- `35_build_cfrp_groove_annotation_table.py`：CFRP 矩形槽双 session 视图清单（平面拟合 + 平滑阈值分割定位槽中心）与空标注表。
+ - `setup_environment.ps1` / `verify_environment.py`：固定与检查 Python 环境。

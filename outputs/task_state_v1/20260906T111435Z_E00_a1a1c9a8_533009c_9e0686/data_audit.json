@@ -1,0 +1,20 @@
+{
+  "rows": 200,
+  "MAIN180_components": 126,
+  "largest_component": 4,
+  "outer_fold_sizes": {
+    "4": 36,
+    "3": 36,
+    "1": 36,
+    "0": 36,
+    "2": 36
+  },
+  "SUPP20_purged_training_rows": 40,
+  "raw_max_error_um": 3.814611034158588e-06,
+  "training_executed": false,
+  "remaining": [
+    "canonical_observer_parity",
+    "physics_and_backend_gates",
+    "algorithm_environment_and_scenarios"
+  ]
+}

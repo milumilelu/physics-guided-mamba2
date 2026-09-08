@@ -1,0 +1,6 @@
+tag,canonical_reason,differentiable_reason,validity_mask_match,replacement_match
+constant_plane,ZERO_NON_DC_ENERGY,ZERO_NON_DC_ENERGY,True,True
+single_x_cosine,,,True,True
+single_y_cosine,,,True,True
+orthogonal_two_cosine,,,True,True
+gaussian_random_field,,,True,True

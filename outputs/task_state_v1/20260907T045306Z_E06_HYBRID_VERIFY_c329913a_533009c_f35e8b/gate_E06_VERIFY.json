@@ -1,0 +1,8 @@
+{
+  "scope": "E06_HYBRID_FORWARD_VERIFICATION",
+  "training_executed": false,
+  "error": "NameError: name 'PhysicsParameters' is not defined",
+  "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\experiments\\task_state_v1\\06_hybrid_verify.py\", line 84, in main\n    p = PhysicsParameters(0.874e-6, 1.03e-6, 1.2, math.exp(log_F1), math.exp(log_delta),\n        ^^^^^^^^^^^^^^^^^\nNameError: name 'PhysicsParameters' is not defined\n",
+  "execution_status": "FAIL",
+  "status": "FAIL"
+}

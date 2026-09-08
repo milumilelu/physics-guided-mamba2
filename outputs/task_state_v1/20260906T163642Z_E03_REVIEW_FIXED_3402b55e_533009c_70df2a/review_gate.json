@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "scope": "IMPLEMENTATION_REGRESSION_ONLY",
+  "allowed_to_calibrate": false,
+  "continuum_registration": "REJECTED_UNCONDITIONAL_USE",
+  "raw_matrix_run": "20260906T163324Z_E03_CELL_VALIDATION_3402b55e_533009c_185328",
+  "remaining": [
+    "finite_80um_observer_sampling_validation",
+    "MAIN180_and_calibration_parameter_domain_coverage"
+  ],
+  "tests_returncode": 0
+}

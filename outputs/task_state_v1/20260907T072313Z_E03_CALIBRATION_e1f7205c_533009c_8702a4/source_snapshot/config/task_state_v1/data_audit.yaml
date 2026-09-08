@@ -1,0 +1,11 @@
+schema_version: '1.2'
+protocol_id: task_state_v1
+scope: E00_DATA_ONLY
+protocol_path: 任务说明/state_space_experiment_package/task_state_execution_v1_1/config/experiment_plan.yaml
+status: PROPOSED_NOT_FROZEN
+allowed_to_train: false
+outer_splits: 5
+inner_splits: 3
+component_id: sha256_sorted_session_string_sample_integer_compact_utf8_json
+fold_rule: descending_component_size_then_hash_greedy_ROI_formal_passmain_fold_id
+canonical_input: experiments/phase2_8_r1/phase2_8_config.yaml

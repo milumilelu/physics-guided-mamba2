@@ -1,0 +1,8 @@
+{
+  "scope": "E06_HYBRID_FORWARD_VERIFICATION",
+  "training_executed": false,
+  "error": "NameError: name 'math' is not defined",
+  "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\experiments\\task_state_v1\\06_hybrid_verify.py\", line 73, in main\n    vec = np.array([math.log(2e8), math.log(1e-8), math.log(0.02), 0.0, 0.0, 0.0])\n                    ^^^^\nNameError: name 'math' is not defined. Did you mean: 'path'? Or did you forget to import 'math'\n",
+  "execution_status": "FAIL",
+  "status": "FAIL"
+}

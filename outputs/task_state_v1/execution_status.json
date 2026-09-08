@@ -1,0 +1,31 @@
+{
+  "protocol_revision": "1.2.1",
+  "runs": {
+    "E00": "20260906T111435Z_E00_a1a1c9a8_533009c_9e0686",
+    "E01_CANONICAL": "20260906T111445Z_E01_OBS_e17ab365_533009c_9fd9ef",
+    "E02_MAIN180": "20260906T111859Z_E02_b901bea5_533009c_68a562",
+    "E01_PHYSICS_UNIT": "20260906T112222Z_E01_PHYS_UNIT_d0670347_533009c_8ccbfd",
+    "E01_G1_REVIEW": "20260906T163558Z_E01_G1_CLOSE_e17ab365_533009c_2993a3",
+    "E03_CELL_VALIDATION": "20260906T163324Z_E03_CELL_VALIDATION_3402b55e_533009c_185328",
+    "E03_REVIEW_FIXED": "20260906T163642Z_E03_REVIEW_FIXED_3402b55e_533009c_70df2a",
+    "E04_B1_REFERENCE": "20260906T164858Z_E04_B1_REFERENCE_18349780_533009c_29e663",
+    "E04_B1_BACKEND": "20260906T165326Z_E04_B1_BACKEND_18349780_533009c_bb14ef"
+  },
+  "full_G1_complete": false,
+  "Mamba_trained": false,
+  "background_training": false,
+  "scope": "E03_finite_solver_implementation_and_B1_reference",
+  "E03_solver_registered": false,
+  "E03_calibration_started": false,
+  "continuum_matrix_passed": 11,
+  "continuum_matrix_cases": 12,
+  "regression_tests_passed": 55,
+  "review_document": "E03_SOLVER_REVIEW_ZH.md",
+  "B1_reference_passed": true,
+  "B1_trained": false,
+  "regression_tests_excluded": [
+    "test_finite_scan.py"
+  ],
+  "finite_solver_implemented": true,
+  "finite_solver_verified": false
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "run": "20260907T021335Z_E04_BACKEND_GATE_e0976959_533009c_67c988",
+    "seal_intact": true
+  },
+  {
+    "run": "20260907T060512Z_E06_HYBRID_VERIFY_c329913a_533009c_cf3329",
+    "seal_intact": true
+  },
+  {
+    "run": "20260907T084747Z_E06_STATIC_c329913a_533009c_c0a874",
+    "seal_intact": true
+  },
+  {
+    "run": "20260907T095134Z_E10_SUPP20_c329913a_533009c_68315e",
+    "seal_intact": true
+  }
+]

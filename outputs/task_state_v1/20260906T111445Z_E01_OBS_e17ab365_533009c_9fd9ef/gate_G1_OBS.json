@@ -1,0 +1,20 @@
+{
+  "experiment_id": "E01",
+  "gate_scope": "CANONICAL_OBSERVER",
+  "execution_status": "PASS",
+  "hypothesis_status": "NOT_TESTED",
+  "G1_complete": false,
+  "differentiable_observer": "NOT_RUN",
+  "training_executed": false,
+  "gate_id": "G1_OBS_CANONICAL",
+  "maximum_absolute_error": 7.105427357601002e-15,
+  "compared_values": 2000,
+  "real_coverage": 200,
+  "full_G1_remaining": [
+    "differentiable_observer",
+    "physics",
+    "AD_FD",
+    "backend"
+  ],
+  "status": "PASS"
+}

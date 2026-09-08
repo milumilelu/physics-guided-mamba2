@@ -1,0 +1,17 @@
+{
+  "experiment_id": "E01",
+  "gate_scope": "DIFFERENTIABLE_OBSERVER_BACKEND",
+  "execution_status": "PASS",
+  "hypothesis_status": "NOT_TESTED",
+  "G1_complete": false,
+  "training_executed": false,
+  "backend": "torch_2.14.0+cpu_cpu_float64",
+  "compared_values": 4050,
+  "real_coverage": 200,
+  "float64_max_abs_error": 4.440892098500626e-15,
+  "float32input_max_abs_error": 4.440892098500626e-15,
+  "synthetic_max_abs_error": 3.552713678800501e-14,
+  "chain_check_values": 2000,
+  "canonical_vs_frozen_max_abs_error": 7.105427357601002e-15,
+  "status": "PASS"
+}

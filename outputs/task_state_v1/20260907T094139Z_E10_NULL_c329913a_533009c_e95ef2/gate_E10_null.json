@@ -1,0 +1,9 @@
+{
+  "scope": "E10_null",
+  "training_executed": false,
+  "n_fields": 12,
+  "note": "radial-power-matched angular-isotropic null through the canonical observer; direction metrics on these fields quantify observer noise, not material anisotropy",
+  "execution_status": "PASS",
+  "metric_status": "VALID",
+  "status": "PASS"
+}

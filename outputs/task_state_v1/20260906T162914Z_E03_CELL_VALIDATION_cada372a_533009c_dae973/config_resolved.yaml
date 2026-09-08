@@ -1,0 +1,51 @@
+schema_version: 1.2.1
+scope: E03_SOLVER_CANDIDATE_VALIDATION
+status: FROZEN_BEFORE_REVIEW_MATRIX
+allowed_to_calibrate: false
+waist_um:
+- 0.874
+- 2.0
+- 3.0
+switches:
+- P01
+- P11
+feedback_cases:
+- delta_m: 1.0e-09
+  kappa: 0.001
+  rho: 0.3
+- delta_m: 1.0e-08
+  kappa: 0.2
+  rho: 0.1
+pitch_over_waist: 0.1
+frequency_Hz: 100000.0
+hatch_um: 4.0
+passes: 1
+tau_s: 1.0e-12
+F1_reference_J_m2: 10000.0
+power_W: 5.3333
+relative_tolerance: 0.01
+numerical_absolute_scale_m: 1.0e-12
+window_over_w: 5.0
+registration_additional_requirements:
+- finite_80um_observer_sampling_validation
+- whole_calibration_parameter_domain_or_runtime_acceptance_guard
+- "full_MA\u200B\u200BIN180_recipe_numerical_coverage"
+cell_config:
+  region_m: 0.0002
+  u_target_m: 2.0e-07
+  n_u_max: 40
+  n_phi: 16
+  dense_dx_over_w0: 0.15
+  window_over_w: 5.0
+  t_nodes: 256
+  max_ode_steps: 20000
+  max_refinement_attempts: 12
+  ode_rtol: 1.0e-07
+  ode_atol: 1.0e-10
+  max_window_retries: 8
+  max_lattice_lines: 401
+  max_packet_pulses: 64
+  packet_max_q: 0.05
+  packet_max_log_threshold: 0.05
+  packet_max_dd_over_zr: 0.02
+  packet_max_beam_over_w: 0.25

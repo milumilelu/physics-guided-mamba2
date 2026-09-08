@@ -1,0 +1,40 @@
+{
+  "out_of_bounds_accepted": {
+    "gamma_F": 2.0,
+    "gamma_delta": 2.0,
+    "configured_upper": 1.0
+  },
+  "starts_count": {
+    "configured": 2,
+    "actual": 3
+  },
+  "b1_sealed_design": "AttributeError: 'int' object has no attribute 'sum'",
+  "chosen_id_when_B_selected": "ValueError: Chosen id not among candidates for pair 0",
+  "laser_hybrid_import": "ImportError: cannot import name 'apply_packet' from 'src.task_state_learning.laser_rollout' (C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\src\\task_state_learning\\laser_rollout.py)",
+  "E06_static": {
+    "rows": 11340,
+    "targets": [
+      "A2_8_16",
+      "A_med",
+      "entropy_8_16",
+      "ilr_z1",
+      "ilr_z2",
+      "ilr_z3",
+      "ilr_z4"
+    ],
+    "empty_hash_columns": {
+      "model_sha": true,
+      "data_sha": true,
+      "split_sha": true
+    }
+  },
+  "B1_evaluator_keys": [
+    "controls",
+    "token_count",
+    "token_dt",
+    "block_duration",
+    "full_terminal_state",
+    "block_boundary_states",
+    "family_id"
+  ]
+}

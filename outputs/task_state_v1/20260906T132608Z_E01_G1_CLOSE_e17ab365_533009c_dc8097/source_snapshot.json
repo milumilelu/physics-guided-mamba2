@@ -1,0 +1,165 @@
+{
+  "sha256": "33095891c17028ab887aa205a943c3a78310b28f4bff0475091c13b647bd8f3c",
+  "files": [
+    {
+      "path": "config/task_state_v1/data_audit.yaml",
+      "bytes": 487,
+      "sha256": "a1a1c9a82a5a8f728cab618edadab5b41fc3c82b28a4c7a2f1f7b882c1357464"
+    },
+    {
+      "path": "config/task_state_v1/depth_compression.yaml",
+      "bytes": 1045,
+      "sha256": "b901bea5a64cf90b3524b921bc50c35a017d697f7560070afe2782827822821f"
+    },
+    {
+      "path": "config/task_state_v1/diff_backend.yaml",
+      "bytes": 313,
+      "sha256": "337bc8f7708cda88a3bf5d335671c0cb283ad1f689b2d96e88e08b805890440c"
+    },
+    {
+      "path": "config/task_state_v1/gradient_gate.yaml",
+      "bytes": 1924,
+      "sha256": "5fd0d2316a848acca8d83e507f2d28f7ddcf3222f64e8070103a6683e90c3fa5"
+    },
+    {
+      "path": "config/task_state_v1/observer_parity.yaml",
+      "bytes": 243,
+      "sha256": "e17ab3654b44172c7f8b8466948d1b7c48902ac9ea4ba8c74a0e879ba90f4a73"
+    },
+    {
+      "path": "config/task_state_v1/physics_numeric.yaml",
+      "bytes": 480,
+      "sha256": "d0670347dcc1590eba9060ee6da235f233146e537ec888fdcc972d36a0f45440"
+    },
+    {
+      "path": "config/task_state_v1/requirements_numeric.txt",
+      "bytes": 219,
+      "sha256": "2ef85d4e2ca75a78a4b45de9c7d19c9a02572eb5e8c9916b7888ae7e76fff015"
+    },
+    {
+      "path": "experiments/task_state_v1/00_audit.py",
+      "bytes": 5989,
+      "sha256": "717b643af570dcde22fd7241eb79f8bba503de3142309e3ca0792f032058f6b1"
+    },
+    {
+      "path": "experiments/task_state_v1/01_differentiable_backend.py",
+      "bytes": 10293,
+      "sha256": "47c81c12caea72d8e2a8a4f1d310bedc84014413cca4f5776487934e5bd4b2fe"
+    },
+    {
+      "path": "experiments/task_state_v1/01_g1_close.py",
+      "bytes": 3461,
+      "sha256": "044b78b675934440a2a92245d2aa539136e483b6e65f932f807ceafe02dd5aa3"
+    },
+    {
+      "path": "experiments/task_state_v1/01_gradient_gate.py",
+      "bytes": 15370,
+      "sha256": "ef3efda36fa3bea619250168365d56f629a0ce402c3634bef9011f65a36d4f14"
+    },
+    {
+      "path": "experiments/task_state_v1/01_observer_parity.py",
+      "bytes": 4379,
+      "sha256": "ffc181280b7626ede2f7aecf1c4df7a0126f12711ffd930cf952fe1f26bc7762"
+    },
+    {
+      "path": "experiments/task_state_v1/01_physics_numeric.py",
+      "bytes": 3956,
+      "sha256": "ca051e29dd6a9def519f0c6d956eb0b12f0956a12d2f596834cdf57a8152412a"
+    },
+    {
+      "path": "experiments/task_state_v1/02_depth_compression.py",
+      "bytes": 11004,
+      "sha256": "4dfe2361491f51b5c8e6c272d7ae112be155ed0ec8f93441bb5e1f56a1feeb9e"
+    },
+    {
+      "path": "experiments/task_state_v1/README.md",
+      "bytes": 2773,
+      "sha256": "9b55a27ae31e1d381a95269aa0031927e1c957d4fa8ebd2efe658a731b753d7c"
+    },
+    {
+      "path": "src/task_state_learning/__init__.py",
+      "bytes": 83,
+      "sha256": "6601f7d1f7b3c52e24d8f28bef64d5481ad9c43ac907744c21589439e81086fb"
+    },
+    {
+      "path": "src/task_state_learning/artifacts.py",
+      "bytes": 3945,
+      "sha256": "f7ea7e8e0f0e251c3bd73fc9ba85098afccc91652362c5a921158188f4c1eed9"
+    },
+    {
+      "path": "src/task_state_learning/contracts.py",
+      "bytes": 3929,
+      "sha256": "4efb55d2af93ed6c7e012c8506e0d8fca9e990458ba43c5fc0a935e95c55691d"
+    },
+    {
+      "path": "src/task_state_learning/diagnostics.py",
+      "bytes": 4488,
+      "sha256": "a548e196b6f7d47dce77b5e174ef63b918a2ed1ed4d5a5d2557db787655fec75"
+    },
+    {
+      "path": "src/task_state_learning/differentiable_observer.py",
+      "bytes": 6977,
+      "sha256": "a4f921d4eaf3dd18a3dc0481f0578d0ca6a802c67e537693b5b595bd667db9c9"
+    },
+    {
+      "path": "src/task_state_learning/differentiable_physics.py",
+      "bytes": 2687,
+      "sha256": "370a6d94934166a6e5dffe90d5cbc74d96e62cbe2702ddf83bc73487f86839ad"
+    },
+    {
+      "path": "src/task_state_learning/grouping.py",
+      "bytes": 5123,
+      "sha256": "17c2565d26c7a9e2cd676e1234d4f28cfb6d8db5763cc25e534b96f36e0f404d"
+    },
+    {
+      "path": "src/task_state_learning/observers.py",
+      "bytes": 4404,
+      "sha256": "1101c97a6be6a4e691e0984035c75d945bda631a859dd4e92ec594a56b23065f"
+    },
+    {
+      "path": "src/task_state_learning/physics.py",
+      "bytes": 3721,
+      "sha256": "55dcf1fc7d67a4f5352ebf8c1e740681034bae54193e6928239c3e5db6bb3fc9"
+    },
+    {
+      "path": "src/task_state_learning/scan.py",
+      "bytes": 7661,
+      "sha256": "293daf312dac92e24f597f8fe50367f18ae5bf4c9de734e956832e885db2bdf0"
+    },
+    {
+      "path": "tests/task_state_v1/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/task_state_v1/test_differentiable_observer.py",
+      "bytes": 3278,
+      "sha256": "c51b3ce4a80be12756163d1941fc9129c54f6af831491659eb1444d25e0febe5"
+    },
+    {
+      "path": "tests/task_state_v1/test_grouping.py",
+      "bytes": 2847,
+      "sha256": "69a74be47f59cc3e4e289ff5f0a2f817938c8c5f0afdd4cdb8ae284a5070a5dd"
+    },
+    {
+      "path": "tests/task_state_v1/test_nested_diagnostics.py",
+      "bytes": 1699,
+      "sha256": "547b9de384c1b7851c66e09f0db51396e823ac1c9ae8850fdf09b358648992db"
+    },
+    {
+      "path": "tests/task_state_v1/test_observers.py",
+      "bytes": 1867,
+      "sha256": "a4d09481772cb97a719093a9186c6aff55e1787a4677ff59677ce56fc418bf2f"
+    },
+    {
+      "path": "tests/task_state_v1/test_physics.py",
+      "bytes": 2758,
+      "sha256": "a61cb1b17b6ed035bc6f07547c63728d87b5eb765b4b711f9568facd74b84831"
+    },
+    {
+      "path": "tests/task_state_v1/test_scan.py",
+      "bytes": 4622,
+      "sha256": "1a48383bd042a265adc5c63cbf5701c89b2d7749a76528fcc1306dc47bc32db3"
+    }
+  ]
+}

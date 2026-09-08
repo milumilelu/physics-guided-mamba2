@@ -1,0 +1,36 @@
+schema_version: '1.2.1'
+scope: E04_B1_TERMINAL_ONLY_TRAINING
+status: FROZEN_BEFORE_RESULTS
+reference_run: 20260906T164858Z_E04_B1_REFERENCE_18349780_533009c_29e663
+dataset_sha256_expected: f99507466a3d11fb10a88d7277ec9969c3c59e8f694ec5201c5f7f7ec617f7cf
+tracks: [coupled, null]
+models: [STATIC, H0, GRU, CTSSM, MAMBA2]
+decision_aware: [MAMBA2_DP, GRU_DP]
+learning_rates: [3.0e-4, 1.0e-3]
+tuning_seed: 17
+final_seeds: [17, 29, 43]
+outer_refit_epochs_policy: median_inner_best_epoch_ceil_min1
+weight_decay: 1.0e-4
+max_epochs: 300
+patience: 40
+batch: 4
+accum: 4
+grad_clip: 1.0
+lambda_dp: 0.25
+lambda_closure: 1.0e-3
+n_anchors: 20
+pairs_per_epoch: 256
+anchor_seed: 20260907
+low_sample_curve: [32, 64, 128, 256, 512]
+device: auto
+continuation:
+  observable_rel_tolerance: 0.05
+  q_separation: 0.5
+  future_pairs: 256
+  future_steps: 32
+  seed: 20260908
+g2:
+  paired_interval: 0.9833
+  bootstrap: 5000
+  bootstrap_seed: 20260907
+  superiority_requirement: 'memory_model_beats_H0_on_native_error_with_null_no_gain'

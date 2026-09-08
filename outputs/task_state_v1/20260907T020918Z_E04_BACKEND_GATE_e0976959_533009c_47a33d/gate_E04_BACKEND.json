@@ -1,0 +1,20 @@
+{
+  "scope": "E04_MAMBA2_REFERENCE_BACKEND_ACCEPTANCE",
+  "mamba_backend": "reference_pure_torch_ssd_v1",
+  "architecture": {
+    "layers": 1,
+    "d_model": 32,
+    "expand": 2,
+    "head_dim": 16,
+    "d_conv": 4,
+    "d_state": 16,
+    "n_groups": 1,
+    "chunk": 64,
+    "dt_min": 0.001,
+    "dt_max": 0.1
+  },
+  "training_executed": false,
+  "error": "TypeError: B1ClosureModel.__init__() got an unexpected keyword argument 'd_state'",
+  "execution_status": "FAIL",
+  "status": "FAIL"
+}
