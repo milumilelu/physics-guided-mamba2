@@ -174,6 +174,8 @@ def main():
                         required=True)
     parser.add_argument('--calibration-run', default=None)
     args = parser.parse_args()
+    from src.task_state_learning.guardrails import require_not_held
+    require_not_held('E10_'+args.stage.upper())
     path = ROOT / args.config
     cfg = yaml.safe_load(path.read_text(encoding='utf-8'))
     if args.calibration_run:

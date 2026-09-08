@@ -1,0 +1,111 @@
+{
+  "source_commit": "f80bca0",
+  "source_run": "outputs/task_state_v1/20260908T044922Z_E03_SOLVER_REGISTRATION_3d172ad2_77c2c3c_d7e592",
+  "triage_verdict": "FAIL_FORMAL_RETAIN",
+  "threshold_changes_proposed": [],
+  "threshold_changes_forbidden": [
+    "tail_relative_tolerance (0.01)",
+    "max_window_attempts_allowed (4)",
+    "implausible_depth_factor (10.0)",
+    "registered parameter bounds",
+    "descriptor set used by the grid-refinement gate"
+  ],
+  "actions": [
+    {
+      "id": "A1",
+      "title": "Complete full MAIN180 recipe coverage",
+      "linked_failure": "F1",
+      "category": "IMPLEMENTATION_REMAINING",
+      "blocking": true,
+      "requires_code_change": false,
+      "requires_rerun": true,
+      "description": "Run 03_register_solver.py with --limit-recipes 0 so that recipe coverage reaches 2160 cases (180 recipes x 4 switches x 3 waists). The 48-case smoke already executed stays sealed and unchanged.",
+      "acceptance": "gate condition full_recipe_coverage == true with no other threshold modified",
+      "must_not_be_done_for": "obtaining a PASS"
+    },
+    {
+      "id": "A2",
+      "title": "Record observed window attempts for rejected domain vectors",
+      "linked_failure": "F2",
+      "category": "IMPLEMENTATION_REMAINING",
+      "blocking": false,
+      "requires_code_change": true,
+      "code_change_kind": "diagnostic instrumentation only",
+      "requires_rerun": false,
+      "description": "When a parameter-domain vector is rejected with 'Window attempt registration budget exceeded', also persist max_window_attempts_observed so the follow-up decision can distinguish a 5-attempt case from a 16-attempt case. No gate threshold is touched.",
+      "acceptance": "parameter_domain_summary.csv contains the observed attempt count for every rejected vector"
+    },
+    {
+      "id": "A3",
+      "title": "Decide the w0=0.874 um defocus sub-domain disposition",
+      "linked_failure": "F2",
+      "category": "BLOCKING_SOLVER_REGISTRATION",
+      "blocking": true,
+      "requires_code_change": "conditional",
+      "requires_rerun": true,
+      "depends_on": ["A2"],
+      "options": [
+        {
+          "option": "restrict the registered domain",
+          "description": "Exclude or bound the waist 0.874 um defocus region and record the restriction as an explicit research-design amendment.",
+          "changes_thresholds": false
+        },
+        {
+          "option": "improve the solver initial window bound",
+          "description": "Seed the window bound from an analytic depth estimate so fewer widening attempts are needed. This changes numerics and therefore requires a full re-registration, not a patch to the existing run.",
+          "changes_thresholds": false
+        }
+      ],
+      "forbidden_option": "raising max_window_attempts_allowed from 4",
+      "acceptance": "documented decision plus a re-registration run whose remaining list no longer contains parameter_domain_finite_and_converged for the chosen domain"
+    },
+    {
+      "id": "A4",
+      "title": "Determine ilr_z2 grid convergence",
+      "linked_failure": "F3",
+      "category": "BLOCKING_NUMERIC",
+      "blocking": true,
+      "requires_code_change": true,
+      "code_change_kind": "diagnostic grid level",
+      "requires_rerun": true,
+      "description": "Add a third diagnostic refinement level (for example 2560) to establish whether ilr_z2 is converging or is intrinsically grid-sensitive at w=2.0 um and dataset_index 0. If not converging, flag ilr_z2 explicitly rather than loosening the 1% tolerance.",
+      "acceptance": "either ilr_z2 passes at a finer grid, or ilr_z2 is formally recorded as not converged at 1% and excluded/flagged per protocol",
+      "forbidden_option": "raising tail_relative_tolerance"
+    },
+    {
+      "id": "A5",
+      "title": "Retain and re-verify the implausible-depth observation",
+      "linked_failure": "N1",
+      "category": "NONBLOCKING_MODEL_INADEQUACY",
+      "blocking": false,
+      "requires_code_change": false,
+      "requires_rerun": false,
+      "description": "Keep the 304/3744 implausible-depth flags (D_um_max = 134594.73 um vs informational threshold 650.84 um) as an explicitly reported model-inadequacy observation. Do not delete the rows and do not tighten the parameter bounds on the basis of MAIN180 depth labels.",
+      "acceptance": "observation carried verbatim into the next registration report"
+    },
+    {
+      "id": "A6",
+      "title": "Do not reinterpret or overwrite the f80bca0 run",
+      "linked_failure": "all",
+      "category": "DOCUMENTATION_ONLY",
+      "blocking": true,
+      "requires_code_change": false,
+      "requires_rerun": false,
+      "description": "The FAIL run is formal scientific evidence. It must remain sealed, cited by run id, and never deleted, overwritten or re-analysed into a PASS.",
+      "acceptance": "run directory and solver_registration_gate.json unchanged in git history"
+    },
+    {
+      "id": "A7",
+      "title": "Re-run only after A1-A4 decisions are recorded",
+      "linked_failure": "all",
+      "category": "IMPLEMENTATION_REMAINING",
+      "blocking": true,
+      "requires_rerun": true,
+      "depends_on": ["A1", "A2", "A3", "A4"],
+      "description": "A formal re-registration may be launched only to complete scope, to record a documented domain/solver decision, or to add a diagnostic grid level. If the three remaining conditions still fail afterwards, the result stands as a scientific negative result.",
+      "acceptance": "rerun justification recorded in writing before launch and equal to one of: scope completion, domain/solver decision, diagnostic instrumentation"
+    }
+  ],
+  "E03_calibration_status": "FROZEN - solver_registration_gate.json allowed_to_calibrate = false",
+  "E04_status": "UNAFFECTED - E04/B1 is an independent hidden-state computational benchmark"
+}

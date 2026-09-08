@@ -17,7 +17,7 @@ PAIRS_PER_EPOCH = 256
 
 def terminal_scale(terminal_x):
     """Per-component scale from the current training split only."""
-    return terminal_x.std(dim=0).clamp_min(1e-12)
+    return terminal_x.var(dim=0,unbiased=False).clamp_min(1e-12).sqrt()
 
 
 def farthest_point_anchors(terminal_x, scale, count=N_ANCHORS):

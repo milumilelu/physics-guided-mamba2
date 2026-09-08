@@ -9,17 +9,34 @@
     "E03_CELL_VALIDATION": "20260906T163324Z_E03_CELL_VALIDATION_3402b55e_533009c_185328",
     "E03_REVIEW_FIXED": "20260906T163642Z_E03_REVIEW_FIXED_3402b55e_533009c_70df2a",
     "E04_B1_REFERENCE": "20260906T164858Z_E04_B1_REFERENCE_18349780_533009c_29e663",
-    "E04_B1_BACKEND": "20260906T165326Z_E04_B1_BACKEND_18349780_533009c_bb14ef"
+    "E04_B1_BACKEND": "20260906T165326Z_E04_B1_BACKEND_18349780_533009c_bb14ef",
+    "REPAIR_ACCEPTANCE": "20260908T012317Z_REPAIR_ACCEPTANCE_cef34f63_77c2c3c_9899bf",
+    "E03_FINITE_FIXTURE": "20260908T010615Z_E03_FINITE_ROI_4569ae8a_77c2c3c_c0feee",
+    "REPAIR_GPU_SMOKE": "20260908T011757Z_REPAIR_TRAINING_SMOKE_cef34f63_77c2c3c_d04458",
+    "E03_SOLVER_REGISTRATION": "20260908T044922Z_E03_SOLVER_REGISTRATION_3d172ad2_77c2c3c_d7e592",
+    "E03_AUDIT": "outputs/task_state_v1/e03_audit"
   },
+  "E03_registration_status": "FAIL",
+  "E03_triage_verdict": "FAIL_FORMAL_RETAIN",
+  "E03_registration_remaining": [
+    "full_recipe_coverage",
+    "parameter_domain_finite_and_converged",
+    "grid_refinement_converged"
+  ],
+  "E04_authorized_by_triage": true,
+  "E06_static_authorized_by_triage": false,
+  "E06_physics_authorized_by_triage": false,
+  "E06_hybrid_authorized_by_triage": false,
+  "gradient_design_authorized_by_triage": false,
   "full_G1_complete": false,
   "Mamba_trained": false,
   "background_training": false,
-  "scope": "E03_finite_solver_implementation_and_B1_reference",
+  "scope": "audit_repair_in_progress",
   "E03_solver_registered": false,
   "E03_calibration_started": false,
   "continuum_matrix_passed": 11,
   "continuum_matrix_cases": 12,
-  "regression_tests_passed": 55,
+  "regression_tests_passed": 85,
   "review_document": "E03_SOLVER_REVIEW_ZH.md",
   "B1_reference_passed": true,
   "B1_trained": false,
@@ -27,5 +44,8 @@
     "test_finite_scan.py"
   ],
   "finite_solver_implemented": true,
-  "finite_solver_verified": false
+  "finite_solver_verified": false,
+  "formal_training_restarted": false,
+  "historical_training_attempts_exist": true,
+  "execution_hold": "config/task_state_v1/execution_hold.json"
 }

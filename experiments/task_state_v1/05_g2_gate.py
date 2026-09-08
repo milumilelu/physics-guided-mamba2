@@ -14,9 +14,10 @@ import pandas as pd
 import torch
 import yaml
 from src.task_state_learning.artifacts import ROOT, new_run, write_json, verify_seal, seal
-from src.task_state_learning.benchmarks import load_terminal_only
+from src.task_state_learning.benchmarks import load_terminal_only, b1_reference
 from src.task_state_learning.grouping import require
 from src.task_state_learning.models import B1ClosureModel
+from src.task_state_learning.design import family_pair_interval
 
 MEMORY_MODELS = {'HM': 'MAMBA2', 'HG': 'GRU', 'HCT': 'CTSSM'}
 
@@ -58,7 +59,7 @@ def continuation_pairs(ref, track, cfg):
     hidden = np.load(ref / 'evaluator_only' / f'test_{track}.npz', allow_pickle=False)
     terminal = test['terminal_x']
     scale = float(terminal.std(axis=0).max())
-    q = hidden['hidden'][:, -1, 2:]
+    q = hidden['full_terminal_state'][:, 2:]
     pairs = []
     for i in range(len(terminal)):
         for j in range(i + 1, len(terminal)):
@@ -81,8 +82,8 @@ def continuation_metrics(run_dir, ref, track, cfg, model_id, seed):
             for k in ('control', 'physical_dt', 'mask')}
     model = B1ClosureModel(model_id.replace('_DP', ''), memory_seed=seed)
     state_path = run_dir / f'state_{model_id}_{track}_{seed}.pt'
-    if state_path.exists():
-        model.load_state_dict(torch.load(state_path, weights_only=True))
+    require(state_path.exists(), 'Missing trained checkpoint: '+str(state_path))
+    model.load_state_dict(torch.load(state_path, map_location='cpu', weights_only=True))
     model.eval()
     future_dt = float(np.asarray(test['physical_dt']).astype(np.float32)[0, 0])
     steps = cfg['continuation']['future_steps']
@@ -94,15 +95,10 @@ def continuation_metrics(run_dir, ref, track, cfg, model_id, seed):
         future_mask = torch.ones(len(data['control']), steps, dtype=torch.bool)
         cont = model(future_u, future_dt_t, future_mask,
                      initial_state={'x': first['x'], 'memory': first['memory']}).numpy()
-    true_future = np.zeros_like(cont)
-    q_all = hidden['hidden'][:, -1, :]
-    for idx, (i, j, _, _) in enumerate(pairs):
-        for col, family in ((0, i), (1, j)):
-            # evaluator truth: continue the true hidden state under zero control
-            x1, x2, q1, q2 = q_all[family]
-            nx1 = x1 * np.exp(-0.4 * future_dt * steps)
-            nx2 = x2 * np.exp(-0.7 * future_dt * steps)
-            true_future[family] = [nx1, nx2]
+    full_state=hidden['full_terminal_state']
+    true_future=b1_reference(np.zeros((len(full_state),1,2)),
+                             np.full((len(full_state),1),future_dt*steps),
+                             initial=full_state,coupling=(track=='coupled'))[:,:2]
     for idx, (i, j, _, _) in enumerate(pairs):
         mse = float(((cont[i] - true_future[i]) ** 2).mean()
                     + ((cont[j] - true_future[j]) ** 2).mean()) / 2
@@ -115,10 +111,13 @@ def continuation_metrics(run_dir, ref, track, cfg, model_id, seed):
         n_pairs=('pair_index', 'count'),
         continuation_mse=('continuation_mse', 'mean'),
         ordering_accuracy=('ordering_correct', 'mean')).reset_index()
+    summary['seed']=seed
     return summary
 
 
 def main():
+    from src.task_state_learning.guardrails import require_not_held
+    require_not_held('E04_G2')
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', default='config/task_state_v1/b1_training.yaml')
     args = parser.parse_args()
@@ -172,7 +171,8 @@ def main():
                     bm = b.groupby('pair_id').regret.mean()
                     common = am.index.intersection(bm.index)
                     dp_rows.append({'contrast': f'{dp_model}_vs_{t_model}', 'track': track,
-                                    **paired_interval(am.loc[common], bm.loc[common],
+                                    **family_pair_interval(am.loc[common]-bm.loc[common],
+                                                      a.drop_duplicates('pair_id').set_index('pair_id').loc[common,['family_a','family_b']].to_numpy(),
                                                       cfg['g2']['paired_interval'],
                                                       cfg['g2']['bootstrap'],
                                                       cfg['g2']['bootstrap_seed'] + 2)})
@@ -183,8 +183,10 @@ def main():
         ref = ROOT / 'outputs/task_state_v1' / cfg['reference_run']
         for track in ['coupled', 'null']:
             for model_id in ['MAMBA2', 'GRU', 'H0']:
-                cont_frames.append(continuation_metrics(run_dir, ref, track, cfg, model_id,
-                                                        cfg['final_seeds'][0]))
+                for seed in cfg['final_seeds']:
+                    result=continuation_metrics(run_dir,ref,track,cfg,model_id,seed)
+                    result['track']=track
+                    cont_frames.append(result)
         continuation = pd.concat(cont_frames, ignore_index=True)
         continuation.to_csv(out / 'g2_continuation.csv', index=False)
         # verdicts

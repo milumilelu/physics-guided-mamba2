@@ -1,0 +1,35 @@
+schema_version: '1.2.1'
+scope: FINITE_ROI_NUMERICAL_FIXTURE
+allowed_to_calibrate: false
+scenario_status: SCENARIO_ASSUMPTION
+scan_region_m: 0.0002
+roi_region_m: 0.00008
+observation_n: 160
+phase_x_pitch: 0.0
+phase_y_pitch: 0.0
+scan_order: increasing_y_tracks_increasing_x_pulses_same_order_each_pass
+turn_exposure: false
+extra_exposure_guard_m: 0.0
+waist_um: [0.874, 2.0, 3.0]
+switches: [P01, P11]
+feedback_cases:
+  - {delta_m: 1.0e-9, kappa: 0.001, rho: 0.3}
+  - {delta_m: 1.0e-8, kappa: 0.2, rho: 0.1}
+frequency_Hz: 100000.0
+pitch_over_waist: 0.1
+hatch_um: 4.0
+passes: 1
+tau_s: 1.0e-12
+F1_reference_J_m2: 10000.0
+power_W: 5.3333
+tail_waists: [6.0, 8.0]
+relative_tolerance: 0.01
+threads: 8
+grid_refinement_n: [640, 1280]
+grid_refinement_cases: [3]
+grid_observation_map: bilinear_interpolation_to_fixed_160_pixel_centers
+near_zero_scales: {D: 1.0e-6, A_med: 1.0e-6, ilr_z1: 1.0, ilr_z2: 1.0, ilr_z3: 1.0, ilr_z4: 1.0, A2_8_16: 1.0, entropy_8_16: 1.0, A2_16_32: 1.0, entropy_16_32: 1.0}
+near_zero_rule: denominator_max_abs_reference_and_fixed_scale
+remaining: [MAIN180_recipe_coverage, calibration_parameter_domain, all_switch_grid_refinement]
+
+supersedes_failed_grid_check: 20260908T010354Z_E03_FINITE_ROI_166ff2c0_77c2c3c_e28472

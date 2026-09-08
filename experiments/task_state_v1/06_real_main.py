@@ -363,6 +363,8 @@ def main():
     parser.add_argument('--stage', choices=['static', 'physics', 'hybrid'], required=True)
     parser.add_argument('--calibration-run', default=None)
     args = parser.parse_args()
+    from src.task_state_learning.guardrails import require_not_held
+    require_not_held('E06_'+args.stage.upper())
     path = ROOT / args.config
     cfg = yaml.safe_load(path.read_text(encoding='utf-8'))
     if args.calibration_run:

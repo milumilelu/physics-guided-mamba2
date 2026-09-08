@@ -1,0 +1,15 @@
+{
+  "held_stages": [
+    "E03_CALIBRATION",
+    "E04_B1_TERMINAL",
+    "E06_PHYSICS",
+    "E06_HYBRID",
+    "E04_G2",
+    "E06_STATIC",
+    "E10_SUPP20",
+    "E10_NULL",
+    "E10_RELEASE"
+  ],
+  "reason": "2026-09-08 independent audit repairs in progress. Release each stage only after its numerical, data-flow, checkpoint and evaluation gates pass.",
+  "review": "outputs/task_state_v1/REVIEW_20260908T005244Z/REVIEW_ZH.md"
+}

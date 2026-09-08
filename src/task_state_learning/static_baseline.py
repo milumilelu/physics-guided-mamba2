@@ -26,22 +26,20 @@ class StaticMLP(nn.Module):
         require(control.ndim == 3 and control.shape[:2] == physical_dt.shape == mask.shape,
                 'Static feature shape')
         require(mask.dtype == torch.bool, 'Static mask dtype')
-        b, t, _ = control.shape
-        require(t % self.blocks == 0, 'Token count must divide into control blocks')
-        n = t // self.blocks
-        cm = mask.view(b, self.blocks, n)
-        safe = torch.where(mask[..., None], control, torch.zeros_like(control))
-        cb = safe.view(b, self.blocks, n, 2)
-        valid = cm.float()[..., None]
-        counts = valid.sum(2).clamp_min(1)
-        mean = (cb * valid).sum(2) / counts
-        std = (((cb - mean[:, :, None, :]) ** 2) * valid).sum(2).div(counts).clamp_min(0).sqrt()
-        active_frac = cm.float().mean(dim=(1, 2), keepdim=False).reshape(b, 1)
-        log_dt = torch.log(physical_dt.clamp_min(1e-12))
-        mean_log_dt = torch.where(mask, log_dt, torch.zeros_like(log_dt)).mean(dim=1).reshape(b, 1)
-        total_log_T = torch.where(mask, log_dt, torch.zeros_like(log_dt)).sum(dim=1).reshape(b, 1)
-        feats = torch.cat([mean.flatten(1), std.flatten(1), active_frac, mean_log_dt,
-                           total_log_T], dim=-1)
+        rows=[]
+        for i in range(len(control)):
+            valid=mask[i]
+            count=int(valid.sum())
+            require(count>0 and count%self.blocks==0,'Active history must divide into eight blocks')
+            values=control[i,valid].reshape(self.blocks,count//self.blocks,2)
+            durations=physical_dt[i,valid]
+            require(bool((durations>0).all()),'Invalid physical duration')
+            mean=values.mean(dim=1)
+            std=values.var(dim=1,unbiased=False).clamp_min(0).sqrt()
+            # Complete registered eight-block history, independent of batch padding.
+            extras=torch.stack((durations.new_tensor(count/128.),durations.log().mean(),durations.sum().log()))
+            rows.append(torch.cat((mean.flatten(),std.flatten(),extras)))
+        feats=torch.stack(rows)
         require(feats.shape[1] == self.blocks * 4 + 3, 'Static feature width mismatch')
         return feats
 

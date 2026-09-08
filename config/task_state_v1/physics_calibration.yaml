@@ -1,37 +1,66 @@
-schema_version: '1.2.1'
+schema_version: 1.2.1
 scope: E03_PHYSICS_CALIBRATION_TRACK_R
 status: FROZEN_BEFORE_RESULTS
 split_run: 20260906T111435Z_E00_a1a1c9a8_533009c_9e0686
 power_W: 5.3333
-wavelength_m: 1.03e-6
+wavelength_m: 1.03e-06
 m_squared: 1.2
 reference_duration_s: 1.0e-12
-waist_um: [0.874, 2.0, 3.0]
-switches: [P00, P10, P01, P11]
+waist_um:
+- 0.874
+- 2.0
+- 3.0
+switches:
+- P00
+- P10
+- P01
+- P11
 calibration:
   subset_recipes: 8
-  refine_recipes: 24
   subset_seed: 20260907
-  objective_targets: [D, A_med]
+  objective_targets:
+  - D
+  - A_med
   maxfev_search: 120
   maxfev_refine_full_train: 40
   n_starts: 2
   optimizer: NelderMead
+  refine_scope: full_current_training_subset
 parameter_bounds:
-  log_F1_J_m2: [4.605, 16.118]
-  log_delta_m: [-27.631, -13.816]
-  log_kappa: [-9.210, 0.693]
-  logit_rho: [-6.0, 6.0]
-  gamma_F: [-1.0, 1.0]
-  gamma_delta: [-1.0, 1.0]
+  log_F1_J_m2:
+  - 4.605
+  - 16.118
+  log_delta_m:
+  - -27.631
+  - -13.816
+  log_kappa:
+  - -9.21
+  - 0.693
+  logit_rho:
+  - -6.0
+  - 6.0
+  gamma_F:
+  - -1.0
+  - 1.0
+  gamma_delta:
+  - -1.0
+  - 1.0
 identifiability:
-  switches: [P11]
+  switches:
+  - P11
   waist_um: 0.874
-  profile_grid: [-0.6, -0.3, 0.0, 0.3, 0.6]
+  profile_grid:
+  - -0.6
+  - -0.3
+  - 0.0
+  - 0.3
+  - 0.6
   flat_profile_rtol: 0.02
-  boundary_tolerance: 1.0e-3
+  boundary_tolerance: 0.001
 coverage:
-  checked_fraction: 0.1
-  checked_seed: 20260907
+  runtime_tail_check_fraction: 1.0
+  requires_finite_ROI_and_MAIN180_registration: true
 workers: 8
 single_line_track: PENDING_SEPARATE_RUN
+implementation_revision: audit_repair_20260908
+solver_registration_run: null

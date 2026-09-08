@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 
 import pandas as pd
+import numpy as np
 
 from .grouping import require
 
@@ -63,3 +64,28 @@ def pairwise_regret(merged, objective_column, pair_id_column='pair_id',
                      'objective_chosen': float(chosen[objective_column].iloc[0]),
                      'objective_best': float(values.min())})
     return pd.DataFrame(rows)
+
+
+def family_pair_interval(differences,endpoints,level=.9833,bootstrap=5000,seed=20260907):
+    """Resample history families, assigning pair weight count(i)*count(j).
+
+    Conditional on the fixed fitted models, anchors and candidate-pair graph.
+    Pairs sharing an endpoint are not treated as independent observations.
+    """
+    values=np.asarray(differences,dtype=float)
+    links=np.asarray(endpoints)
+    require(links.shape==(len(values),2) and len(values)>=2,'Pair endpoint shape mismatch')
+    require(np.isfinite(values).all() and (links[:,0]!=links[:,1]).all(),'Invalid pair contrast')
+    nodes,indices=np.unique(links,return_inverse=True)
+    indices=indices.reshape(-1,2)
+    rng=np.random.default_rng(seed);stats=[]
+    for _ in range(bootstrap):
+        counts=rng.multinomial(len(nodes),np.full(len(nodes),1/len(nodes)))
+        weights=counts[indices[:,0]]*counts[indices[:,1]]
+        if weights.sum():stats.append(float(np.average(values,weights=weights)))
+    require(len(stats)>=.95*bootstrap,'Too few defined family-bootstrap replicates')
+    alpha=(1-level)/2
+    return {'mean':float(values.mean()),'low':float(np.quantile(stats,alpha)),
+            'high':float(np.quantile(stats,1-alpha)),'n_families':len(nodes),
+            'valid_bootstrap_replicates':len(stats),'resampling_unit':'history_family',
+            'interval_scope':'conditional_on_fixed_models_anchors_and_pair_graph'}

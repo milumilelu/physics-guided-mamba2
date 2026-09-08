@@ -3,7 +3,7 @@ scope: E04_B1_TERMINAL_ONLY_TRAINING
 status: FROZEN_BEFORE_RESULTS
 reference_run: 20260906T164858Z_E04_B1_REFERENCE_18349780_533009c_29e663
 dataset_sha256_expected: f99507466a3d11fb10a88d7277ec9969c3c59e8f694ec5201c5f7f7ec617f7cf
-tracks: [coupled, null]
+tracks: [coupled, 'null']
 models: [STATIC, H0, GRU, CTSSM, MAMBA2]
 decision_aware: [MAMBA2_DP, GRU_DP]
 learning_rates: [3.0e-4, 1.0e-3]

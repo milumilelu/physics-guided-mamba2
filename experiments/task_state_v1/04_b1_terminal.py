@@ -65,9 +65,9 @@ def sealed_design(model, test_data, anchors, scale, train_terminal, run_dir, mod
         jb = float(((pred[b] - anchors[t]) / scale).pow(2).sum())
         chosen = a if ja <= jb else b
         rows.append({'pair_id': pair, 'anchor_id': t, 'candidate_id': ('A', a),
-                     'chosen_id': ('A', chosen)})
+                     'chosen_id': ('A', a) if chosen == a else ('B', b)})
         rows.append({'pair_id': pair, 'anchor_id': t, 'candidate_id': ('B', b),
-                     'chosen_id': ('A', chosen)})
+                     'chosen_id': ('A', a) if chosen == a else ('B', b)})
     choices = pd.DataFrame([{'pair_id': r['pair_id'], 'anchor_id': r['anchor_id'],
                              'candidate_id': f"{r['candidate_id'][0]}{r['candidate_id'][1]}",
                              'chosen_id': f"{r['chosen_id'][0]}{r['chosen_id'][1]}"} for r in rows])
@@ -78,82 +78,41 @@ def sealed_design(model, test_data, anchors, scale, train_terminal, run_dir, mod
     merged = evaluate_sealed(run_dir / f'sealed_choices_{model_id}.csv', measured, 'candidate_id')
     anchor_term = anchors.numpy()
     merged['objective_true'] = [
-        float(((np.array([r.true_terminal_x1, r.true_terminal_x2]) - anchor_term[r.anchor_id]) / scale.numpy()) ** 2 .sum())
+        float((((np.array([r.true_terminal_x1, r.true_terminal_x2]) - anchor_term[r.anchor_id]) / scale.numpy()) ** 2).sum())
         for r in merged.itertuples()]
     regret = pairwise_regret(merged, 'objective_true')
     regret['model_id'] = model_id
+    regret['family_a'] = i.numpy()
+    regret['family_b'] = j.numpy()
     return regret, digest
 
 
-def continuation_evaluator(track_data_eval, track, cfg, device_seed_bundle):
-    """Evaluator-only continuation pairs; learner never reads these arrays."""
-    c = cfg['continuation']
-    hidden = track_data_eval['hidden']            # (F, T_steps, 4) block-boundary truth
-    terminal_true = track_data_eval['terminal_x']
-    controls = track_data_eval['controls']
-    dts = track_data_eval['token_dt']
-    k = track_data_eval['token_count']
-    order = np.argsort(np.arange(len(hidden)))
-    rng = np.random.default_rng(c['seed'])
-    scale = terminal_true.std(axis=0).clip(1e-12)
-    used = []
-    for i in range(len(hidden)):
-        for j in range(i + 1, len(hidden)):
-            obs_gap = np.abs(terminal_true[i] - terminal_true[j]).max()
-            q_gap = np.abs(hidden[i, -1, 2:] - hidden[j, -1, 2:]).max() / scale.max()
-            if obs_gap <= c['observable_rel_tolerance'] and q_gap >= c['q_separation']:
-                used.append((i, j))
-    rng.shuffle(used)
-    used = used[:c['future_pairs']]
-    future = rng.uniform(-1, 1, (c['future_steps'], 2))
-    rows = []
-    for pair_index, (i, j) in enumerate(used):
-        future_blocks = np.repeat(future[None], 2, axis=0)
-        duration = np.full((2, c['future_steps']), dts[i])
-        xt, _ = b1_reference(np.concatenate([controls[[i, j]], future_blocks], axis=1),
-                             np.concatenate([np.repeat((k[[i, j]] * dts[[i, j]] / 8)[:, None], 8, axis=1),
-                                             duration], axis=1),
-                             coupling=(track == 'coupled'))
-        rows.append({'pair_index': pair_index, 'family_a': i, 'family_b': j,
-                     'true_future_x1_a': float(xt[0, 0]), 'true_future_x2_a': float(xt[0, 1]),
-                     'true_future_x1_b': float(xt[1, 0]), 'true_future_x2_b': float(xt[1, 1])})
-    return pd.DataFrame(rows), future, dts, k
-
-
-def continuation_metrics(model, test_terminal, pairs_df, future, dts, k, track):
-    """Learner replays its own predicted state, then consumes the common future."""
-    rows = []
-    correct = 0
-    total = 0
-    for r in pairs_df.itertuples():
-        # continuation prediction uses the learner's own state: approximate by
-        # re-running the model on the original history then closed-form future —
-        # implemented as evaluator-side x evolution with the learner's terminal x
-        # replaced by its prediction (state = predicted terminal observable).
-        y_pred_a = model.predict_future(torch.tensor([test_terminal[r.family_a]]),
-                                        torch.tensor(future), torch.tensor(dts[r.family_a]),
-                                        torch.tensor(int(k[r.family_a])))
-        y_pred_b = model.predict_future(torch.tensor([test_terminal[r.family_b]]),
-                                        torch.tensor(future), torch.tensor(dts[r.family_b]),
-                                        torch.tensor(int(k[r.family_b])))
-        true_a = np.array([r.true_future_x1_a, r.true_future_x2_a])
-        true_b = np.array([r.true_future_x1_b, r.true_future_x2_b])
-        mse = float(((y_pred_a - true_a) ** 2).mean() + ((y_pred_b - true_b) ** 2).mean()) / 2
-        order_true = np.linalg.norm(true_a - true_b)
-        order_pred = np.linalg.norm(np.asarray(y_pred_a) - np.asarray(y_pred_b))
-        rows.append({'pair_index': r.pair_index, 'continuation_mse': mse})
-    return pd.DataFrame(rows)
-
+# Continuation is evaluated independently by 05_g2_gate.py.
 
 def main():
+    from src.task_state_learning.guardrails import require_not_held
+    require_not_held('E04_B1_TERMINAL')
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', default='config/task_state_v1/b1_training.yaml')
     parser.add_argument('--tracks', nargs='*', default=None)
+    parser.add_argument('--resume-run', type=Path)
     args = parser.parse_args()
     path = ROOT / args.config
     c = yaml.safe_load(path.read_text(encoding='utf-8'))
-    out = new_run('E04_B1_TERMINAL', path)
+    if args.resume_run:
+        out=args.resume_run.resolve()
+        require(out.is_relative_to(ROOT/'outputs/task_state_v1'),'Resume path outside namespace')
+        require(not (out/'release_manifest.json').exists(),'Cannot mutate a sealed run')
+        require((out/'config_source.yaml').read_bytes()==path.read_bytes(),'Resume config mismatch')
+        source=json.loads((out/'source_snapshot.json').read_text(encoding='utf-8'))
+        from src.task_state_learning.artifacts import sha256
+        for row in source['files']:
+            require(sha256(ROOT/row['path'])==row['sha256'],'Resume source mismatch: '+row['path'])
+    else:
+        out = new_run('E04_B1_TERMINAL', path)
+    (out/'config_resolved.yaml').write_text(yaml.safe_dump(c,sort_keys=False),encoding='utf-8')
     tracks = args.tracks or c['tracks']
+    require(tracks and set(tracks)<= {'coupled','null'},'Unknown or YAML-null track name')
     ref = ROOT / 'outputs/task_state_v1' / c['reference_run']
     verify_seal(ref)
     gate = {'scope': c['scope'], 'tracks': tracks, 'training_executed': True,
@@ -166,7 +125,7 @@ def main():
             data = {}
             for split in ['train', 'validation', 'test']:
                 data[split] = load_terminal_only(ref / 'terminal_only' / f'{split}_{track}.npz')
-            eval_hidden = np.load(ref / 'evaluator_only' / f'test_{track}.npz', allow_pickle=False)
+            # Hidden arrays are not opened by the training runner.
             train_tensors = tensors(data['train'])
             val_tensors = tensors(data['validation'])
             test_tensors = tensors(data['test'])
@@ -186,14 +145,17 @@ def main():
                     use_dp = model_id.endswith('_DP')
                     result = fit(model, train_tensors, val_tensors, lr=lr,
                                  seed=c['tuning_seed'], device=device,
-                                 dp=dp_bundle if use_dp else None)
+                                 dp=dp_bundle if use_dp else None,
+                                 max_epochs=c['max_epochs'],patience=c['patience'],batch=c['batch'],accum=c['accum'],
+                                 checkpoint_dir=out/'jobs'/f'{track}_{model_id}_tune_{lr}',
+                                 epoch_callback=lambda r: print(f"{track}/{model_id}/tune epoch {r['epochs_completed']}: {r['val_loss']:.6g}",flush=True))
                     inner_rows.append({'model_id': model_id, 'lr': lr,
                                        'best_epoch': result['best_epoch'],
                                        'val_loss': result['val_loss']})
             inner = pd.DataFrame(inner_rows)
             inner.to_csv(out / f'inner_tuning_{track}.csv', index=False)
             chosen = inner.loc[inner.groupby('model_id').val_loss.idxmin()]
-            epochs = {r.model_id: max(1, math.ceil(r.best_epoch)) for r in chosen.itertuples()}
+            epochs = {r.model_id: int(r.best_epoch)+1 for r in chosen.itertuples()}
             lrs = {r.model_id: r.lr for r in chosen.itertuples()}
             # ---- outer refits (frozen epochs, no early stopping) ----
             test_metrics = []
@@ -205,7 +167,12 @@ def main():
                     use_dp = model_id.endswith('_DP')
                     result = fit(model, train_tensors, val_tensors, lr=lrs[model_id],
                                  seed=seed, device=device, fixed_epochs=epochs[model_id],
-                                 dp=dp_bundle if use_dp else None)
+                                 dp=dp_bundle if use_dp else None,
+                                 batch=c['batch'],accum=c['accum'],
+                                 checkpoint_dir=out/'jobs'/f'{track}_{model_id}_refit_{seed}',
+                                 epoch_callback=lambda r: print(f"{track}/{model_id}/seed{seed} epoch {r['epochs_completed']}",flush=True))
+                    from src.task_state_learning.training import _atomic_save
+                    _atomic_save(result['model'].state_dict(),out/f'state_{model_id}_{track}_{seed}.pt')
                     pred = predict(result['model'], test_tensors)
                     mse = float((pred - test_tensors['terminal_x']).pow(2).mean())
                     per_family = (pred - test_tensors['terminal_x']).pow(2).sum(1)
@@ -219,22 +186,18 @@ def main():
                                          'pred_x1': float(pred[i, 0]), 'pred_x2': float(pred[i, 1]),
                                          'true_x1': float(test_tensors['terminal_x'][i, 0]),
                                          'true_x2': float(test_tensors['terminal_x'][i, 1])})
-            # ---- sealed design regret on test ----
+            # Reuse all registered refits; no extra training or seed selection.
             design_rows = []
-            for model_id in [m for m in c['models'] + c['decision_aware'] if m != 'STATIC']:
-                model = make_model(model_id, c['final_seeds'][0])
-                device = ('cuda' if torch.cuda.is_available() else 'cpu') \
-                    if device_pref == 'auto' else device_pref
-                use_dp = model_id.endswith('_DP')
-                result = fit(model, train_tensors, val_tensors, lr=lrs[model_id],
-                             seed=c['final_seeds'][0], device=device,
-                             fixed_epochs=epochs[model_id], dp=dp_bundle if use_dp else None)
-                regret, digest = sealed_design(result['model'], test_tensors, anchors, scale,
-                                               train_tensors['terminal_x'], out,
-                                               f'{model_id}_{track}', c['anchor_seed'] + 1)
-                regret['track'] = track
-                design_rows.append(regret)
-                (out / f'seal_hash_{model_id}_{track}.txt').write_text(digest, encoding='utf-8')
+            for model_id in c['models'] + c['decision_aware']:
+                for seed in c['final_seeds']:
+                    model=make_model(model_id,seed)
+                    state_path=out/f'state_{model_id}_{track}_{seed}.pt'
+                    require(state_path.exists(),'Missing refit checkpoint')
+                    model.load_state_dict(torch.load(state_path,map_location='cpu',weights_only=True))
+                    regret,digest=sealed_design(model,test_tensors,anchors,scale,
+                        train_tensors['terminal_x'],out,f'{model_id}_{track}_{seed}',c['anchor_seed']+1)
+                    regret['model_id']=model_id;regret['track']=track;regret['seed']=seed
+                    design_rows.append(regret)
             pd.concat(design_rows).to_csv(out / f'design_regret_{track}.csv', index=False)
             pd.DataFrame(test_metrics).to_csv(out / f'test_metrics_{track}.csv', index=False)
             all_results.extend(test_metrics)

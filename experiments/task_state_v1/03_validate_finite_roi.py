@@ -2,7 +2,7 @@
 import sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
-import json,time,subprocess
+import json,time,subprocess,argparse
 from dataclasses import replace
 import numpy as np
 import pandas as pd
@@ -33,7 +33,9 @@ def comparison(a,b,scales,tolerance):
 
 
 def main():
-    path=ROOT/'config/task_state_v1/finite_validation.yaml'
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--config',default='config/task_state_v1/finite_validation.yaml')
+    path=ROOT/parser.parse_args().config
     c=yaml.safe_load(path.read_text(encoding='utf-8'))
     out=new_run('E03_FINITE_ROI',path)
     numba.set_num_threads(c['threads'])

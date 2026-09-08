@@ -1,0 +1,123 @@
+{
+  "status": "FAIL_FORMAL_RETAIN",
+  "status_definition": "The f80bca0 run executed completely and reproducibly; it failed three pre-registered conditions at unchanged thresholds. It is retained as formal negative evidence and must not be deleted, overwritten or reinterpreted.",
+  "not_status": {
+    "INVALID_REQUIRES_CORRECTION": false,
+    "reason": "No identity error, unit error, numerical-implementation error, registration-contract error or supervision leakage was found. config_source.yaml is byte-identical to the committed config/task_state_v1/solver_registration.yaml; semantic/input fingerprints bind the run to calibration config and inputs; all 3884 jobs are accounted for; all stage worker_errors are empty; determinism is bitwise over 4/4 cases.",
+    "invalid_trigger_conditions_checked": [
+      "MAIN180 identity and split binding",
+      "physical unit conversions (fs->s, kHz->Hz, mm/s->m/s, um->m)",
+      "registration domain equals optimizer domain (physics_params imported from the calibration runner)",
+      "out-of-bounds rejection contract (40/40)",
+      "no parameter fitting performed during registration (parameter_fitting_executed=false)",
+      "no training performed (training_executed=false)"
+    ]
+  },
+  "run_identity": {
+    "commit": "f80bca0",
+    "parent_commit": "8c80743",
+    "repo_sha_at_run": "77c2c3cbbaf408c3feac77aa1f627147c6e6ae84",
+    "repo_dirty_at_run": true,
+    "run_dir": "outputs/task_state_v1/20260908T044922Z_E03_SOLVER_REGISTRATION_3d172ad2_77c2c3c_d7e592",
+    "gate_file": "outputs/task_state_v1/20260908T044922Z_E03_SOLVER_REGISTRATION_3d172ad2_77c2c3c_d7e592/solver_registration_gate.json",
+    "gate_status": "FAIL",
+    "allowed_to_calibrate": false,
+    "full_recipe_coverage": false,
+    "recipe_coverage_scope": "smoke_first_4_rows",
+    "metric_status": "INVALID",
+    "scenario_status": "FINITE_ROI_REGISTERED_FIXTURE",
+    "jobs_completed": 3884,
+    "jobs_planned": 3884,
+    "all_jobs_accounted": true,
+    "calibration_semantic_sha256": "9c3a6caeadd424adb9b271584fc39cca82724eebac912ee2093e75909ef0c83a",
+    "calibration_config_sha256": "037c060525fc3fd36041eda25eb877b58ab9b8fcd9e8b8a5e857f68ffeb6fca9",
+    "input_sha256": "0396071b3644adfb21eeb558c8d9edd11ea7f88d8d8fd0779f8ea07fb4a1eed7"
+  },
+  "thresholds_unchanged": {
+    "tail_relative_tolerance": 0.01,
+    "max_window_attempts_allowed": 4,
+    "solver_internal_max_window_retries": 16,
+    "implausible_depth_factor": 10.0,
+    "implausible_depth_um": 650.8415985107422,
+    "config_status": "FROZEN_BEFORE_RESULTS",
+    "config_source_vs_committed": "byte-identical (diff produced no output)",
+    "any_threshold_modified_by_this_triage": false
+  },
+  "per_condition_verdict": {
+    "full_recipe_coverage": {
+      "question_1_failed_gate": "full_recipe_coverage",
+      "question_2_threshold": "limit == 0 => 2160 recipe cases (180 MAIN180 recipes x 4 switches x 3 waists)",
+      "question_3_observed": "48 cases executed (4 recipes x 4 switches x 3 waists); 2.22% of the formal scope",
+      "question_4_nature": "incomplete scope, not a code defect and not a scientific negative result",
+      "question_5_affects_B1_E04": false,
+      "question_6_affects_real_E06": true,
+      "question_7_P11_skeleton": "not affected by this item",
+      "question_8_code_change": false,
+      "question_9_rerun": true,
+      "question_10_rerun_justification": "scope completion only (run --limit-recipes 0); not to obtain a positive result",
+      "category": "IMPLEMENTATION_REMAINING"
+    },
+    "parameter_domain_finite_and_converged": {
+      "question_1_failed_gate": "parameter_domain_finite_and_converged",
+      "question_2_threshold": "all 3744 sampled vectors accepted and finite; max_window_attempts <= 4; all 41154 descriptor checks error <= 0.01 via denominator max(|reference|, fixed scale)",
+      "question_3_observed": "3/3744 vectors rejected with 'Window attempt registration budget exceeded'; 3/41154 descriptor checks failed; all three at waist 0.874 um with defocus switches P10/P11; all vectors strictly inside the declared box",
+      "question_4_nature": "scientific/engineering negative result, not a code defect. The solver converged inside its internal 16-retry budget (otherwise the message would be 'Finite scan failed window/update budget'); only the pre-registered 4-attempt acceptance budget was exceeded, which is exactly the behavior mandated by E03_REGISTRATION_AUDIT_20260908_ZH.md point 5",
+      "question_5_affects_B1_E04": false,
+      "question_6_affects_real_E06": true,
+      "question_7_P11_skeleton": "2 of the 3 failures are P11 at w0=0.874 um, so P11 numeric validity is NOT established at the tightest waist; P11 may still be used as an inductive skeleton but not as a validated ground-truth generator over the full declared domain",
+      "question_8_code_change": true,
+      "question_8_code_change_scope": "diagnostic only: record max_window_attempts_observed for rejected vectors so the domain/solver decision can distinguish 'needs 5 attempts' from 'needs 16 attempts'",
+      "question_9_rerun": true,
+      "question_10_rerun_justification": "domain/solver scope decision (restrict the 0.874 um defocus sub-domain or improve the solver initial bound and re-register). Explicitly NOT for the purpose of turning the gate positive",
+      "category": "BLOCKING_SOLVER_REGISTRATION"
+    },
+    "grid_refinement_converged": {
+      "question_1_failed_gate": "grid_refinement_converged",
+      "question_2_threshold": "960 descriptor checks (640->1280 bilinear-mapped to the canonical 160-pixel centers, plus 1280-mapped vs direct ROI) all with error <= 0.01",
+      "question_3_observed": "2/960 failed, both check=grid_finest and descriptor=ilr_z2: 0.01080425601888252 (grid_0_P00_w2.0) and 0.010887487062417019 (grid_0_P10_w2.0), i.e. 8.9% over threshold; all grid_to_direct_points checks pass and every other descriptor stays below 0.0083",
+      "question_4_nature": "numerical discretization-convergence negative result, not a code defect",
+      "question_5_affects_B1_E04": false,
+      "question_6_affects_real_E06": true,
+      "question_7_P11_skeleton": "ilr_z2 is not grid-converged to 1% at w=2.0 um; any descriptor-level supervision built on ilr_z2 must carry this caveat",
+      "question_8_code_change": true,
+      "question_8_code_change_scope": "diagnostic only: add a third grid level to determine whether ilr_z2 is converging. The 0.01 tolerance must not be loosened",
+      "question_9_rerun": true,
+      "question_10_rerun_justification": "convergence determination for one descriptor, plus any rerun forced by the F1/F2 decisions. Not for the purpose of turning the gate positive",
+      "category": "BLOCKING_NUMERIC"
+    }
+  },
+  "non_gating_observations": {
+    "implausible_depth": {
+      "count": 304,
+      "total": 3744,
+      "fraction": 0.0811965812,
+      "D_um_max": 134594.7301909552,
+      "threshold_um": 650.8415985107422,
+      "category": "NONBLOCKING_MODEL_INADEQUACY",
+      "note": "Informational flag by explicit config design ('never silently dropped, never a gate'). Physics model extrapolates implausible depths in domain corners."
+    },
+    "sensitivity_3w_vs_6w": {
+      "checks": 480,
+      "max_error": 0.0008254759134491141,
+      "category": "NONBLOCKING_PARAMETER_NONIDENTIFIABILITY",
+      "note": "Passes. 6w vs 8w tail difference is exactly zero in many cases because fluence beyond 6w is ~exp(-72) of peak; zero difference is not independent evidence of accuracy."
+    }
+  },
+  "P11_inductive_skeleton_decision": {
+    "allowed_as_inductive_skeleton": true,
+    "allowed_as_validated_ground_truth_generator": false,
+    "conditions": [
+      "full MAIN180 recipe coverage completed",
+      "explicit disposition of the w0=0.874 um + defocus sub-domain (domain restriction documented, or solver initial-bound improvement followed by full re-registration)",
+      "ilr_z2 grid-convergence determination recorded"
+    ],
+    "supporting_evidence": "P11 passes 12/12 recipe-coverage cases at the nominal fixture, 3741/3744 domain vectors, all grid_to_direct_points checks, and bitwise determinism; the failures are localized to the tightest waist and to one descriptor at w=2.0 um."
+  },
+  "artifacts": [
+    "outputs/task_state_v1/e03_audit/E03_FAIL_TRIAGE.md",
+    "outputs/task_state_v1/e03_audit/e03_failure_inventory.csv",
+    "outputs/task_state_v1/e03_audit/e03_remaining_actions.json",
+    "outputs/task_state_v1/e03_audit/e03_scientific_status.json",
+    "outputs/task_state_v1/e03_audit/gate_transition_decision.json"
+  ]
+}
