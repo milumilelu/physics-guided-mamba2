@@ -1,0 +1,79 @@
+{
+  "files": [
+    {
+      "path": "config_source.yaml",
+      "sha256": "48ea26748ce72f0649447c4ff06bc7b39fe1bbfb01acc8e23a875fa90bbebcb1",
+      "bytes": 2977
+    },
+    {
+      "path": "contract_gate.json",
+      "sha256": "3a149e949220cb3e7b9fafbe6637d1a90cffa59b02d9fcd29d952b7233c6a760",
+      "bytes": 234
+    },
+    {
+      "path": "environment.json",
+      "sha256": "85508e0b0e48c20846a38f900479b0e723ca0dc298835867966f7a32e795106e",
+      "bytes": 392
+    },
+    {
+      "path": "git_state.json",
+      "sha256": "6f79803e2721782e7a0de3c6190602bbe537fb9751908e49cb9df95946444710",
+      "bytes": 2755
+    },
+    {
+      "path": "source_snapshot/config/depth_target_v1/protocol.yaml",
+      "sha256": "48ea26748ce72f0649447c4ff06bc7b39fe1bbfb01acc8e23a875fa90bbebcb1",
+      "bytes": 2977
+    },
+    {
+      "path": "source_snapshot/experiments/depth_target_v1/00_contract.py",
+      "sha256": "4e0918214532b0be4adce1d7c9c636c715e0c2135e124eb693154ec733d7502a",
+      "bytes": 6467
+    },
+    {
+      "path": "source_snapshot/experiments/depth_target_v1/01_depth_baselines.py",
+      "sha256": "800d415176ea1272150afd580696a6577b52566c9ee9305b2d9763676e155202",
+      "bytes": 9655
+    },
+    {
+      "path": "source_snapshot/src/depth_target/__init__.py",
+      "sha256": "a09fbdebd32778c6a6589639cb1ef6d48ffaafd6a36245b60db8e47f600534ef",
+      "bytes": 288
+    },
+    {
+      "path": "source_snapshot/src/depth_target/features.py",
+      "sha256": "b6097cfb5e61d4536d21837a1050b09c1892d690fcb8ad7e146a2a776e9ce67f",
+      "bytes": 7657
+    },
+    {
+      "path": "source_snapshot/src/depth_target/models.py",
+      "sha256": "00d9a3986623d4c8c8d6d74a9ace534873db2ec533365d4716f4c9255deacf75",
+      "bytes": 3657
+    },
+    {
+      "path": "source_snapshot/src/depth_target/runs.py",
+      "sha256": "59555656a0d84e01b5e3d01e43f04b9a140c21f1ce5c7a0e612c44d05bd9bdb3",
+      "bytes": 3072
+    },
+    {
+      "path": "source_snapshot/src/depth_target/splits.py",
+      "sha256": "d761a479ed61565f0906a5f864b173d0831d1927d826dda1f31fa29d983ab819",
+      "bytes": 1865
+    },
+    {
+      "path": "source_snapshot/tests/depth_target_v1/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "source_snapshot/tests/depth_target_v1/test_depth_target.py",
+      "sha256": "1186bee3ed8a2c5b13eed8ec52e4187bdac5572f4ae14fb1ff94ffc40016269d",
+      "bytes": 3680
+    },
+    {
+      "path": "source_snapshot.json",
+      "sha256": "217b31c5665900e328fab31b07566533741d5ca93e61bed736ce7981eab0e8c1",
+      "bytes": 1536
+    }
+  ]
+}

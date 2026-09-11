@@ -1,0 +1,8 @@
+{
+  "experiment_id": "D0_contract",
+  "execution_status": "FAIL",
+  "checks": {},
+  "error": "ValueError: Upstream artifact hash mismatch: config_resolved.yaml",
+  "status": "FAIL",
+  "walltime_seconds": 0.0025298999971710145
+}

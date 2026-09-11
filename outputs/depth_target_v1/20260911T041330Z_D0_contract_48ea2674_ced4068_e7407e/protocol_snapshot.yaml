@@ -1,0 +1,133 @@
+schema: depth_target_v1
+status: EXECUTABLE
+repository_ref_note: "supersedes PROPOSED_NOT_EXECUTED draft in \u4EFB\u52A1\u8BF4\
+  \u660E/depth_centered_research_plan.md \u9644\u5F55B"
+scope: D0_contract_and_D1_depth_baselines_MAIN180
+allowed_to_train: true
+deep_training_allowed: false
+permission_scope: statistical_Ridge_GAM_only
+primary_target:
+  name: D_canonical
+  unit: um
+  definition: negative_median_of_external_plane_referenced_ROI
+primary_height: height_raw
+inputs:
+  audit_run: outputs/task_state_v1/20260906T111435Z_E00_a1a1c9a8_533009c_9e0686
+  height_package: outputs/rectangle_registration/manual_internal_roi_v1/dataset/stable_roi_80um_dataset.npz
+  height_package_sha256: 8a116fe28f1239506ee1f0c409132ca805569e256abffb049c4cb51d4c9b9423
+  pixel_um: 0.5
+morphology:
+  remove_absolute_offset: true
+  primary_detrend: median_only
+  forbidden:
+  - canonical_depth
+  - absolute_height_mean_or_minimum
+  - raw_height_DC
+  - target_normalized_features
+  - target_equivalent_volume
+  reused_canonical_columns:
+  - D
+  - A_med
+  - ilr_z1
+  - ilr_z2
+  - ilr_z3
+  - ilr_z4
+  - A2_8_16
+  - entropy_8_16
+  new_feature_source: height_raw_median_residual_only
+  blocks:
+    A:
+    - A_med
+    - sq_mean_um
+    - iqr_um
+    - tail_width_um
+    P:
+    - ilr_z1
+    - ilr_z2
+    - ilr_z3
+    - ilr_z4
+    PE:
+    - log10_E_lt8
+    - log10_E_8_16
+    - log10_E_16_32
+    - log10_E_32_64
+    - log10_E_64_inf
+    G:
+    - rms_slope
+    - corr_length_um
+    T:
+    - A2_8_16
+    - entropy_8_16
+cohorts:
+  primary: MAIN180_formal120_plus_pass_main60
+  excluded_from_training: SUPP20_pass_supplement_domain_stress_only
+  historical: HIST200_descriptive_only
+splits:
+  unit: audited_source_and_process_family_components
+  outer: reuse_E00_frozen_split_manifest_after_seal_verification
+  inner: reuse_E00_frozen_inner_split_manifest
+models:
+  families:
+  - Ridge
+  - GAM
+  gam_spline:
+    degree: 2
+    n_knots: 4
+    knots: uniform
+    include_bias: false
+    extrapolation: linear
+  alpha_grid:
+  - 0.001
+  - 0.01
+  - 0.1
+  - 1.0
+  - 10.0
+  - 100.0
+  - 1000.0
+  alpha_tie_break: smaller_alpha
+  depth_models:
+  - B0
+  - BQ
+  - BU
+  - BA
+  - BP
+  - BPE
+  - BG
+  - BT
+  - BM
+  - BUM
+process_coordinates:
+  U:
+  - pulse_duration_fs
+  - frequency_kHz
+  - velocity_mm_s
+  - hatch_spacing_um
+  - pass_count
+  U_transform: log
+  dose_proxy_column: areal_dose_proxy_J_per_mm2
+metrics:
+  primary: component_balanced_MAE_um
+  secondary:
+  - RMSE_um
+  - component_balanced_Q2
+  - per_role_error
+  - coverage
+  risk_unit: component_balanced_MSE_um2
+primary_comparisons:
+- M_added_to_U_for_D
+- U_added_to_M_for_D
+secondary_comparisons:
+- morphology_blocks_for_D
+uncertainty:
+  method: fixed_OOF_component_bootstrap
+  bootstrap_replicates: 5000
+  bootstrap_seed: 20260911
+  interval_level: 0.95
+  scope: descriptive_conditional_fixed_OOF_no_confirmatory_claim
+noninferiority:
+  tolerance_um: UNSET_requires_metrology_or_application_justification
+  significance_is_not_equivalence: true
+deterministic_seed: 17
+causal_claims: not_authorized_by_terminal_prediction_alone
+optical_absorption_claims: require_independent_evidence
+audit_release_sha256: de7530a2c274f0b09c4832f86ebabe07e4c33831117cb7483652df34d8803d58

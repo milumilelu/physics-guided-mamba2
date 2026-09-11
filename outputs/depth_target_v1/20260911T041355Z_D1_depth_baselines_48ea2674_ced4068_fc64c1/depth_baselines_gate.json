@@ -1,0 +1,12 @@
+{
+  "experiment_id": "D1_depth_baselines",
+  "execution_status": "PASS",
+  "training_executed": true,
+  "deep_training_executed": false,
+  "oof_rows": 3600,
+  "best_model": "GAM/BU",
+  "best_MAE_um": 6.527572492943998,
+  "scope": "MAIN180 depth-primary OOF; SUPP20 untouched; causal claims not authorized",
+  "status": "PASS",
+  "walltime_seconds": 11.68920849999995
+}

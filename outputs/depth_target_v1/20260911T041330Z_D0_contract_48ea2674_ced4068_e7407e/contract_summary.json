@@ -1,0 +1,12 @@
+{
+  "n_main180": 180,
+  "n_components": 126,
+  "outer_folds": 5,
+  "qa_columns_available": [
+    "plane_rmse_um",
+    "repair_fraction",
+    "valid_fraction"
+  ],
+  "plane_rmse_um_median": 0.24373464044589266,
+  "supp20_status": "excluded_from_training_domain_stress_only"
+}

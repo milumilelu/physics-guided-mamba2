@@ -1,0 +1,11 @@
+family,contrast,mean_difference_um2,ci95_low,ci95_high,scope
+Ridge,Delta_{M|U}=R(BU)-R(BUM),-5.699772898730015,-14.357276525107823,3.1737422738940055,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+Ridge,Delta_{U|M}=R(BM)-R(BUM),156.94513201366405,115.37568139630916,200.8848579895892,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+Ridge,R(BU)-R(BM),-162.64490491239408,-208.84543273149626,-119.56891662255826,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+Ridge,R(B0)-R(BU),355.4320444246708,303.7837958150156,407.5099452188238,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+Ridge,R(B0)-R(BM),192.78713951227667,129.29690036068763,257.934449707895,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+GAM,Delta_{M|U}=R(BU)-R(BUM),-26.361054718219197,-42.3531460499928,-10.766827435256493,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+GAM,Delta_{U|M}=R(BM)-R(BUM),169.82438603988018,120.794422406001,222.11295700613874,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+GAM,R(BU)-R(BM),-196.18544075809936,-252.18356295883433,-145.65175949860722,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+GAM,R(B0)-R(BU),367.70928127516225,319.54732033283193,417.46695212190093,descriptive_conditional_fixed_OOF_no_confirmatory_claim
+GAM,R(B0)-R(BM),171.52384051706287,107.29530262387068,232.2717936087605,descriptive_conditional_fixed_OOF_no_confirmatory_claim

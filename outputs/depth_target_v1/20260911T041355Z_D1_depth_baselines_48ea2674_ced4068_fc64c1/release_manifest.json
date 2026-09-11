@@ -1,0 +1,109 @@
+{
+  "files": [
+    {
+      "path": "config_source.yaml",
+      "sha256": "48ea26748ce72f0649447c4ff06bc7b39fe1bbfb01acc8e23a875fa90bbebcb1",
+      "bytes": 2977
+    },
+    {
+      "path": "depth_baselines_gate.json",
+      "sha256": "773abb829053e3f02445729d976c4c9093319e70601a88ebe129333591e25c4c",
+      "bytes": 379
+    },
+    {
+      "path": "depth_metrics.csv",
+      "sha256": "18152fc24f6766b9a43878e87c19b86287b887a5fc457bd50e5a4f008af636c9",
+      "bytes": 1814
+    },
+    {
+      "path": "environment.json",
+      "sha256": "85508e0b0e48c20846a38f900479b0e723ca0dc298835867966f7a32e795106e",
+      "bytes": 392
+    },
+    {
+      "path": "git_state.json",
+      "sha256": "6f79803e2721782e7a0de3c6190602bbe537fb9751908e49cb9df95946444710",
+      "bytes": 2755
+    },
+    {
+      "path": "inner_tuning.csv",
+      "sha256": "41e26653e37183936a98dea51dff46a34829665ecc05f7e8ef8263107dfefaff",
+      "bytes": 3493
+    },
+    {
+      "path": "oof_depth_predictions.csv",
+      "sha256": "914e3daa676806415e3a339edcc3e9da27492fdf5c28abee110c4c6de8891932",
+      "bytes": 1063415
+    },
+    {
+      "path": "paired_risk_intervals.csv",
+      "sha256": "bd3d4c4857e18584f5fb8458fc4365b052ee58c994848bef4a9d6d8e11b18db9",
+      "bytes": 1423
+    },
+    {
+      "path": "per_role_metrics.csv",
+      "sha256": "06cb4e0329553b82fe712e197c61950dac53cd55e9bdde2797c4c039ef33a3da",
+      "bytes": 1789
+    },
+    {
+      "path": "source_snapshot/config/depth_target_v1/protocol.yaml",
+      "sha256": "48ea26748ce72f0649447c4ff06bc7b39fe1bbfb01acc8e23a875fa90bbebcb1",
+      "bytes": 2977
+    },
+    {
+      "path": "source_snapshot/experiments/depth_target_v1/00_contract.py",
+      "sha256": "3eca838b5eb9de3a1c4d05a13e474a1d5476aa1dc459d0f0e8edaabdc43fd369",
+      "bytes": 6722
+    },
+    {
+      "path": "source_snapshot/experiments/depth_target_v1/01_depth_baselines.py",
+      "sha256": "800d415176ea1272150afd580696a6577b52566c9ee9305b2d9763676e155202",
+      "bytes": 9655
+    },
+    {
+      "path": "source_snapshot/src/depth_target/__init__.py",
+      "sha256": "a09fbdebd32778c6a6589639cb1ef6d48ffaafd6a36245b60db8e47f600534ef",
+      "bytes": 288
+    },
+    {
+      "path": "source_snapshot/src/depth_target/features.py",
+      "sha256": "b6097cfb5e61d4536d21837a1050b09c1892d690fcb8ad7e146a2a776e9ce67f",
+      "bytes": 7657
+    },
+    {
+      "path": "source_snapshot/src/depth_target/models.py",
+      "sha256": "00d9a3986623d4c8c8d6d74a9ace534873db2ec533365d4716f4c9255deacf75",
+      "bytes": 3657
+    },
+    {
+      "path": "source_snapshot/src/depth_target/runs.py",
+      "sha256": "735fb8194177a1c77a0a6967523d10628baf52cd5213287bd7c0ca04d461e113",
+      "bytes": 4684
+    },
+    {
+      "path": "source_snapshot/src/depth_target/splits.py",
+      "sha256": "d761a479ed61565f0906a5f864b173d0831d1927d826dda1f31fa29d983ab819",
+      "bytes": 1865
+    },
+    {
+      "path": "source_snapshot/tests/depth_target_v1/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "source_snapshot/tests/depth_target_v1/test_depth_target.py",
+      "sha256": "1186bee3ed8a2c5b13eed8ec52e4187bdac5572f4ae14fb1ff94ffc40016269d",
+      "bytes": 3680
+    },
+    {
+      "path": "source_snapshot.json",
+      "sha256": "02ff9c99cbb161e677da63d708cea3939228561d73be85f122893d3d00cdee9d",
+      "bytes": 1536
+    },
+    {
+      "path": "tests.log",
+      "sha256": "c5bee2aac0f3a32a9ab136788c29347d1ac56673a2c11eb46fcf5b8bc93e309b",
+      "bytes": 870
+    }
+  ]
+}

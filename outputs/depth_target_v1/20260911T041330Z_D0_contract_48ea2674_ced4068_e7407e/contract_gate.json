@@ -1,0 +1,25 @@
+{
+  "experiment_id": "D0_contract",
+  "execution_status": "PASS",
+  "checks": {
+    "C1_audit_seal": "PASS exact=15 crlf_reconstructed=20",
+    "C1_height_hash": "PASS",
+    "C2_partition": "PASS",
+    "C3_alignment_parity": "PASS",
+    "C4_translation_invariance": "PASS max_err=2.309e-14",
+    "C5_forbidden_audit": "PASS forbidden=['absolute_height_mean_or_minimum', 'canonical_depth', 'raw_height_DC', 'target_equivalent_volume', 'target_normalized_features']",
+    "C6_supp20_excluded": "PASS"
+  },
+  "n_main180": 180,
+  "n_components": 126,
+  "outer_folds": 5,
+  "qa_columns_available": [
+    "plane_rmse_um",
+    "repair_fraction",
+    "valid_fraction"
+  ],
+  "plane_rmse_um_median": 0.24373464044589266,
+  "supp20_status": "excluded_from_training_domain_stress_only",
+  "status": "PASS",
+  "walltime_seconds": 2.4225347000028705
+}
