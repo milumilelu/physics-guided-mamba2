@@ -1,0 +1,93 @@
+{
+  "run": "C:\\Users\\RZF\\Desktop\\博士课题资料\\physics-guided Mamba-2\\outputs\\depth_target_v1\\20260911T041330Z_D0_contract_48ea2674_ced4068_e7407e",
+  "n_files": 21,
+  "exact": 21,
+  "crlf_reconstructed": 0,
+  "mismatched": [],
+  "files": [
+    {
+      "path": "config_source.yaml",
+      "status": "exact"
+    },
+    {
+      "path": "contract_gate.json",
+      "status": "exact"
+    },
+    {
+      "path": "contract_summary.json",
+      "status": "exact"
+    },
+    {
+      "path": "environment.json",
+      "status": "exact"
+    },
+    {
+      "path": "feature_audit.csv",
+      "status": "exact"
+    },
+    {
+      "path": "git_state.json",
+      "status": "exact"
+    },
+    {
+      "path": "input_provenance.csv",
+      "status": "exact"
+    },
+    {
+      "path": "protocol_snapshot.yaml",
+      "status": "exact"
+    },
+    {
+      "path": "source_snapshot/config/depth_target_v1/protocol.yaml",
+      "status": "exact"
+    },
+    {
+      "path": "source_snapshot/experiments/depth_target_v1/00_contract.py",
+      "status": "exact"
+    },
+    {
+      "path": "source_snapshot/experiments/depth_target_v1/01_depth_baselines.py",
+      "status": "exact"
+    },
+    {
+      "path": "source_snapshot/src/depth_target/__init__.py",
+      "status": "exact"
+    },
+    {
+      "path": "source_snapshot/src/depth_target/features.py",
+      "status": "exact"
+    },
+    {
+      "path": "source_snapshot/src/depth_target/models.py",
+      "status": "exact"
+    },
+    {
+      "path": "source_snapshot/src/depth_target/runs.py",
+      "status": "exact"
+    },
+    {
+      "path": "source_snapshot/src/depth_target/splits.py",
+      "status": "exact"
+    },
+    {
+      "path": "source_snapshot/tests/depth_target_v1/__init__.py",
+      "status": "exact"
+    },
+    {
+      "path": "source_snapshot/tests/depth_target_v1/test_depth_target.py",
+      "status": "exact"
+    },
+    {
+      "path": "source_snapshot.json",
+      "status": "exact"
+    },
+    {
+      "path": "split_manifest.csv",
+      "status": "exact"
+    },
+    {
+      "path": "upstream_seal_report.json",
+      "status": "exact"
+    }
+  ]
+}

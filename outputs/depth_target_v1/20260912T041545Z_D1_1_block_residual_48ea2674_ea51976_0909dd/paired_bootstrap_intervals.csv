@@ -1,0 +1,16 @@
+model_id,family,reference_model,reference_family,mean_delta_risk_MSE_um2,ci95_low,ci95_high,n_components,scope
+U+A,Ridge,BU,Ridge,-0.7215051023731812,-6.082888581446911,5.121692845916862,126,fixed OOF component bootstrap; descriptive
+U+A,GAM,BU,GAM,11.757601649548466,-0.37902292821805983,24.911067228209433,126,fixed OOF component bootstrap; descriptive
+U+P,Ridge,BU,Ridge,3.5609496618928027,-2.5671118674406377,10.087948070576575,126,fixed OOF component bootstrap; descriptive
+U+P,GAM,BU,GAM,12.308813131188552,2.732562347146834,22.27603120786552,126,fixed OOF component bootstrap; descriptive
+U+PE,Ridge,BU,Ridge,1.8644857992892527,-4.095202973300006,7.884591361898271,126,fixed OOF component bootstrap; descriptive
+U+PE,GAM,BU,GAM,11.571564303628172,1.644254482649691,21.472690480517862,126,fixed OOF component bootstrap; descriptive
+U+G,Ridge,BU,Ridge,0.13278827597264775,-3.6239129853590915,3.7483198685069405,126,fixed OOF component bootstrap; descriptive
+U+G,GAM,BU,GAM,10.407565066468969,1.7088050893859419,18.8424032209285,126,fixed OOF component bootstrap; descriptive
+U+T,Ridge,BU,Ridge,-0.10538000845446883,-5.149539759945997,4.9807453516199764,126,fixed OOF component bootstrap; descriptive
+U+T,GAM,BU,GAM,12.425806474422524,2.312930153785866,22.9684660935433,126,fixed OOF component bootstrap; descriptive
+INTERACTION,Ridge,BU,Ridge,-1.900272708751544,-20.797213233073624,16.697805858619024,126,fixed OOF component bootstrap; descriptive
+RESIDUAL_M|U,Ridge,BU,Ridge,-1.5371216577955142,-5.116235298646867,1.6600766349097031,126,fixed OOF component bootstrap; descriptive
+RESIDUAL_M|U,GAM,BU,GAM,-0.6236561110600731,-3.6617216882116983,2.4927259058113367,126,fixed OOF component bootstrap; descriptive
+UTREE,ExtraTrees,BU,GAM,-19.771337781321094,-45.83090886984386,4.108069604617,126,fixed OOF component bootstrap; descriptive
+UTREE,ExtraTrees,BU,Ridge,-32.04857463181259,-62.5015016480049,-5.897851766649961,126,fixed OOF component bootstrap; descriptive

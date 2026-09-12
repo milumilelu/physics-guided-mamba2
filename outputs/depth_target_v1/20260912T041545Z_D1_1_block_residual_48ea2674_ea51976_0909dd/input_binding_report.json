@@ -1,0 +1,18 @@
+[
+  {
+    "role": "height_package",
+    "status": "exact"
+  },
+  {
+    "role": "frozen_targets_E00",
+    "status": "exact"
+  },
+  {
+    "role": "frozen_outer_split_E00",
+    "status": "exact"
+  },
+  {
+    "role": "frozen_inner_split_E00",
+    "status": "exact"
+  }
+]

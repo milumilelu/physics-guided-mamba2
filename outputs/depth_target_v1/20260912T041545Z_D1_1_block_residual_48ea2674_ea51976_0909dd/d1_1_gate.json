@@ -1,0 +1,13 @@
+{
+  "experiment_id": "D1_1_block_residual",
+  "execution_status": "PASS",
+  "training_executed": true,
+  "deep_training_executed": false,
+  "oof_rows": 2880,
+  "n_models": 16,
+  "best_model": "ExtraTrees/UTREE",
+  "best_MAE_um": 5.419284769979129,
+  "scope": "MAIN180 frozen E00 grouped OOF; blocks, residual, interaction and tree sensitivity; SUPP20 excluded; descriptive only",
+  "status": "PASS",
+  "walltime_seconds": 17.740053700021235
+}
