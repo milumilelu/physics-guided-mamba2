@@ -1,0 +1,13 @@
+{
+  "experiment_id": "D1_1_matched_tree",
+  "execution_status": "PASS",
+  "training_executed": true,
+  "deep_training_executed": false,
+  "oof_rows": 900,
+  "n_models": 5,
+  "best_model": "Tree(U)",
+  "best_MAE_um": 5.129398536810004,
+  "scope": "MAIN180 frozen E00 grouped OOF; matched ExtraTrees feature-set controls; SUPP20 excluded; descriptive only",
+  "status": "PASS",
+  "walltime_seconds": 9.033932799997274
+}

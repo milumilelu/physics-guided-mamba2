@@ -1,0 +1,5 @@
+model_id,reference_model,mean_delta_risk_MSE_um2,ci95_low,ci95_high,n_components,interpretation,scope
+Tree(M),Tree(U+M),184.64666953164686,130.50698653439687,241.6245456488096,126,negative favors model; positive favors U+M,fixed OOF component bootstrap; descriptive
+Tree(P),Tree(U+M),201.5637865460089,149.23358814692935,261.18225159914476,126,negative favors model; positive favors U+M,fixed OOF component bootstrap; descriptive
+Tree(U),Tree(U+M),-5.3009587486097,-16.490437403885547,4.658968533034835,126,negative favors model; positive favors U+M,fixed OOF component bootstrap; descriptive
+Tree(U+P),Tree(U+M),-3.4241766355633843,-10.54083216504563,3.361412032055208,126,negative favors model; positive favors U+M,fixed OOF component bootstrap; descriptive

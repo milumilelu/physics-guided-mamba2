@@ -1,5 +1,7 @@
 # Research-direction report: machining depth as the final target
 
+> **Revision note (2026-09-12).** External review narrowed the active program to one flagship question: **when is current depth sufficient to represent the state relevant to the next removal step, and which measured morphology variables must be retained when it is not?** The shortlist below is therefore staged rather than parallel. Novelty scores are provisional opportunity scores; literature precedents constrain claims about heat accumulation, morphology feedback, scale-dependent evolution, order effects, and depth/defocus. Terminal regressions establish predictive associations and observability limits under a specified representation, not causal mediation or fundamental material forgetting.
+
 **Repository audited:** `physics-guided-mamba2` (workspace checkout, 2026-09-12)  
 **Pasted brief:** `C:\Users\RZF\.codex\attachments\bc708bd6-3119-4845-9fbf-32d90e17c222\pasted-text-1.txt`
 
@@ -17,9 +19,11 @@ with morphology decomposing into at least two observable families:
 - **spectral composition and amplitude**, which carry depth-related information;
 - **directional texture**, which is strongly organized by hatch/scan geometry and is weakly related to terminal depth.
 
-The data do **not** yet identify a strict serial causal chain \(U\to M\to D\), a unique latent physical state, or a morphology representation that replaces process parameters. The most promising paper is therefore a **depth-oriented information decomposition**: quantify what terminal morphology preserves, what it loses, which process factors remain necessary after observing morphology, and whether a compact spectral/amplitude representation is sufficient for depth within the measured support.
+The data do **not** yet identify a strict serial causal chain \(U\to M\to D\), a unique latent physical state, or a morphology representation that replaces process parameters. The most promising paper is therefore a **depth-oriented state sufficiency study**: quantify what terminal morphology preserves under a fixed representation, what remains unobservable, which process factors remain necessary after observing morphology, and whether a compact spectral/amplitude representation is sufficient for depth and then for the next removal increment within the measured support.
 
 The immediate next step is to interpret the sealed D1.1 conditional/residual result, then execute D2 factor absorption, reverse depth conditioning, compression, and the error atlas. A large Mamba model should be deferred until a genuine sequence target exists and simple state baselines establish an incremental need.
+
+**Flagship execution order.** (A) Complete matched Tree(U), Tree(M), Tree(U+P), and Tree(U+M) baselines; the current UTREE (U+M) score is exploratory without Tree(U). (B) Build a support-matched depth/pass/dose/session conditional spectrum matrix. (C) Collect same-location histories with comparable (D_t), repeated metrology, two fixed next-step recipes, and compare depth-only, depth-plus-morphology, and depth-plus-history predictors. (D) Add observer and explicit depth/defocus/thermal states before testing GRU, SSM, or Mamba on pass extrapolation. This sequence tests whether history can be compressed into current depth plus a few morphology variables while preserving future response.
 
 ## Repository audit and evidence map
 
@@ -268,15 +272,15 @@ Scores are 1 (low) to 5 (high); “defensible if null” measures whether a nega
 
 | Rank | Direction | Novelty | Data fit | Preliminary support | Cost (inverse) | Interpretability | Defensible if null | Decision |
 |---:|---|---:|---:|---:|---:|---:|---:|---|
-| 1 | Block-specific residual \(M\to D-\hat D_U\) | 4 | 5 | 3 | 5 | 5 | 5 | **Low risk** |
-| 2 | Factor absorption before/after morphology | 5 | 5 | 3 | 4 | 5 | 5 | **Low risk** |
-| 3 | Depth-conditioned reverse morphology | 5 | 5 | 3 | 4 | 5 | 5 | **Low risk** |
-| 4 | Compact supervised \(Z_D\) | 5 | 5 | 3 | 3 | 4 | 5 | **Low risk** |
+| 1 | Block-specific residual \(M\to D-\hat D_U\) | 3 | 5 | 3 | 5 | 5 | 5 | **Low risk** |
+| 2 | Factor absorption before/after morphology | 3 | 5 | 3 | 4 | 5 | 5 | **Low risk** |
+| 3 | Depth-conditioned reverse morphology | 3 | 5 | 3 | 4 | 5 | 5 | **Low risk** |
+| 4 | Compact supervised \(Z_D\) | 3 | 5 | 3 | 3 | 4 | 5 | **Low risk** |
 | 5 | Scale/representation and error atlas | 4 | 5 | 3 | 4 | 4 | 5 | **Low risk** |
-| 6 | Same-location next-increment morphology state | 5 | 1 | 4 | 1 | 5 | 5 | **High upside** |
-| 7 | Defocus/incubation/absorptance physical state | 5 | 2 | 4 | 2 | 4 | 5 | **High upside** |
-| 8 | Physics-informed residual-closure model | 5 | 2 | 2 | 2 | 3 | 4 | **High upside** |
-| 9 | Mamba/SSM for pass extrapolation | 4 | 1 | 1 | 2 | 2 | 3 | **High upside only after data** |
+| 6 | Same-location next-increment morphology state | 3 | 1 | 4 | 1 | 5 | 5 | **High upside** |
+| 7 | Defocus/incubation/absorptance physical state | 3 | 2 | 4 | 2 | 4 | 5 | **High upside** |
+| 8 | Physics-informed residual-closure model | 3 | 2 | 2 | 2 | 3 | 4 | **High upside** |
+| 9 | Mamba/SSM for pass extrapolation | 2 | 1 | 1 | 2 | 2 | 3 | **High upside only after data** |
 | 10 | Strict terminal mediation claim | 2 | 5 | 0 | 4 | 1 | 1 | **Abandon** |
 | 11 | Mamba-first scale-up without longitudinal targets | 2 | 1 | 0 | 1 | 1 | 1 | **Abandon** |
 | 12 | Inverse/morphology-by-design before forward validation | 4 | 1 | 0 | 1 | 1 | 2 | **Abandon** |
@@ -287,16 +291,16 @@ The five low-risk directions are the first five rows. The four high-upside direc
 
 | Experiment | Hypothesis tested | Controls | Changed variable | Outputs | Competing predictions | Minimum design | Causal status |
 |---|---|---|---|---|---|---|---|
-| Matched-dose temporal delivery | Incubation/thermal history matters beyond total dose | Material, spot, total pulse count, nominal dose | Pulse spacing or burst schedule | \(D_t,M_t,\Delta D\), temperature proxy | Dose-only predicts equal D; state model predicts schedule effect | 3 independent specimens × 4 schedules | Intervention supports causal temporal effect |
-| Pulse-order reversal | Order affects accumulated state | Same pulse multiset and total dose | Permute pulse energies/frequencies | Terminal D and M, per-pass profiles | Memoryless model invariant; state model order-sensitive | 3 specimens × 2 orders × 3 repeats | Causal for order within support |
+| Matched-dose temporal delivery | Incubation/thermal history matters beyond total dose | Material, spot, total pulse count, nominal dose | Pulse spacing or burst schedule | \(D_t,M_t,\Delta D\), temperature proxy | Dose-only predicts equal D; state model predicts schedule effect | Feasibility pilot, then power from repeated-process variance and a predeclared effect margin | Intervention identifies schedule effect within support; hidden-state mechanism still needs observer |
+| Pulse-order reversal | Order affects accumulated state beyond current observable state | Same pulse multiset and total dose | Permute pulse energies/frequencies | Terminal D and M, per-pass profiles | Memoryless model invariant; nonlinear current-depth model may also be order-sensitive; residual effect supports extra state | Feasibility pilot, then powered matched orders | Causal order intervention within support, not proof of hidden memory by itself |
 | Inter-pass waiting time | Cooling/relaxation changes depth increments | Same U, pass count, scan path | Wait 0.1/1/10 s (registered values) | \(D_t,M_t,\Delta D\), thermal decay | No waiting effect vs thermal-state effect | 3 specimens × 3 waits, repeated locations | Causal temporal intervention |
-| Same-location per-pass metrology | M_t predicts next removal | Same coordinates and scan sequence | Pass number is observed, not substituted | Co-registered H/M after every pass | \(D_t,U\) sufficient vs M_t adds \(\Delta D\) skill | 10 locations × 4 passes × 3 specimens | Needed for longitudinal/state claim |
-| Matched-current-depth histories | Terminal D does not uniquely define history | Current D within ± metrology tolerance | Prior path/pass ordering | M differences at matched D | Unique-state model collapses; history model retains differences | 6 history pairs × 3 specimens | Distinguishes common-state from history dependence |
+| Same-location per-pass metrology | M_t predicts next removal | Same coordinates and scan sequence | Pass number is observed, not substituted | Co-registered H/M after every pass | \(D_t,U\) sufficient vs M_t adds \(\Delta D\) skill | Repeat scans first; then locations/specimens sized for a predeclared practical margin | Needed for longitudinal predictive-state claim; not automatic causal morphology evidence |
+| Matched-current-depth histories | Specified terminal observation does not uniquely define history | Current D within fixed, noise-based tolerance | Prior path/pass ordering | M differences at matched D | Unique-state model collapses; history model retains differences | History pairs and repeat scans selected before outcome inspection | Distinguishes an observability boundary from history dependence; not proof of irreversible material forgetting |
 | Pre-roughened versus polished start | Initial morphology changes absorptance/incubation | Same subsequent U and dose | Controlled RMS/correlation-length bands | Initial M, D increments, final M | No initial effect vs morphology-mediated effect | 3 roughness levels × 3 repeats | Intervention; mediation still needs measured absorptance |
 | Hatch/direction perturbation at matched dose | Directional texture is geometry channel | Dose, pulse count, material | Hatch and scan orientation | Direction blocks, D, residual D | Direction changes M only vs changes D too | 4 hatch levels × 2 orientations × 3 repeats | Causal geometry effect if orientation recorded |
 | In-situ optical/thermal observer | Hidden state can be measured | Same process family and metrology | Add calibrated reflectance/thermal channel | \(S_t\) proxy, D/M, uncertainty | No observer gain vs state observability | 3 repeats per condition, calibration set held out | Mechanistic support; not automatically mediation |
 
-The minimum counts are starting designs for variance estimation, not power calculations. Before execution, estimate variance from D1 residuals and set a confirmatory holdout by complete process family.
+The minimum counts are starting designs for workflow and variance estimation, not power calculations. Before execution, estimate repeated-scan and repeated-process variance and set a confirmatory holdout by complete process family. For an observed current depth \(\widetilde D_t=D_t+e_t\), the observed increment is \(\widetilde{\Delta D}=\Delta D+e_{t+1}-e_t\); under independent scan errors, \(\operatorname{Cov}(e_t,\widetilde{\Delta D})=-\operatorname{Var}(e_t)\). This shared-error term can create or distort apparent depth dependence and must be included in the analysis plan.
 
 ## Split semantics and reporting contract
 

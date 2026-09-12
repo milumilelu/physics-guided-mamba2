@@ -1,0 +1,27 @@
+{
+  "support_label": "MAIN180",
+  "excluded_session_role": "pass_supplement",
+  "n": 180,
+  "dataset_index_min": 0,
+  "dataset_index_max": 199,
+  "depth_um": {
+    "min": 0.0514,
+    "max": 65.0842
+  },
+  "pass_count": {
+    "min": 1.0,
+    "max": 5.0
+  },
+  "dose_proxy_J_per_mm2": {
+    "min": 26.6665,
+    "max": 4444.416666666667
+  },
+  "dose_log10": {
+    "min": 1.425966017923287,
+    "max": 3.6478147675396433
+  },
+  "session_role_counts": {
+    "formal": 120,
+    "pass_main": 60
+  }
+}

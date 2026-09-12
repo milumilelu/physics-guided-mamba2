@@ -1,0 +1,7 @@
+method,predictor_a,predictor_b,correlation
+pearson,D,N,0.5608218098040281
+pearson,D,Q_log10,0.5562146984139424
+pearson,N,Q_log10,0.5839707328898801
+spearman,D,N,0.5668615193200444
+spearman,D,Q_log10,0.5688933068043801
+spearman,N,Q_log10,0.5782416840388569

@@ -1,0 +1,14 @@
+test_band_energies_sum_to_non_dc_variance (test_depth_target.TestBandEnergyParseval.test_band_energies_sum_to_non_dc_variance) ... ok
+test_b0_constant_is_train_weighted_mean (test_depth_target.TestLeakageGuards.test_b0_constant_is_train_weighted_mean) ... ok
+test_bum_contains_no_depth_column (test_depth_target.TestLeakageGuards.test_bum_contains_no_depth_column) ... ok
+test_morphology_list_excludes_depth_and_absolute (test_depth_target.TestLeakageGuards.test_morphology_list_excludes_depth_and_absolute) ... ok
+test_depth_moves_with_shift (test_depth_target.TestTranslationInvariance.test_depth_moves_with_shift) ... ok
+test_features_invariant_to_constant_shift (test_depth_target.TestTranslationInvariance.test_features_invariant_to_constant_shift) ... ok
+test_binding_rejects_config_input_and_feature_drift (test_release.ReleaseTests.test_binding_rejects_config_input_and_feature_drift) ... ok
+test_legacy_reports_and_rejects_damage (test_release.ReleaseTests.test_legacy_reports_and_rejects_damage) ... ok
+test_new_seal_checkout_and_strictness (test_release.ReleaseTests.test_new_seal_checkout_and_strictness) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.529s
+
+OK

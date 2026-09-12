@@ -1,0 +1,39 @@
+schema: flagship_followup_state_identification_v1
+status: DESIGN_READY_NOT_EXECUTED
+target: next_step_depth_increment
+question: "Is current depth sufficient for predicting the next removal response?"
+design:
+  history_families: 4-6
+  positions_per_family: 3-4
+  probe_recipes: [U_A_low_dose, U_B_high_dose]
+  first_round_independent_positions: 24
+  repeat_positions: 6
+  held_out_unit: history_family_or_experimental_batch
+observations:
+  current: [D_t, morphology_centered, focus_position, timestamp, pause_duration, material_state_proxy]
+  after_probe: [D_t1, morphology_centered_t1, timestamp]
+models:
+  G0: [D_t, U_next]
+  G1: [D_t, Z_M, U_next]
+  G2: [D_t, Z_M, H_t, U_next]
+  morphology_variables_frozen:
+    - A_med
+    - ilr_z1
+    - ilr_z2
+    - rms_DCT_8_16_um
+    - rms_DCT_32_64_um
+metrics: [MAE, RMSE, paired_risk_delta, interval_95, MID_comparison]
+quality_gates:
+  - duplicate_measurement_and_reclamp_repeatability
+  - registration_and_valid_area
+  - pause_log_complete
+  - support_range_check
+claims:
+  primary: predictive_state_identification
+  causal_morphology: not_identified_by_this_design_alone
+  continuous_vs_cooled_state: must_be_reported_separately
+stop_rules:
+  - "measurement_error > 0.5 * MID"
+  - "no overlapping depth support across history families"
+  - "critical registration or pause metadata failure"
+execution_status: not_started
