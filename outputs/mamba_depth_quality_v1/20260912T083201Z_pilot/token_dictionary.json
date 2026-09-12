@@ -1,0 +1,24 @@
+{
+  "tokenization_id": "equivalent_exposure_progress_v1",
+  "points_per_pass": 8,
+  "features": [
+    "log_tau",
+    "log_f",
+    "log_v",
+    "log_h",
+    "pass_index",
+    "within_pass_progress",
+    "log1p_nu_start",
+    "log1p_nu_end",
+    "log1p_delta_nu",
+    "log_Ep_SI",
+    "log_F0_SI",
+    "log_dx_over_2w",
+    "log_h_over_2w",
+    "log_F0_over_F1",
+    "D_ref_start_um",
+    "D_ref_end_um"
+  ],
+  "normalization": "train-only component/token statistics",
+  "padding": "mask and last-valid"
+}

@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "scope": "isolated source copy import/reload plus masked full/stepwise inference",
+  "run_dir": "C:\\Users\\RZF\\Desktop\\\u535a\u58eb\u8bfe\u9898\u8d44\u6599\\physics-guided Mamba-2\\outputs\\mamba_depth_quality_v1\\20260912T083201Z_pilot",
+  "source_sha256": "2aecdf66081341421842cfb012c4cd75e48731bb49e0312d67558902f2b9a1e6",
+  "inference": {
+    "finite": true,
+    "shape": [
+      3
+    ],
+    "parameters": 7908,
+    "stepwise_max_abs_diff": 1.862645149230957e-08
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "outer_refit": "one reference per outer training fold",
+  "inner_crossfit": "3-fold reference cross-fit implemented",
+  "reference_id": "RLOG_EQEXP_v1"
+}

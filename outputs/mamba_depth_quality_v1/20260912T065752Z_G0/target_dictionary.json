@@ -1,0 +1,10 @@
+{
+  "D": "-median(valid height_raw)",
+  "Sq": "sqrt(mean((H-mean(H))^2))",
+  "A_med": "audit only, not Sq",
+  "pixel_um": 0.5,
+  "roi_shape": [
+    160,
+    160
+  ]
+}

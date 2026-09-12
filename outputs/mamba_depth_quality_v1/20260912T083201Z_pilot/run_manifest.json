@@ -1,0 +1,19 @@
+{
+  "run_id": "20260912T083201Z_pilot",
+  "seed": 17,
+  "fast": false,
+  "max_epochs": 300,
+  "inner_reference_crossfit": 3,
+  "models": [
+    "CONST_DQ",
+    "TREE_U_DQ",
+    "STATIC_PHY_K4_AUX",
+    "GRU_PHY_K4_AUX",
+    "MAMBA_RAW_K4_AUX",
+    "MAMBA_PHY_K4_NOAUX",
+    "MAMBA_PHY_K4_AUX",
+    "MAMBA_PHY_K32_AUX"
+  ],
+  "oof_rows": 1440,
+  "failures": 0
+}

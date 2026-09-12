@@ -1,0 +1,2 @@
+mode,fast,models,outer_folds,max_epochs,inner_folds
+full,false,8,5,300,3

@@ -1,0 +1,13 @@
+{
+  "reference_id": "RLOG_EQEXP_v1",
+  "backend_id": "reference_pure_torch_ssd_mamba2_verified_adapter_v1",
+  "full_step_max_abs": 0.0,
+  "padding_invariance_max_abs": 0.0,
+  "gradient_finite": true,
+  "token_shape": [
+    180,
+    40,
+    16
+  ],
+  "reference_profile_rows": 64
+}
